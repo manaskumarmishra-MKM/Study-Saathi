@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progress Tracker – StudySaathi</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ── TOP NAV ──────────────────────────────────────────────── -->
+<nav class="topnav">
+  <a class="topnav-logo" href="dashboard.html"><span class="mark">✦</span> StudySaathi</a>
+  <div class="topnav-links">
+    <span style="font-size:.82rem;color:var(--muted)">Hello, <strong id="nav-user-name" style="color:#fff">—</strong></span>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="planner.html">Planner</a>
+    <a href="progress.html" class="active">Progress</a>
+    <a href="profile.html">Profile</a>
+    <button class="btn btn-ghost btn-sm" onclick="logout()">Logout</button>
+  </div>
+</nav>
+
+<!-- ── SIDEBAR ──────────────────────────────────────────────── -->
+<aside class="sidebar">
+  <div class="sidebar-label">Navigation</div>
+  <a class="sidebar-item" href="dashboard.html"><span class="si-icon">🏠</span> Dashboard</a>
+  <a class="sidebar-item" href="planner.html"><span class="si-icon">📅</span> Study Planner</a>
+  <a class="sidebar-item active" href="progress.html"><span class="si-icon">📈</span> Progress</a>
+  <a class="sidebar-item" href="profile.html"><span class="si-icon">👤</span> Profile</a>
+  <div class="sidebar-label">Actions</div>
+  <div class="sidebar-item" onclick="openModal('log-modal')"><span class="si-icon">⏱</span> Log Study Hours</div>
+</aside>
+
+<!-- ── MAIN ─────────────────────────────────────────────────── -->
+<main class="main-content">
+<div class="page-body">
+
+  <div class="page-header">
+    <div>
+      <h2>Progress Tracker</h2>
+      <p>Visualise your study hours, syllabus completion, and improvement areas</p>
+    </div>
+    <button class="btn btn-teal" onclick="openModal('log-modal')">⏱ Log Study Hours</button>
+  </div>
+
+  <!-- ── Top stat row ──────────────────────────────────────── -->
+  <div class="grid-4" style="margin-bottom:24px">
+    <div class="stat-card">
+      <div class="sc-label">⏱ Hours Today</div>
+      <div class="sc-value" id="p-stat-today">—</div>
+      <div class="sc-sub">this session</div>
+    </div>
+    <div class="stat-card">
+      <div class="sc-label">📅 This Week</div>
+      <div class="sc-value" id="p-stat-week">—</div>
+      <div class="sc-sub">total hours</div>
+    </div>
+    <div class="stat-card">
+      <div class="sc-label">🔥 Streak</div>
+      <div class="sc-value" id="p-stat-streak">—</div>
+      <div class="sc-sub">days in a row</div>
+    </div>
+    <div class="stat-card">
+      <div class="sc-label">📚 Best Subject</div>
+      <div class="sc-value" id="p-stat-best" style="font-size:1rem;line-height:1.3;margin-top:4px">—</div>
+      <div class="sc-sub">most hours logged</div>
+    </div>
+  </div>
+
+  <!-- ── Row 1: Weekly chart + Streak ──────────────────────── -->
+  <div class="grid-2" style="margin-bottom:22px">
+    <div class="card">
+      <div class="card-title">📊 Weekly Study Hours</div>
+      <div class="bar-chart" id="prog-week-chart" style="margin-top:8px">
+        <div class="loading-row" style="width:100%"><div class="spinner"></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔥 Study Streak</div>
+      <div class="streak-row" id="prog-streak-row" style="margin-bottom:16px"></div>
+      <div style="font-size:.85rem;margin-bottom:18px">
+        <span style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--teal)"
+              id="prog-streak-count">0</span>
+        <span style="color:var(--muted);margin-left:8px">consecutive study days</span>
+      </div>
+      <p style="font-size:.82rem;color:var(--muted)">
+        Study at least 30 minutes per day to maintain your streak.
+        Every ✦ green cell is a day you studied!
+      </p>
+    </div>
+  </div>
+
+  <!-- ── Row 2: Subject progress + Topic completion ─────────── -->
+  <div class="grid-2" style="margin-bottom:22px">
+
+    <!-- Subject hours breakdown -->
+    <div class="card">
+      <div class="card-title">📖 Hours by Subject</div>
+      <div id="subject-hours-list">
+        <div class="loading-row"><div class="spinner"></div></div>
+      </div>
+    </div>
+
+    <!-- Topic completion -->
+    <div class="card">
+      <div class="card-title">✅ Topic Completion</div>
+      <div id="topic-completion-list">
+        <div class="loading-row"><div class="spinner"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Row 3: All exams list ──────────────────────────────── -->
+  <div class="card" style="margin-bottom:22px">
+    <div class="card-title">
+      📝 All Exams
+      <a onclick="openModal('exam-modal')">+ Add Exam</a>
+    </div>
+    <div id="all-exams-list">
+      <div class="loading-row"><div class="spinner"></div></div>
+    </div>
+  </div>
+
+  <!-- ── Row 4: AI suggestions ──────────────────────────────── -->
+  <div class="card" style="margin-bottom:22px">
+    <div class="card-title">💡 AI Improvement Suggestions</div>
+    <div id="prog-suggestions">
+      <div class="loading-row"><div class="spinner"></div> Analysing your data…</div>
+    </div>
+  </div>
+
+</div>
+<div class="page-footer">© Manas Kumar Mishra. All rights reserved.</div>
+</main>
+
+<!-- ── LOG HOURS MODAL ───────────────────────────────────────── -->
+<div class="modal-overlay" id="log-modal">
+  <div class="modal">
+    <h3>⏱ Log Study Session</h3>
+    <div class="form-group">
+      <label>Subject</label>
+      <input type="text" id="log-subj" placeholder="e.g. Physics">
+    </div>
+    <div class="input-row">
+      <div class="form-group">
+        <label>Hours Studied</label>
+        <input type="number" id="log-hours" placeholder="2.5" min="0.5" max="12" step="0.5">
+      </div>
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" id="log-date">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('log-modal')">Cancel</button>
+      <button class="btn btn-teal" id="log-save-btn" onclick="logHours()">Save Session</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── ADD EXAM MODAL ────────────────────────────────────────── -->
+<div class="modal-overlay" id="exam-modal">
+  <div class="modal">
+    <h3>📝 Add Exam</h3>
+    <div class="form-group">
+      <label>Subject / Exam Name</label>
+      <input type="text" id="ex-subj" placeholder="e.g. Physics Practical">
+    </div>
+    <div class="form-group">
+      <label>Exam Date</label>
+      <input type="date" id="ex-date">
+    </div>
+    <div class="form-group">
+      <label>Notes (optional)</label>
+      <input type="text" id="ex-notes" placeholder="e.g. Unit 3-5 only">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('exam-modal')">Cancel</button>
+      <button class="btn btn-teal" id="exam-save-btn" onclick="addExam()">Add Exam</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+  requireAuth();
+  document.getElementById("log-date").value = todayString();
+
+  // ── Load all progress data ─────────────────────────────────
+  async function loadProgress() {
+    try {
+      const data = await API.get("/progress/");
+
+      // Weekly chart
+      const chartData = (data.weekly || []).map((d,i) => ({
+        label: d.label, value: d.hours,
+        color: i === 6 ? "var(--teal)" : "var(--indigo)"
+      }));
+      buildBarChart("prog-week-chart", chartData);
+
+      // Stat: today
+      document.getElementById("p-stat-today").textContent = (data.hours_today || 0) + "h";
+
+      // Stat: this week total
+      const weekTotal = (data.weekly || []).reduce((a,d) => a + d.hours, 0);
+      document.getElementById("p-stat-week").textContent = weekTotal.toFixed(1) + "h";
+
+      // Stat: best subject
+      const subSum = data.subject_summary || [];
+      if (subSum.length) {
+        document.getElementById("p-stat-best").textContent = subSum[0].subject;
+      }
+
+      // Stat: streak
+      document.getElementById("p-stat-streak").textContent = data.streak || 0;
+
+      // Streak row
+      buildStreakRow("prog-streak-row", data.study_dates || [], data.streak || 0);
+      document.getElementById("prog-streak-count").textContent = data.streak || 0;
+
+      // Subject hours breakdown
+      renderSubjectHours(subSum);
+
+      // Topic completion
+      renderTopicCompletion(data.topic_summary || []);
+
+      // Suggestions
+      const typeClass = { weak_subject:"sug-weak", hard_topic:"sug-hard",
+                          exam_alert:"sug-exam", positive:"sug-ok" };
+      document.getElementById("prog-suggestions").innerHTML =
+        (data.suggestions || []).map(s => `
+          <div class="suggestion-card ${typeClass[s.type]||'sug-ok'}">
+            <div class="su-icon">${s.icon}</div>
+            <div><div class="su-title">${s.title}</div>
+                 <div class="su-msg">${s.message}</div></div>
+          </div>`).join("") || emptyState("💡","All good! Keep studying.");
+
+    } catch(err) {
+      showToast("Error loading progress: " + err.message, "error");
+    }
+  }
+
+  function renderSubjectHours(subjects) {
+    const wrap = document.getElementById("subject-hours-list");
+    if (!subjects.length) {
+      wrap.innerHTML = emptyState("⏱", "No study sessions logged yet. Start logging hours!");
+      return;
+    }
+    const maxHours = Math.max(...subjects.map(s => s.total_hours), 1);
+    wrap.innerHTML = subjects.map((s,i) => {
+      const pct = Math.round((s.total_hours / maxHours) * 100);
+      return progressBarHTML(
+        `${s.subject} <span class="small muted">(${s.days_studied} days)</span>`,
+        s.total_hours > 0 ? pct : 0,
+        subjectColor(i)
+      ) + ``;
+    }).join("") +
+    `<table class="data-table" style="margin-top:16px">
+      <thead><tr><th>Subject</th><th>Total Hours</th><th>Days Studied</th></tr></thead>
+      <tbody>
+        ${subjects.map((s,i) => `
+          <tr>
+            <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;
+              background:${subjectColor(i)};margin-right:6px"></span>${s.subject}</td>
+            <td>${s.total_hours}h</td>
+            <td>${s.days_studied}</td>
+          </tr>`).join("")}
+      </tbody>
+    </table>`;
+  }
+
+  function renderTopicCompletion(topics) {
+    const wrap = document.getElementById("topic-completion-list");
+    if (!topics.length) {
+      wrap.innerHTML = emptyState("📚", "Add subjects and topics in the Planner to see completion.");
+      return;
+    }
+    wrap.innerHTML = topics.map((t,i) => `
+      ${progressBarHTML(
+        `${t.subject} <span class="small muted">(${t.done_topics}/${t.total_topics} done)</span>`,
+        t.completion_pct,
+        subjectColor(i)
+      )}`).join("") +
+      `<div style="margin-top:16px;padding:14px;background:rgba(0,201,167,.06);
+                   border:1px solid rgba(0,201,167,.2);border-radius:10px;font-size:.85rem">
+        <strong style="color:var(--teal)">Overall Syllabus:</strong>
+        ${Math.round(topics.reduce((a,t)=>a+t.done_topics,0) /
+                     Math.max(topics.reduce((a,t)=>a+t.total_topics,0),1)*100)}%
+        completed across all subjects.
+      </div>`;
+  }
+
+  // ── Load streak ────────────────────────────────────────────
+  async function loadStreakData() { /* Handled inside loadProgress */ }
+
+  // ── Load AI suggestions ─────────────────────────────────────
+  async function loadSuggestions() { /* Handled inside loadProgress */ }
+
+  // ── Load all exams ──────────────────────────────────────────
+  async function loadExams() {
+    try {
+      const data = await API.get("/exams/");
+      const wrap = document.getElementById("all-exams-list");
+      if (!data.exams.length) {
+        wrap.innerHTML = emptyState("📅","No exams added yet.");
+        return;
+      }
+      wrap.innerHTML = `
+        <table class="data-table">
+          <thead><tr><th>Subject</th><th>Exam Date</th><th>Days Left</th><th>Notes</th><th>Action</th></tr></thead>
+          <tbody>
+            ${data.exams.map(e => {
+              const dl  = e.days_left;
+              const col = dl <= 7 ? "var(--red)" : dl <= 14 ? "var(--gold)" : "var(--teal)";
+              return `
+              <tr>
+                <td><strong>${e.subject}</strong></td>
+                <td>${formatDate(e.exam_date)}</td>
+                <td style="color:${col};font-weight:700">${Math.round(dl)} days</td>
+                <td style="color:var(--muted)">${e.notes || "—"}</td>
+                <td><button class="btn btn-danger btn-sm" onclick="deleteExam(${e.id})">Delete</button></td>
+              </tr>`;
+            }).join("")}
+          </tbody>
+        </table>`;
+    } catch(_) {}
+  }
+
+  // ── Log hours ──────────────────────────────────────────────
+  async function logHours() {
+    const subject       = document.getElementById("log-subj").value.trim();
+    const hours_studied = parseFloat(document.getElementById("log-hours").value);
+    const date          = document.getElementById("log-date").value;
+    if (!subject || !hours_studied) { showToast("Subject and hours required","error"); return; }
+    const btn = document.getElementById("log-save-btn");
+    setLoading(btn, true);
+    try {
+      await API.post("/progress/", { subject, hours_studied, date });
+      closeModal("log-modal");
+      showToast(`⏱ ${hours_studied}h logged for ${subject}!`);
+      loadProgress(); loadStreakData(); loadSuggestions();
+    } catch(err) { showToast(err.message,"error"); }
+    finally { setLoading(btn, false); }
+  }
+
+  // ── Add exam ───────────────────────────────────────────────
+  async function addExam() {
+    const subject   = document.getElementById("ex-subj").value.trim();
+    const exam_date = document.getElementById("ex-date").value;
+    const notes     = document.getElementById("ex-notes").value.trim();
+    if (!subject || !exam_date) { showToast("Subject and date required","error"); return; }
+    const btn = document.getElementById("exam-save-btn");
+    setLoading(btn, true);
+    try {
+      await API.post("/exams/", { subject, exam_date, notes });
+      closeModal("exam-modal");
+      showToast("📝 Exam added!");
+      loadExams();
+    } catch(err) { showToast(err.message,"error"); }
+    finally { setLoading(btn, false); }
+  }
+
+  // ── Delete exam ────────────────────────────────────────────
+  async function deleteExam(id) {
+    if (!confirm("Delete this exam?")) return;
+    try {
+      await API.del(`/exams/${id}`);
+      showToast("Exam deleted");
+      loadExams();
+    } catch(err) { showToast(err.message,"error"); }
+  }
+
+  // ── Init ──────────────────────────────────────────────────
+  loadProgress();
+  loadStreakData();
+  loadExams();
+  loadSuggestions();
+</script>
+</body>
+</html>

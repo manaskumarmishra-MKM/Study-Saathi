@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard – StudySaathi</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ── TOP NAV ───────────────────────────────────────────────── -->
+<nav class="topnav">
+  <a class="topnav-logo" href="dashboard.html"><span class="mark">✦</span> StudySaathi</a>
+  <div class="topnav-links">
+    <span style="font-size:.82rem;color:var(--muted)">Hello, <strong id="nav-user-name" style="color:#fff">—</strong></span>
+    <a href="dashboard.html" class="active">Dashboard</a>
+    <a href="planner.html">Planner</a>
+    <a href="progress.html">Progress</a>
+    <a href="profile.html">Profile</a>
+    <button class="btn btn-ghost btn-sm" onclick="logout()">Logout</button>
+  </div>
+</nav>
+
+<!-- ── SIDEBAR ───────────────────────────────────────────────── -->
+<aside class="sidebar">
+  <div class="sidebar-label">Main</div>
+  <a class="sidebar-item active" href="dashboard.html"><span class="si-icon">🏠</span> Dashboard</a>
+  <a class="sidebar-item" href="planner.html"><span class="si-icon">📅</span> Study Planner</a>
+  <a class="sidebar-item" href="progress.html"><span class="si-icon">📈</span> Progress</a>
+  <a class="sidebar-item" href="profile.html"><span class="si-icon">👤</span> Profile</a>
+  <div class="sidebar-label">Quick Add</div>
+  <div class="sidebar-item" onclick="openModal('task-modal')"><span class="si-icon">✅</span> Add Task</div>
+  <div class="sidebar-item" onclick="openModal('exam-modal')"><span class="si-icon">📝</span> Add Exam</div>
+  <div class="sidebar-item" onclick="openModal('progress-modal')"><span class="si-icon">⏱</span> Log Hours</div>
+  <div class="sidebar-label">Account</div>
+  <div class="sidebar-item" onclick="logout()"><span class="si-icon">🚪</span> Logout</div>
+</aside>
+
+<!-- ── MAIN ───────────────────────────────────────────────────── -->
+<main class="main-content">
+<div class="page-body">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h2 id="welcome-msg">Good Morning 👋</h2>
+      <p id="welcome-sub">Loading your dashboard…</p>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost btn-sm" onclick="openModal('task-modal')">+ Add Task</button>
+      <a href="planner.html" class="btn btn-teal btn-sm">🧠 Generate Plan</a>
+    </div>
+  </div>
+
+  <!-- ── Stat cards ──────────────────────────────────────────── -->
+  <div class="grid-4" style="margin-bottom:24px">
+    <div class="stat-card">
+      <div class="sc-label">⏱ Hours Today</div>
+      <div class="sc-value" id="stat-hours">—</div>
+      <div class="sc-sub" id="stat-hours-sub">of daily goal</div>
+    </div>
+    <div class="stat-card">
+      <div class="sc-label">✅ Tasks Done</div>
+      <div class="sc-value" id="stat-tasks">—</div>
+      <div class="sc-sub" id="stat-tasks-sub">today</div>
+    </div>
+    <div class="stat-card">
+      <div class="sc-label">🔥 Study Streak</div>
+      <div class="sc-value" id="stat-streak">—</div>
+      <div class="sc-sub">days in a row</div>
+    </div>
+    <div class="stat-card">
+      <div class="sc-label">📚 Syllabus Done</div>
+      <div class="sc-value" id="stat-syllabus">—</div>
+      <div class="sc-sub" id="stat-syllabus-sub">of all topics</div>
+    </div>
+  </div>
+
+  <!-- ── Row 1: Today's Tasks + Upcoming Exams ──────────────── -->
+  <div class="grid-2-1" style="margin-bottom:22px">
+
+    <!-- Today's Tasks -->
+    <div class="card">
+      <div class="card-title">
+        Today's Tasks
+        <a onclick="openModal('task-modal')">+ Add Task</a>
+      </div>
+      <div id="tasks-list"></div>
+    </div>
+
+    <!-- Upcoming Exams -->
+    <div class="card">
+      <div class="card-title">
+        Upcoming Exams
+        <a onclick="openModal('exam-modal')">+ Add</a>
+      </div>
+      <div id="exams-list"></div>
+    </div>
+  </div>
+
+  <!-- ── Row 2: Weekly Chart + Streak ───────────────────────── -->
+  <div class="grid-2" style="margin-bottom:22px">
+
+    <!-- Weekly study hours bar chart -->
+    <div class="card">
+      <div class="card-title">Weekly Study Hours</div>
+      <div class="bar-chart" id="weekly-chart" style="margin-top:8px">
+        <div class="loading-row" style="width:100%"><div class="spinner"></div></div>
+      </div>
+    </div>
+
+    <!-- Streak + quick log -->
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div class="card">
+        <div class="card-title">🔥 Study Streak</div>
+        <div class="streak-row" id="streak-row"></div>
+        <p style="font-size:.78rem;color:var(--muted);margin-top:10px">
+          <strong id="streak-count" style="color:var(--teal)">0</strong> days strong!
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-title">Quick Log Hours</div>
+        <div style="display:flex;gap:10px;align-items:flex-end">
+          <div class="form-group" style="flex:1;margin:0">
+            <label>Subject</label>
+            <input type="text" id="ql-subject" placeholder="e.g. Mathematics">
+          </div>
+          <div class="form-group" style="width:80px;margin:0">
+            <label>Hours</label>
+            <input type="number" id="ql-hours" placeholder="2" min="0.5" max="12" step="0.5">
+          </div>
+          <button class="btn btn-teal btn-sm" onclick="quickLogHours()" style="flex-shrink:0">Log</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Row 3: AI Suggestions ──────────────────────────────── -->
+  <div class="card" style="margin-bottom:22px">
+    <div class="card-title">💡 AI Suggestions</div>
+    <div id="suggestions-list">
+      <div class="loading-row"><div class="spinner"></div> Analysing your data…</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Page footer -->
+<div class="page-footer">© Manas Kumar Mishra. All rights reserved.</div>
+</main>
+
+<!-- ── ADD TASK MODAL ─────────────────────────────────────────── -->
+<div class="modal-overlay" id="task-modal">
+  <div class="modal">
+    <h3>✅ Add New Task</h3>
+    <div class="form-group">
+      <label>Task Description</label>
+      <input type="text" id="m-task" placeholder="e.g. Solve 10 Calculus problems">
+    </div>
+    <div class="input-row">
+      <div class="form-group">
+        <label>Priority</label>
+        <select id="m-priority">
+          <option>High</option><option selected>Medium</option><option>Low</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" id="m-date">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Notes (optional)</label>
+      <textarea id="m-notes" placeholder="Any extra detail…" style="min-height:60px"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('task-modal')">Cancel</button>
+      <button class="btn btn-teal" id="task-save-btn" onclick="saveTask()">Add Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── ADD EXAM MODAL ─────────────────────────────────────────── -->
+<div class="modal-overlay" id="exam-modal">
+  <div class="modal">
+    <h3>📝 Add Exam</h3>
+    <div class="form-group">
+      <label>Subject / Exam Name</label>
+      <input type="text" id="m-exam-subj" placeholder="e.g. Mathematics End-Term">
+    </div>
+    <div class="form-group">
+      <label>Exam Date</label>
+      <input type="date" id="m-exam-date">
+    </div>
+    <div class="form-group">
+      <label>Notes (optional)</label>
+      <input type="text" id="m-exam-notes" placeholder="e.g. Covers chapters 1-6">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('exam-modal')">Cancel</button>
+      <button class="btn btn-teal" id="exam-save-btn" onclick="saveExam()">Add Exam</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── LOG PROGRESS MODAL ─────────────────────────────────────── -->
+<div class="modal-overlay" id="progress-modal">
+  <div class="modal">
+    <h3>⏱ Log Study Hours</h3>
+    <div class="form-group">
+      <label>Subject</label>
+      <input type="text" id="m-prog-subj" placeholder="e.g. Physics">
+    </div>
+    <div class="form-group">
+      <label>Hours Studied</label>
+      <input type="number" id="m-prog-hours" placeholder="2.5" min="0.5" max="12" step="0.5">
+    </div>
+    <div class="form-group">
+      <label>Date</label>
+      <input type="date" id="m-prog-date">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('progress-modal')">Cancel</button>
+      <button class="btn btn-teal" id="prog-save-btn" onclick="saveProgress()">Log Hours</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+  requireAuth();
+
+  // Pre-fill today's date in modals
+  const todayVal = todayString();
+  document.getElementById("m-date").value       = todayVal;
+  document.getElementById("m-prog-date").value  = todayVal;
+
+  // ── Load dashboard data ──────────────────────────────────────
+  async function loadDashboard() {
+    try {
+      const data = await API.get("/dashboard");
+
+      // Greeting
+      const hr   = new Date().getHours();
+      const greet = hr < 12 ? "Good Morning" : hr < 17 ? "Good Afternoon" : "Good Evening";
+      document.getElementById("welcome-msg").textContent = `${greet}, ${data.user.name.split(" ")[0]} 👋`;
+      document.getElementById("welcome-sub").textContent =
+        `${data.tasks_done} of ${data.tasks_total} tasks done today · ${data.subject_count} subjects`;
+
+      // Stats
+      document.getElementById("stat-hours").textContent    = data.hours_today + "h";
+      document.getElementById("stat-tasks").textContent    = `${data.tasks_done}/${data.tasks_total}`;
+      document.getElementById("stat-tasks-sub").textContent= `${data.tasks_total ? Math.round(data.tasks_done/data.tasks_total*100) : 0}% complete`;
+      document.getElementById("stat-syllabus").textContent = data.syllabus_pct + "%";
+
+      // Tasks
+      renderTasks(data.tasks);
+
+      // Exams
+      renderExams(data.exams);
+
+    } catch (err) {
+      showToast("Failed to load dashboard: " + err.message, "error");
+    }
+  }
+
+  // ── Render tasks ──────────────────────────────────────────────
+  function renderTasks(tasks) {
+    const wrap = document.getElementById("tasks-list");
+    if (!tasks.length) { wrap.innerHTML = emptyState("📝", "No tasks for today. Add one above!"); return; }
+    wrap.innerHTML = tasks.map(t => `
+      <div class="task-item" id="task-${t.id}">
+        <div class="task-check ${t.status==='done'?'done':''}"
+             onclick="toggleTask(${t.id}, '${t.status}')">${t.status==='done'?'✓':''}</div>
+        <span class="task-label ${t.status==='done'?'done':''}">${t.task}</span>
+        ${badgeHTML(t.priority, PRIORITY_MAP)}
+        <span style="cursor:pointer;color:var(--muted);font-size:.8rem;margin-left:6px"
+              onclick="deleteTask(${t.id})">✕</span>
+      </div>`).join("");
+  }
+
+  // ── Render exams ──────────────────────────────────────────────
+  function renderExams(exams) {
+    const wrap = document.getElementById("exams-list");
+    if (!exams.length) { wrap.innerHTML = emptyState("📅", "No upcoming exams. Add one!"); return; }
+    const colors = ["var(--indigo)","var(--teal)","#ec4899","var(--gold)","#10b981"];
+    wrap.innerHTML = exams.map((e,i) => {
+      const dl    = Math.round(e.days_left);
+      const color = dl <= 7 ? "var(--red)" : dl <= 14 ? "var(--gold)" : "var(--teal)";
+      return `
+        <div class="exam-item">
+          <div class="exam-color" style="background:${colors[i%colors.length]}"></div>
+          <div class="exam-info">
+            <div class="exam-name">${e.subject}</div>
+            <div class="exam-date">${formatDate(e.exam_date)}</div>
+          </div>
+          <div class="exam-days" style="color:${color}">${dl}<span>days left</span></div>
+        </div>`;
+    }).join("");
+  }
+
+  // ── Load weekly chart ─────────────────────────────────────────
+  async function loadWeeklyChart() {
+    try {
+      const data = await API.get("/progress/");
+      const chartData = (data.weekly || []).map((d,i) => ({
+        label: d.label, value: d.hours,
+        color: i === 6 ? "var(--teal)" : "var(--indigo)"
+      }));
+      buildBarChart("weekly-chart", chartData);
+    } catch(_) {
+      document.getElementById("weekly-chart").innerHTML =
+        emptyState("📊","Log some study hours to see your chart!");
+    }
+  }
+
+  // ── Load streak ───────────────────────────────────────────────
+  async function loadStreak() {
+    try {
+      const data = await API.get("/progress/streak");
+      buildStreakRow("streak-row", data.dates || [], data.streak || 0);
+      document.getElementById("stat-streak").textContent = data.streak || 0;
+    } catch(_) {
+      buildStreakRow("streak-row", [], 0);
+      document.getElementById("stat-streak").textContent = 0;
+    }
+  }
+
+  // ── Load AI suggestions ───────────────────────────────────────
+  async function loadSuggestions() {
+    const typeClass = { weak_subject:"sug-weak", hard_topic:"sug-hard",
+                        exam_alert:"sug-exam", positive:"sug-ok" };
+    try {
+      const data = await API.get("/progress/suggestions");
+      const html = (data.suggestions || []).map(s => `
+        <div class="suggestion-card ${typeClass[s.type]||'sug-ok'}">
+          <div class="su-icon">${s.icon}</div>
+          <div><div class="su-title">${s.title}</div>
+               <div class="su-msg">${s.message}</div></div>
+        </div>`).join("");
+      document.getElementById("suggestions-list").innerHTML =
+        html || emptyState("💡","Keep studying to get personalised suggestions!");
+    } catch(_) {
+      document.getElementById("suggestions-list").innerHTML =
+        emptyState("💡","Add subjects and log hours to get AI suggestions.");
+    }
+  }
+
+  // ── Toggle task done/pending ──────────────────────────────────
+  async function toggleTask(id, currentStatus) {
+    const newStatus = currentStatus === "done" ? "pending" : "done";
+    try {
+      await API.patch(`/tasks/${id}`, { status: newStatus });
+      loadDashboard();
+    } catch(err) { showToast(err.message, "error"); }
+  }
+
+  // ── Delete task ───────────────────────────────────────────────
+  async function deleteTask(id) {
+    try {
+      await API.del(`/tasks/${id}`);
+      loadDashboard();
+      showToast("Task deleted");
+    } catch(err) { showToast(err.message,"error"); }
+  }
+
+  // ── Save new task ─────────────────────────────────────────────
+  async function saveTask() {
+    const task  = document.getElementById("m-task").value.trim();
+    const prio  = document.getElementById("m-priority").value;
+    const date  = document.getElementById("m-date").value;
+    const notes = document.getElementById("m-notes").value.trim();
+
+    if (!task) { showToast("Task description required","error"); return; }
+
+    const btn = document.getElementById("task-save-btn");
+    setLoading(btn, true);
+    try {
+      await API.post("/tasks/", { task, priority: prio, date, notes });
+      closeModal("task-modal");
+      document.getElementById("m-task").value  = "";
+      document.getElementById("m-notes").value = "";
+      showToast("✅ Task added!");
+      loadDashboard();
+    } catch(err) { showToast(err.message,"error"); }
+    finally { setLoading(btn, false); }
+  }
+
+  // ── Save new exam ─────────────────────────────────────────────
+  async function saveExam() {
+    const subject   = document.getElementById("m-exam-subj").value.trim();
+    const exam_date = document.getElementById("m-exam-date").value;
+    const notes     = document.getElementById("m-exam-notes").value.trim();
+
+    if (!subject || !exam_date) { showToast("Subject and date required","error"); return; }
+
+    const btn = document.getElementById("exam-save-btn");
+    setLoading(btn, true);
+    try {
+      await API.post("/exams/", { subject, exam_date, notes });
+      closeModal("exam-modal");
+      document.getElementById("m-exam-subj").value  = "";
+      document.getElementById("m-exam-date").value  = "";
+      document.getElementById("m-exam-notes").value = "";
+      showToast("📝 Exam added!");
+      loadDashboard();
+    } catch(err) { showToast(err.message,"error"); }
+    finally { setLoading(btn, false); }
+  }
+
+  // ── Save progress ─────────────────────────────────────────────
+  async function saveProgress() {
+    const subject       = document.getElementById("m-prog-subj").value.trim();
+    const hours_studied = parseFloat(document.getElementById("m-prog-hours").value);
+    const date          = document.getElementById("m-prog-date").value;
+
+    if (!subject || !hours_studied) { showToast("Subject and hours required","error"); return; }
+
+    const btn = document.getElementById("prog-save-btn");
+    setLoading(btn, true);
+    try {
+      await API.post("/progress/", { subject, hours_studied, date });
+      closeModal("progress-modal");
+      showToast("⏱ Hours logged!");
+      loadDashboard(); loadWeeklyChart(); loadStreak();
+    } catch(err) { showToast(err.message,"error"); }
+    finally { setLoading(btn, false); }
+  }
+
+  // ── Quick log hours inline ────────────────────────────────────
+  async function quickLogHours() {
+    const subject = document.getElementById("ql-subject").value.trim();
+    const hours   = parseFloat(document.getElementById("ql-hours").value);
+    if (!subject || !hours) { showToast("Enter subject and hours","error"); return; }
+    try {
+      await API.post("/progress/", { subject, hours_studied: hours, date: todayString() });
+      document.getElementById("ql-subject").value = "";
+      document.getElementById("ql-hours").value   = "";
+      showToast(`⏱ ${hours}h logged for ${subject}`);
+      loadDashboard(); loadWeeklyChart(); loadStreak();
+    } catch(err) { showToast(err.message,"error"); }
+  }
+
+  // ── Init ──────────────────────────────────────────────────────
+  loadDashboard();
+  loadWeeklyChart();
+  loadStreak();
+  loadSuggestions();
+</script>
+</body>
+</html>
