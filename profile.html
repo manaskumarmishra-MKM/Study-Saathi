@@ -1,384 +1,549 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile – StudySaathi</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile – StudySaathi</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- ── TOP NAV ──────────────────────────────────────────────── -->
+    <nav class="topnav">
+      <a class="topnav-logo" href="dashboard.html"
+        ><span class="mark">✦</span> StudySaathi</a
+      >
+      <div class="topnav-links">
+        <span style="font-size: 0.82rem; color: var(--muted)"
+          >Hello,
+          <strong id="nav-user-name" style="color: #fff">—</strong></span
+        >
+        <a href="dashboard.html">Dashboard</a>
+        <a href="planner.html">Planner</a>
+        <a href="progress.html">Progress</a>
+        <a href="profile.html" class="active">Profile</a>
+        <button class="btn btn-ghost btn-sm" onclick="logout()">Logout</button>
+      </div>
+    </nav>
 
-<!-- ── TOP NAV ──────────────────────────────────────────────── -->
-<nav class="topnav">
-  <a class="topnav-logo" href="dashboard.html"><span class="mark">✦</span> StudySaathi</a>
-  <div class="topnav-links">
-    <span style="font-size:.82rem;color:var(--muted)">Hello, <strong id="nav-user-name" style="color:#fff">—</strong></span>
-    <a href="dashboard.html">Dashboard</a>
-    <a href="planner.html">Planner</a>
-    <a href="progress.html">Progress</a>
-    <a href="profile.html" class="active">Profile</a>
-    <button class="btn btn-ghost btn-sm" onclick="logout()">Logout</button>
-  </div>
-</nav>
+    <!-- ── SIDEBAR ──────────────────────────────────────────────── -->
+    <aside class="sidebar">
+      <div class="sidebar-label">Navigation</div>
+      <a class="sidebar-item" href="dashboard.html"
+        ><span class="si-icon">🏠</span> Dashboard</a
+      >
+      <a class="sidebar-item" href="planner.html"
+        ><span class="si-icon">📅</span> Study Planner</a
+      >
+      <a class="sidebar-item" href="progress.html"
+        ><span class="si-icon">📈</span> Progress</a
+      >
+      <a class="sidebar-item active" href="profile.html"
+        ><span class="si-icon">👤</span> Profile</a
+      >
+      <div class="sidebar-label">Account</div>
+      <div class="sidebar-item" onclick="logout()">
+        <span class="si-icon">🚪</span> Logout
+      </div>
+    </aside>
 
-<!-- ── SIDEBAR ──────────────────────────────────────────────── -->
-<aside class="sidebar">
-  <div class="sidebar-label">Navigation</div>
-  <a class="sidebar-item" href="dashboard.html"><span class="si-icon">🏠</span> Dashboard</a>
-  <a class="sidebar-item" href="planner.html"><span class="si-icon">📅</span> Study Planner</a>
-  <a class="sidebar-item" href="progress.html"><span class="si-icon">📈</span> Progress</a>
-  <a class="sidebar-item active" href="profile.html"><span class="si-icon">👤</span> Profile</a>
-  <div class="sidebar-label">Account</div>
-  <div class="sidebar-item" onclick="logout()"><span class="si-icon">🚪</span> Logout</div>
-</aside>
+    <!-- ── MAIN ─────────────────────────────────────────────────── -->
+    <main class="main-content">
+      <div class="page-body" style="max-width: 780px">
+        <div class="page-header">
+          <div>
+            <h2>Profile & Settings</h2>
+            <p>Manage your account, goals, and preferences</p>
+          </div>
+        </div>
 
-<!-- ── MAIN ─────────────────────────────────────────────────── -->
-<main class="main-content">
-<div class="page-body" style="max-width:780px">
+        <!-- ── Profile card ──────────────────────────────────────── -->
+        <div class="card" style="margin-bottom: 20px">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 20px;
+              flex-wrap: wrap;
+            "
+          >
+            <!-- Avatar circle -->
+            <div
+              id="profile-avatar"
+              style="
+                width: 70px;
+                height: 70px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, var(--indigo), var(--teal));
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: &quot;Syne&quot;, sans-serif;
+                font-size: 1.5rem;
+                font-weight: 800;
+                color: #fff;
+                flex-shrink: 0;
+              "
+            >
+              —
+            </div>
+            <div style="flex: 1">
+              <div
+                id="profile-name"
+                style="
+                  font-family: &quot;Syne&quot;, sans-serif;
+                  font-size: 1.3rem;
+                  font-weight: 800;
+                "
+              >
+                —
+              </div>
+              <div
+                id="profile-email"
+                style="font-size: 0.85rem; color: var(--muted); margin-top: 3px"
+              >
+                —
+              </div>
+              <div style="margin-top: 8px">
+                <span id="profile-course" class="badge badge-teal">—</span>
+              </div>
+            </div>
+            <button
+              class="btn btn-ghost btn-sm"
+              onclick="openModal('edit-profile-modal')"
+            >
+              ✏ Edit Profile
+            </button>
+          </div>
+        </div>
 
-  <div class="page-header">
-    <div>
-      <h2>Profile & Settings</h2>
-      <p>Manage your account, goals, and preferences</p>
-    </div>
-  </div>
+        <!-- ── Quick stats ───────────────────────────────────────── -->
+        <div class="grid-3" style="margin-bottom: 20px">
+          <div class="stat-card">
+            <div class="sc-label">📚 Subjects Added</div>
+            <div class="sc-value" id="ps-subjects">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-label">✅ Tasks Completed</div>
+            <div class="sc-value" id="ps-tasks">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-label">📅 Exams Tracked</div>
+            <div class="sc-value" id="ps-exams">—</div>
+          </div>
+        </div>
 
-  <!-- ── Profile card ──────────────────────────────────────── -->
-  <div class="card" style="margin-bottom:20px">
-    <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
-      <!-- Avatar circle -->
-      <div id="profile-avatar"
-           style="width:70px;height:70px;border-radius:50%;
-                  background:linear-gradient(135deg,var(--indigo),var(--teal));
-                  display:flex;align-items:center;justify-content:center;
-                  font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;
-                  color:#fff;flex-shrink:0">—</div>
-      <div style="flex:1">
-        <div id="profile-name"
-             style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800">—</div>
-        <div id="profile-email" style="font-size:.85rem;color:var(--muted);margin-top:3px">—</div>
-        <div style="margin-top:8px">
-          <span id="profile-course" class="badge badge-teal">—</span>
+        <!-- ── Study preferences ─────────────────────────────────── -->
+        <div class="card" style="margin-bottom: 20px">
+          <div class="card-title">🎯 Study Goals & Preferences</div>
+          <div class="input-row" style="margin-bottom: 14px">
+            <div class="form-group" style="margin: 0">
+              <label>Daily Study Target (hours)</label>
+              <input
+                type="number"
+                id="pref-hours"
+                value="5"
+                min="1"
+                max="16"
+                step="0.5"
+              />
+            </div>
+            <div class="form-group" style="margin: 0">
+              <label>Preferred Study Style</label>
+              <select id="pref-style">
+                <option value="deep">Deep Work (90 min blocks)</option>
+                <option value="pomodoro">Pomodoro (25+5 min)</option>
+                <option value="flexible">Flexible Timing</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Course / Exam Type</label>
+            <select id="pref-course">
+              <option>B.Tech / Engineering</option>
+              <option>JEE Main / Advanced</option>
+              <option>NEET</option>
+              <option>UPSC / Civil Services</option>
+              <option>Class XII Boards</option>
+              <option>Class X Boards</option>
+              <option>GATE</option>
+              <option>MBA / CAT</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <button class="btn btn-teal btn-sm" onclick="savePrefs()">
+            Save Preferences
+          </button>
+        </div>
+
+        <!-- ── Notifications ─────────────────────────────────────── -->
+        <div class="card" style="margin-bottom: 20px">
+          <div class="card-title">🔔 Notification Preferences</div>
+          <div id="notif-rows">
+            <!-- populated by JS -->
+          </div>
+        </div>
+
+        <!-- ── Appearance ────────────────────────────────────────── -->
+        <div class="card" style="margin-bottom: 20px">
+          <div class="card-title">🎨 Appearance</div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 10px 0;
+            "
+          >
+            <div>
+              <div style="font-size: 0.9rem; font-weight: 500">Dark Mode</div>
+              <div class="small muted">
+                Currently active. Light mode coming soon.
+              </div>
+            </div>
+            <div class="toggle-btn on" style="pointer-events: none"></div>
+          </div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 10px 0;
+              border-top: 1px solid var(--border);
+            "
+          >
+            <div>
+              <div style="font-size: 0.9rem; font-weight: 500">
+                Compact Sidebar
+              </div>
+              <div class="small muted">Show icons only in sidebar.</div>
+            </div>
+            <div
+              class="toggle-btn"
+              id="compact-toggle"
+              onclick="this.classList.toggle('on')"
+            ></div>
+          </div>
+        </div>
+
+        <!-- ── Account security ──────────────────────────────────── -->
+        <div class="card" style="margin-bottom: 20px">
+          <div class="card-title">🔐 Account Security</div>
+          <button
+            class="btn btn-ghost btn-sm"
+            onclick="openModal('change-pass-modal')"
+            style="margin-right: 10px"
+          >
+            🔑 Change Password
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="confirmLogoutAll()">
+            🚪 Logout of All Devices
+          </button>
+        </div>
+
+        <!-- ── Danger zone ───────────────────────────────────────── -->
+        <div
+          class="card"
+          style="margin-bottom: 20px; border-color: rgba(239, 68, 68, 0.2)"
+        >
+          <div class="card-title" style="color: #f87171">⚠ Danger Zone</div>
+          <p
+            style="font-size: 0.85rem; color: var(--muted); margin-bottom: 16px"
+          >
+            These actions are permanent and cannot be undone.
+          </p>
+          <button class="btn btn-danger btn-sm" onclick="confirmDelete()">
+            🗑 Delete My Account
+          </button>
         </div>
       </div>
-      <button class="btn btn-ghost btn-sm" onclick="openModal('edit-profile-modal')">
-        ✏ Edit Profile
-      </button>
-    </div>
-  </div>
+      <div class="page-footer">© Manas Kumar Mishra. All rights reserved.</div>
+    </main>
 
-  <!-- ── Quick stats ───────────────────────────────────────── -->
-  <div class="grid-3" style="margin-bottom:20px">
-    <div class="stat-card">
-      <div class="sc-label">📚 Subjects Added</div>
-      <div class="sc-value" id="ps-subjects">—</div>
-    </div>
-    <div class="stat-card">
-      <div class="sc-label">✅ Tasks Completed</div>
-      <div class="sc-value" id="ps-tasks">—</div>
-    </div>
-    <div class="stat-card">
-      <div class="sc-label">📅 Exams Tracked</div>
-      <div class="sc-value" id="ps-exams">—</div>
-    </div>
-  </div>
-
-  <!-- ── Study preferences ─────────────────────────────────── -->
-  <div class="card" style="margin-bottom:20px">
-    <div class="card-title">🎯 Study Goals & Preferences</div>
-    <div class="input-row" style="margin-bottom:14px">
-      <div class="form-group" style="margin:0">
-        <label>Daily Study Target (hours)</label>
-        <input type="number" id="pref-hours" value="5" min="1" max="16" step="0.5">
+    <!-- ── EDIT PROFILE MODAL ────────────────────────────────────── -->
+    <div class="modal-overlay" id="edit-profile-modal">
+      <div class="modal">
+        <h3>✏ Edit Profile</h3>
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="ep-name" placeholder="Your full name" />
+        </div>
+        <div class="form-group">
+          <label>Course / Exam Type</label>
+          <select id="ep-course">
+            <option>B.Tech / Engineering</option>
+            <option>JEE Main / Advanced</option>
+            <option>NEET</option>
+            <option>UPSC / Civil Services</option>
+            <option>Class XII Boards</option>
+            <option>Class X Boards</option>
+            <option>GATE</option>
+            <option>MBA / CAT</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-ghost"
+            onclick="closeModal('edit-profile-modal')"
+          >
+            Cancel
+          </button>
+          <button class="btn btn-teal" onclick="saveProfile()">
+            Save Changes
+          </button>
+        </div>
       </div>
-      <div class="form-group" style="margin:0">
-        <label>Preferred Study Style</label>
-        <select id="pref-style">
-          <option value="deep">Deep Work (90 min blocks)</option>
-          <option value="pomodoro">Pomodoro (25+5 min)</option>
-          <option value="flexible">Flexible Timing</option>
-        </select>
+    </div>
+
+    <!-- ── CHANGE PASSWORD MODAL ─────────────────────────────────── -->
+    <div class="modal-overlay" id="change-pass-modal">
+      <div class="modal">
+        <h3>🔑 Change Password</h3>
+        <div class="form-group">
+          <label>Current Password</label>
+          <input
+            type="password"
+            id="cp-old"
+            placeholder="Enter current password"
+          />
+        </div>
+        <div class="form-group">
+          <label>New Password</label>
+          <input type="password" id="cp-new" placeholder="Min 6 characters" />
+        </div>
+        <div class="form-group">
+          <label>Confirm New Password</label>
+          <input
+            type="password"
+            id="cp-confirm"
+            placeholder="Repeat new password"
+          />
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-ghost"
+            onclick="closeModal('change-pass-modal')"
+          >
+            Cancel
+          </button>
+          <button class="btn btn-teal" onclick="changePassword()">
+            Update Password
+          </button>
+        </div>
       </div>
     </div>
-    <div class="form-group">
-      <label>Course / Exam Type</label>
-      <select id="pref-course">
-        <option>B.Tech / Engineering</option>
-        <option>JEE Main / Advanced</option>
-        <option>NEET</option>
-        <option>UPSC / Civil Services</option>
-        <option>Class XII Boards</option>
-        <option>Class X Boards</option>
-        <option>GATE</option>
-        <option>MBA / CAT</option>
-        <option>Other</option>
-      </select>
-    </div>
-    <button class="btn btn-teal btn-sm" onclick="savePrefs()">Save Preferences</button>
-  </div>
 
-  <!-- ── Notifications ─────────────────────────────────────── -->
-  <div class="card" style="margin-bottom:20px">
-    <div class="card-title">🔔 Notification Preferences</div>
-    <div id="notif-rows">
-      <!-- populated by JS -->
-    </div>
-  </div>
+    <!-- ── Toggle button style ──────────────────────────────────── -->
+    <style>
+      .toggle-btn {
+        width: 44px;
+        height: 24px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        position: relative;
+        transition: 0.3s;
+        flex-shrink: 0;
+      }
+      .toggle-btn.on {
+        background: var(--teal);
+      }
+      .toggle-btn::after {
+        content: "";
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #fff;
+        top: 3px;
+        left: 3px;
+        transition: 0.3s;
+      }
+      .toggle-btn.on::after {
+        left: 23px;
+      }
+    </style>
 
-  <!-- ── Appearance ────────────────────────────────────────── -->
-  <div class="card" style="margin-bottom:20px">
-    <div class="card-title">🎨 Appearance</div>
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0">
-      <div>
-        <div style="font-size:.9rem;font-weight:500">Dark Mode</div>
-        <div class="small muted">Currently active. Light mode coming soon.</div>
-      </div>
-      <div class="toggle-btn on" style="pointer-events:none"></div>
-    </div>
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid var(--border)">
-      <div>
-        <div style="font-size:.9rem;font-weight:500">Compact Sidebar</div>
-        <div class="small muted">Show icons only in sidebar.</div>
-      </div>
-      <div class="toggle-btn" id="compact-toggle" onclick="this.classList.toggle('on')"></div>
-    </div>
-  </div>
+    <script src="script.js"></script>
+    <script>
+      requireAuth();
 
-  <!-- ── Account security ──────────────────────────────────── -->
-  <div class="card" style="margin-bottom:20px">
-    <div class="card-title">🔐 Account Security</div>
-    <button class="btn btn-ghost btn-sm" onclick="openModal('change-pass-modal')" style="margin-right:10px">
-      🔑 Change Password
-    </button>
-    <button class="btn btn-danger btn-sm" onclick="confirmLogoutAll()">
-      🚪 Logout of All Devices
-    </button>
-  </div>
+      const NOTIF_SETTINGS = [
+        { key: "daily_reminder", label: "Daily Study Reminders", def: true },
+        { key: "exam_alerts", label: "Exam Countdown Alerts", def: true },
+        { key: "streak_reminder", label: "Streak Reminder (8pm)", def: true },
+        { key: "weekly_report", label: "Weekly Progress Report", def: false },
+        { key: "break_reminder", label: "Break Reminders", def: true },
+      ];
 
-  <!-- ── Danger zone ───────────────────────────────────────── -->
-  <div class="card" style="margin-bottom:20px;border-color:rgba(239,68,68,.2)">
-    <div class="card-title" style="color:#f87171">⚠ Danger Zone</div>
-    <p style="font-size:.85rem;color:var(--muted);margin-bottom:16px">
-      These actions are permanent and cannot be undone.
-    </p>
-    <button class="btn btn-danger btn-sm" onclick="confirmDelete()">
-      🗑 Delete My Account
-    </button>
-  </div>
+      // Prefs stored in localStorage
+      const PREFS_KEY = "ss_prefs";
+      function getPrefs() {
+        try {
+          return JSON.parse(localStorage.getItem(PREFS_KEY)) || {};
+        } catch {
+          return {};
+        }
+      }
+      function setPrefs(obj) {
+        localStorage.setItem(
+          PREFS_KEY,
+          JSON.stringify({ ...getPrefs(), ...obj }),
+        );
+      }
 
-</div>
-<div class="page-footer">© Manas Kumar Mishra. All rights reserved.</div>
-</main>
+      // ── Load profile ──────────────────────────────────────────
+      async function loadProfile() {
+        try {
+          const data = await API.get("/auth/me");
+          const u = data.user;
+          const initials = u.name
+            .split(" ")
+            .map((w) => w[0])
+            .join("")
+            .toUpperCase()
+            .slice(0, 2);
+          document.getElementById("profile-avatar").textContent = initials;
+          document.getElementById("profile-name").textContent = u.name;
+          document.getElementById("profile-email").textContent = u.email;
+          document.getElementById("profile-course").textContent =
+            u.course || "Not set";
+          // Pre-fill edit form
+          document.getElementById("ep-name").value = u.name;
+          document.getElementById("ep-course").value = u.course || "";
+        } catch (err) {
+          showToast("Could not load profile", "error");
+        }
+      }
 
-<!-- ── EDIT PROFILE MODAL ────────────────────────────────────── -->
-<div class="modal-overlay" id="edit-profile-modal">
-  <div class="modal">
-    <h3>✏ Edit Profile</h3>
-    <div class="form-group">
-      <label>Full Name</label>
-      <input type="text" id="ep-name" placeholder="Your full name">
-    </div>
-    <div class="form-group">
-      <label>Course / Exam Type</label>
-      <select id="ep-course">
-        <option>B.Tech / Engineering</option><option>JEE Main / Advanced</option>
-        <option>NEET</option><option>UPSC / Civil Services</option>
-        <option>Class XII Boards</option><option>Class X Boards</option>
-        <option>GATE</option><option>MBA / CAT</option><option>Other</option>
-      </select>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('edit-profile-modal')">Cancel</button>
-      <button class="btn btn-teal" onclick="saveProfile()">Save Changes</button>
-    </div>
-  </div>
-</div>
+      // ── Load quick stats ──────────────────────────────────────
+      async function loadStats() {
+        try {
+          const dash = await API.get("/dashboard");
+          document.getElementById("ps-subjects").textContent =
+            dash.subject_count;
+          document.getElementById("ps-tasks").textContent = dash.tasks_done;
+        } catch (_) {}
+        try {
+          const ex = await API.get("/exams/");
+          document.getElementById("ps-exams").textContent = ex.exams.length;
+        } catch (_) {}
+      }
 
-<!-- ── CHANGE PASSWORD MODAL ─────────────────────────────────── -->
-<div class="modal-overlay" id="change-pass-modal">
-  <div class="modal">
-    <h3>🔑 Change Password</h3>
-    <div class="form-group">
-      <label>Current Password</label>
-      <input type="password" id="cp-old" placeholder="Enter current password">
-    </div>
-    <div class="form-group">
-      <label>New Password</label>
-      <input type="password" id="cp-new" placeholder="Min 6 characters">
-    </div>
-    <div class="form-group">
-      <label>Confirm New Password</label>
-      <input type="password" id="cp-confirm" placeholder="Repeat new password">
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('change-pass-modal')">Cancel</button>
-      <button class="btn btn-teal" onclick="changePassword()">Update Password</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── Toggle button style ──────────────────────────────────── -->
-<style>
-.toggle-btn {
-  width: 44px; height: 24px; border-radius: 12px;
-  background: rgba(255,255,255,.1); cursor: pointer;
-  position: relative; transition: .3s; flex-shrink: 0;
-}
-.toggle-btn.on { background: var(--teal); }
-.toggle-btn::after {
-  content: ""; position: absolute; width: 18px; height: 18px;
-  border-radius: 50%; background: #fff; top: 3px; left: 3px; transition: .3s;
-}
-.toggle-btn.on::after { left: 23px; }
-</style>
-
-<script src="script.js"></script>
-<script>
-  requireAuth();
-
-  const NOTIF_SETTINGS = [
-    { key: "daily_reminder",     label: "Daily Study Reminders",      def: true  },
-    { key: "exam_alerts",        label: "Exam Countdown Alerts",      def: true  },
-    { key: "streak_reminder",    label: "Streak Reminder (8pm)",      def: true  },
-    { key: "weekly_report",      label: "Weekly Progress Report",     def: false },
-    { key: "break_reminder",     label: "Break Reminders",            def: true  },
-  ];
-
-  // Prefs stored in localStorage
-  const PREFS_KEY = "ss_prefs";
-  function getPrefs() {
-    try { return JSON.parse(localStorage.getItem(PREFS_KEY)) || {}; } catch { return {}; }
-  }
-  function setPrefs(obj) {
-    localStorage.setItem(PREFS_KEY, JSON.stringify({ ...getPrefs(), ...obj }));
-  }
-
-  // ── Load profile ──────────────────────────────────────────
-  async function loadProfile() {
-    try {
-      const data = await API.get("/auth/me");
-      const u    = data.user;
-      const initials = u.name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0,2);
-      document.getElementById("profile-avatar").textContent = initials;
-      document.getElementById("profile-name").textContent   = u.name;
-      document.getElementById("profile-email").textContent  = u.email;
-      document.getElementById("profile-course").textContent = u.course || "Not set";
-      // Pre-fill edit form
-      document.getElementById("ep-name").value   = u.name;
-      document.getElementById("ep-course").value = u.course || "";
-    } catch(err) { showToast("Could not load profile","error"); }
-  }
-
-  // ── Load quick stats ──────────────────────────────────────
-  async function loadStats() {
-    try {
-      const dash = await API.get("/dashboard");
-      document.getElementById("ps-subjects").textContent = dash.subject_count;
-      document.getElementById("ps-tasks").textContent    = dash.tasks_done;
-    } catch(_) {}
-    try {
-      const ex = await API.get("/exams/");
-      document.getElementById("ps-exams").textContent = ex.exams.length;
-    } catch(_) {}
-  }
-
-  // ── Render notification toggles ───────────────────────────
-  function renderNotifSettings() {
-    const prefs = getPrefs();
-    const wrap  = document.getElementById("notif-rows");
-    wrap.innerHTML = NOTIF_SETTINGS.map(n => {
-      const isOn = prefs[n.key] !== undefined ? prefs[n.key] : n.def;
-      return `
+      // ── Render notification toggles ───────────────────────────
+      function renderNotifSettings() {
+        const prefs = getPrefs();
+        const wrap = document.getElementById("notif-rows");
+        wrap.innerHTML = NOTIF_SETTINGS.map((n) => {
+          const isOn = prefs[n.key] !== undefined ? prefs[n.key] : n.def;
+          return `
         <div style="display:flex;justify-content:space-between;align-items:center;
                     padding:12px 0;border-bottom:1px solid var(--border)">
           <span style="font-size:.9rem">${n.label}</span>
-          <div class="toggle-btn ${isOn?'on':''}" id="tog-${n.key}"
+          <div class="toggle-btn ${isOn ? "on" : ""}" id="tog-${n.key}"
                onclick="toggleNotif('${n.key}')"></div>
         </div>`;
-    }).join("");
-  }
-
-  function toggleNotif(key) {
-    const el    = document.getElementById("tog-" + key);
-    const isOn  = el.classList.toggle("on");
-    setPrefs({ [key]: isOn });
-    showToast(isOn ? "✓ Notification enabled" : "Notification disabled");
-  }
-
-  // ── Load prefs into form ──────────────────────────────────
-  function loadPrefs() {
-    const p = getPrefs();
-    if (p.daily_hours) document.getElementById("pref-hours").value   = p.daily_hours;
-    if (p.style)       document.getElementById("pref-style").value   = p.style;
-    if (p.course)      document.getElementById("pref-course").value  = p.course;
-  }
-
-  // ── Save prefs ────────────────────────────────────────────
-  function savePrefs() {
-    setPrefs({
-      daily_hours: parseFloat(document.getElementById("pref-hours").value),
-      style:       document.getElementById("pref-style").value,
-      course:      document.getElementById("pref-course").value
-    });
-    showToast("✅ Preferences saved!");
-  }
-
-  // ── Save profile ──────────────────────────────────────────
-  function saveProfile() {
-    // In production this would PATCH /api/auth/profile
-    // For demo we just update localStorage user
-    const name   = document.getElementById("ep-name").value.trim();
-    const course = document.getElementById("ep-course").value;
-    if (!name) { showToast("Name required","error"); return; }
-    const u = Auth.user();
-    if (u) {
-      u.name   = name;
-      u.course = course;
-      Auth.save(Auth.token(), u);
-    }
-    closeModal("edit-profile-modal");
-    showToast("✅ Profile updated!");
-    loadProfile();
-    populateUserNav();
-  }
-
-  // ── Change password (demo) ────────────────────────────────
-  function changePassword() {
-    const old  = document.getElementById("cp-old").value.trim();
-    const nw   = document.getElementById("cp-new").value.trim();
-    const conf = document.getElementById("cp-confirm").value.trim();
-    if (!old || !nw || !conf) { showToast("All fields required","error"); return; }
-    if (nw !== conf) { showToast("Passwords do not match","error"); return; }
-    if (nw.length < 6) { showToast("Min 6 characters","error"); return; }
-    // In production: POST /api/auth/change-password
-    closeModal("change-pass-modal");
-    showToast("🔑 Password updated! (demo)");
-  }
-
-  // ── Confirm logout all ────────────────────────────────────
-  function confirmLogoutAll() {
-    if (confirm("Log out of all devices? You will need to log in again.")) {
-      logout();
-    }
-  }
-
-  // ── Confirm delete ────────────────────────────────────────
-  function confirmDelete() {
-    if (confirm("⚠️ This will permanently delete your account and all data. Are you sure?")) {
-      if (confirm("Last confirmation: Delete my StudySaathi account?")) {
-        // In production: DELETE /api/auth/account
-        Auth.clear();
-        showToast("Account deleted. Goodbye! 👋");
-        setTimeout(() => window.location.href = "index.html", 1000);
+        }).join("");
       }
-    }
-  }
 
-  // ── Init ──────────────────────────────────────────────────
-  loadProfile();
-  loadStats();
-  loadPrefs();
-  renderNotifSettings();
-</script>
-</body>
+      function toggleNotif(key) {
+        const el = document.getElementById("tog-" + key);
+        const isOn = el.classList.toggle("on");
+        setPrefs({ [key]: isOn });
+        showToast(isOn ? "✓ Notification enabled" : "Notification disabled");
+      }
+
+      // ── Load prefs into form ──────────────────────────────────
+      function loadPrefs() {
+        const p = getPrefs();
+        if (p.daily_hours)
+          document.getElementById("pref-hours").value = p.daily_hours;
+        if (p.style) document.getElementById("pref-style").value = p.style;
+        if (p.course) document.getElementById("pref-course").value = p.course;
+      }
+
+      // ── Save prefs ────────────────────────────────────────────
+      function savePrefs() {
+        setPrefs({
+          daily_hours: parseFloat(document.getElementById("pref-hours").value),
+          style: document.getElementById("pref-style").value,
+          course: document.getElementById("pref-course").value,
+        });
+        showToast("✅ Preferences saved!");
+      }
+
+      // ── Save profile ──────────────────────────────────────────
+      function saveProfile() {
+        // In production this would PATCH /api/auth/profile
+        // For demo we just update localStorage user
+        const name = document.getElementById("ep-name").value.trim();
+        const course = document.getElementById("ep-course").value;
+        if (!name) {
+          showToast("Name required", "error");
+          return;
+        }
+        const u = Auth.user();
+        if (u) {
+          u.name = name;
+          u.course = course;
+          Auth.save(Auth.token(), u);
+        }
+        closeModal("edit-profile-modal");
+        showToast("✅ Profile updated!");
+        loadProfile();
+        populateUserNav();
+      }
+
+      // ── Change password (demo) ────────────────────────────────
+      function changePassword() {
+        const old = document.getElementById("cp-old").value.trim();
+        const nw = document.getElementById("cp-new").value.trim();
+        const conf = document.getElementById("cp-confirm").value.trim();
+        if (!old || !nw || !conf) {
+          showToast("All fields required", "error");
+          return;
+        }
+        if (nw !== conf) {
+          showToast("Passwords do not match", "error");
+          return;
+        }
+        if (nw.length < 6) {
+          showToast("Min 6 characters", "error");
+          return;
+        }
+        // In production: POST /api/auth/change-password
+        closeModal("change-pass-modal");
+        showToast("🔑 Password updated! (demo)");
+      }
+
+      // ── Confirm logout all ────────────────────────────────────
+      function confirmLogoutAll() {
+        if (confirm("Log out of all devices? You will need to log in again.")) {
+          logout();
+        }
+      }
+
+      // ── Confirm delete ────────────────────────────────────────
+      function confirmDelete() {
+        if (
+          confirm(
+            "⚠️ This will permanently delete your account and all data. Are you sure?",
+          )
+        ) {
+          if (confirm("Last confirmation: Delete my StudySaathi account?")) {
+            // In production: DELETE /api/auth/account
+            Auth.clear();
+            showToast("Account deleted. Goodbye! 👋");
+            setTimeout(() => (window.location.href = "index.html"), 1000);
+          }
+        }
+      }
+
+      // ── Init ──────────────────────────────────────────────────
+      loadProfile();
+      loadStats();
+      loadPrefs();
+      renderNotifSettings();
+    </script>
+  </body>
 </html>

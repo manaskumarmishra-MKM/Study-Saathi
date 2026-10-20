@@ -90,7 +90,12 @@ def make_token(uid, name, email):
     import os
 
     secret = os.environ.get("SS3_SECRET", "studysaathi-v3-secret-key-change-in-prod")
-    payload = {"id": uid, "name": name, "email": email, "exp": int(time.time()) + 86400 * 14}
+    payload = {
+        "id": uid,
+        "name": name,
+        "email": email,
+        "exp": int(time.time()) + 86400 * 14,
+    }
     encoded = base64.urlsafe_b64encode(json.dumps(payload).encode()).decode()
     signature = hmac.new(secret.encode(), encoded.encode(), hashlib.sha256).hexdigest()
     return f"{encoded}.{signature}"

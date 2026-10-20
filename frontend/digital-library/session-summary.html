@@ -1,317 +1,609 @@
-<!DOCTYPE html>
+<!doctype html>
 
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>StudySaathi 2.0 - Session End Summary</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "on-error-container": "#ffdad6",
-                        "error-container": "#93000a",
-                        "inverse-on-surface": "#342f2f",
-                        "on-secondary-fixed": "#0b1d2d",
-                        "surface-variant": "#383433",
-                        "on-tertiary-fixed-variant": "#324c40",
-                        "inverse-surface": "#e9e1df",
-                        "secondary": "#b7c8de",
-                        "on-primary-container": "#bd928f",
-                        "on-tertiary-container": "#86a394",
-                        "on-secondary-fixed-variant": "#38485a",
-                        "on-tertiary": "#1b352b",
-                        "outline": "#9d8d8c",
-                        "surface": "#161312",
-                        "on-surface-variant": "#d4c3c1",
-                        "surface-tint": "#eabcb8",
-                        "tertiary-fixed-dim": "#b0cdbe",
-                        "inverse-primary": "#795553",
-                        "on-primary-fixed-variant": "#5f3e3c",
-                        "surface-container-lowest": "#110d0d",
-                        "tertiary-container": "#1f392e",
-                        "primary": "#eabcb8",
-                        "on-secondary-container": "#a9bad0",
-                        "primary-container": "#4a2c2a",
-                        "background": "#161312",
-                        "on-secondary": "#213243",
-                        "surface-dim": "#161312",
-                        "surface-container-high": "#2d2929",
-                        "surface-container-low": "#1e1b1a",
-                        "on-surface": "#e9e1df",
-                        "surface-container-highest": "#383433",
-                        "on-primary-fixed": "#2e1413",
-                        "on-error": "#690005",
-                        "primary-fixed": "#ffdad7",
-                        "surface-bright": "#3d3838",
-                        "tertiary": "#b0cdbe",
-                        "surface-container": "#221f1e",
-                        "tertiary-fixed": "#cbe9d9",
-                        "secondary-container": "#3a4b5d",
-                        "outline-variant": "#504443",
-                        "secondary-fixed": "#d2e4fb",
-                        "error": "#ffb4ab",
-                        "secondary-fixed-dim": "#b7c8de",
-                        "on-primary": "#462827",
-                        "on-background": "#e9e1df",
-                        "on-tertiary-fixed": "#052016",
-                        "primary-fixed-dim": "#eabcb8"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.125rem",
-                        "lg": "0.25rem",
-                        "xl": "0.5rem",
-                        "full": "0.75rem"
-                    },
-                    "spacing": {
-                        "gutter": "24px",
-                        "margin-mobile": "16px",
-                        "container-max": "1280px",
-                        "unit": "8px",
-                        "margin-desktop": "40px"
-                    },
-                    "fontFamily": {
-                        "headline-lg": ["Playfair Display"],
-                        "body-lg": ["Inter"],
-                        "display-lg": ["Playfair Display"],
-                        "headline-lg-mobile": ["Playfair Display"],
-                        "headline-md": ["Playfair Display"],
-                        "label-sm": ["Inter"],
-                        "body-md": ["Inter"]
-                    },
-                    "fontSize": {
-                        "headline-lg": ["32px", { "lineHeight": "1.3", "fontWeight": "600" }],
-                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
-                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-                        "headline-lg-mobile": ["28px", { "lineHeight": "1.3", "fontWeight": "600" }],
-                        "headline-md": ["24px", { "lineHeight": "1.4", "fontWeight": "500" }],
-                        "label-sm": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600" }],
-                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }]
-                    }
-                }
-            }
-        }
+<html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>StudySaathi 2.0 - Session End Summary</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-error-container": "#ffdad6",
+              "error-container": "#93000a",
+              "inverse-on-surface": "#342f2f",
+              "on-secondary-fixed": "#0b1d2d",
+              "surface-variant": "#383433",
+              "on-tertiary-fixed-variant": "#324c40",
+              "inverse-surface": "#e9e1df",
+              secondary: "#b7c8de",
+              "on-primary-container": "#bd928f",
+              "on-tertiary-container": "#86a394",
+              "on-secondary-fixed-variant": "#38485a",
+              "on-tertiary": "#1b352b",
+              outline: "#9d8d8c",
+              surface: "#161312",
+              "on-surface-variant": "#d4c3c1",
+              "surface-tint": "#eabcb8",
+              "tertiary-fixed-dim": "#b0cdbe",
+              "inverse-primary": "#795553",
+              "on-primary-fixed-variant": "#5f3e3c",
+              "surface-container-lowest": "#110d0d",
+              "tertiary-container": "#1f392e",
+              primary: "#eabcb8",
+              "on-secondary-container": "#a9bad0",
+              "primary-container": "#4a2c2a",
+              background: "#161312",
+              "on-secondary": "#213243",
+              "surface-dim": "#161312",
+              "surface-container-high": "#2d2929",
+              "surface-container-low": "#1e1b1a",
+              "on-surface": "#e9e1df",
+              "surface-container-highest": "#383433",
+              "on-primary-fixed": "#2e1413",
+              "on-error": "#690005",
+              "primary-fixed": "#ffdad7",
+              "surface-bright": "#3d3838",
+              tertiary: "#b0cdbe",
+              "surface-container": "#221f1e",
+              "tertiary-fixed": "#cbe9d9",
+              "secondary-container": "#3a4b5d",
+              "outline-variant": "#504443",
+              "secondary-fixed": "#d2e4fb",
+              error: "#ffb4ab",
+              "secondary-fixed-dim": "#b7c8de",
+              "on-primary": "#462827",
+              "on-background": "#e9e1df",
+              "on-tertiary-fixed": "#052016",
+              "primary-fixed-dim": "#eabcb8",
+            },
+            borderRadius: {
+              DEFAULT: "0.125rem",
+              lg: "0.25rem",
+              xl: "0.5rem",
+              full: "0.75rem",
+            },
+            spacing: {
+              gutter: "24px",
+              "margin-mobile": "16px",
+              "container-max": "1280px",
+              unit: "8px",
+              "margin-desktop": "40px",
+            },
+            fontFamily: {
+              "headline-lg": ["Playfair Display"],
+              "body-lg": ["Inter"],
+              "display-lg": ["Playfair Display"],
+              "headline-lg-mobile": ["Playfair Display"],
+              "headline-md": ["Playfair Display"],
+              "label-sm": ["Inter"],
+              "body-md": ["Inter"],
+            },
+            fontSize: {
+              "headline-lg": ["32px", { lineHeight: "1.3", fontWeight: "600" }],
+              "body-lg": ["18px", { lineHeight: "1.6", fontWeight: "400" }],
+              "display-lg": [
+                "48px",
+                {
+                  lineHeight: "1.2",
+                  letterSpacing: "-0.02em",
+                  fontWeight: "700",
+                },
+              ],
+              "headline-lg-mobile": [
+                "28px",
+                { lineHeight: "1.3", fontWeight: "600" },
+              ],
+              "headline-md": ["24px", { lineHeight: "1.4", fontWeight: "500" }],
+              "label-sm": [
+                "12px",
+                { lineHeight: "1", letterSpacing: "0.05em", fontWeight: "600" },
+              ],
+              "body-md": ["16px", { lineHeight: "1.5", fontWeight: "400" }],
+            },
+          },
+        },
+      };
     </script>
-<style>
-        .texture-wood {
-            background-image: linear-gradient(90deg, #161312 0%, #1e1b1a 50%, #161312 100%);
-            border-top: 1px solid #383433;
-        }
-        .texture-paper {
-            background-color: #1e1b1a;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            border: 1px solid #2d2929;
-            position: relative;
-        }
-        .texture-paper::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-            opacity: 0.15;
-            pointer-events: none;
-        }
-        .glow-accent {
-            box-shadow: 0 0 15px rgba(234, 188, 184, 0.2);
-        }
-        .glass-panel {
-            background: rgba(30, 27, 26, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(234, 188, 184, 0.1);
-        }
+    <style>
+      .texture-wood {
+        background-image: linear-gradient(
+          90deg,
+          #161312 0%,
+          #1e1b1a 50%,
+          #161312 100%
+        );
+        border-top: 1px solid #383433;
+      }
+      .texture-paper {
+        background-color: #1e1b1a;
+        box-shadow:
+          0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border: 1px solid #2d2929;
+        position: relative;
+      }
+      .texture-paper::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+        opacity: 0.15;
+        pointer-events: none;
+      }
+      .glow-accent {
+        box-shadow: 0 0 15px rgba(234, 188, 184, 0.2);
+      }
+      .glass-panel {
+        background: rgba(30, 27, 26, 0.8);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(234, 188, 184, 0.1);
+      }
     </style>
-<style>
-.dl-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(17,13,13,0.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(234,188,184,0.1);height:56px;display:flex;align-items:center;padding:0 24px;gap:4px;}
-.dl-nav a{display:flex;align-items:center;gap:5px;padding:7px 11px;border-radius:5px;font-family:Inter,sans-serif;font-size:11.5px;font-weight:600;color:#9d8d8c;text-decoration:none;transition:all 0.2s;letter-spacing:.04em;white-space:nowrap;border:1px solid transparent;}
-.dl-nav a:hover{color:#eabcb8;background:rgba(234,188,184,0.07);}
-.dl-nav a.active{color:#eabcb8;background:rgba(234,188,184,0.1);border-color:rgba(234,188,184,0.15);}
-.dl-nav .logo{font-family:"Playfair Display",serif;font-size:15px;font-weight:700;color:#e9e1df;letter-spacing:-0.01em;margin-right:6px;padding:6px 10px;}
-.dl-nav .logo:hover{background:rgba(234,188,184,0.05);color:#eabcb8;}
-.dl-nav .sep{width:1px;height:20px;background:rgba(234,188,184,0.12);margin:0 6px;flex-shrink:0;}
-.dl-nav .spacer{flex:1;}
-.dl-nav .nav-v3{font-size:11px;border:1px solid rgba(176,205,190,0.25)!important;border-radius:20px;color:#b0cdbe!important;padding:5px 13px!important;}
-.dl-nav .nav-v3:hover{background:rgba(176,205,190,0.1)!important;border-color:rgba(176,205,190,0.4)!important;}
-.dl-nav .material-symbols-outlined{font-size:15px!important;}
-body.with-dl-nav{padding-top:56px;}
-</style>
-</head>
-<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col relative overflow-x-hidden">
-<nav class="dl-nav">
-  <a href="entrance.html" class="logo">✦ StudySaathi</a>
-  <div class="sep"></div>
-  <a href="entrance.html" data-p="entrance"><span class="material-symbols-outlined">castle</span>Library</a>
-  <a href="shelves.html" data-p="shelves"><span class="material-symbols-outlined">library_books</span>Shelves</a>
-  <a href="question-paper.html" data-p="question-paper"><span class="material-symbols-outlined">inventory_2</span>PYQ Archive</a>
-  <a href="study-desk.html" data-p="study-desk"><span class="material-symbols-outlined">desk</span>Study Desk</a>
-  <a href="active-session.html" data-p="active-session"><span class="material-symbols-outlined">timer</span>Study Session</a>
-  <a href="mock-session.html" data-p="mock-session"><span class="material-symbols-outlined">quiz</span>Mock Test</a>
-  <a href="break-mode.html" data-p="break-mode"><span class="material-symbols-outlined">spa</span>Break</a>
-  <a href="session-summary.html" data-p="session-summary"><span class="material-symbols-outlined">bar_chart</span>Summary</a>
-  <div class="spacer"></div>
-  <a href="../dashboard.html" class="nav-v3"><span class="material-symbols-outlined">dashboard</span>v3 Dashboard</a>
-</nav>
-<script>
-(function(){
-  document.body.classList.add("with-dl-nav");
-  const p=location.pathname.split("/").pop().replace(".html","");
-  document.querySelectorAll(".dl-nav a[data-p]").forEach(a=>{if(a.dataset.p===p)a.classList.add("active");});
-})();
-</script>
-<!-- Background Texture/Image -->
-<div class="fixed inset-0 z-0 pointer-events-none opacity-20">
-<img alt="Background Texture" class="w-full h-full object-cover grayscale mix-blend-overlay" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxplJmYlTOLaoTkSBzH9a7_XrF4DYybRGgrAC3hzkj6BYXBbCTPiSKsZSsx0zANreqIOkYOcZ1BBz0sVzEqZcoc3X-nY0aMcd9DmQMNNYYogpGZQwQhQAxJWeF1rffg2PwIZwf5pEi1xpIlPx4Xn-VkJJrBY-MsCbioKeqbeuUGf3cx_ofUqF-EwHBZVXdnv9w4fWgfwZNJQZqkhQc6By08ENiq0v6pepqzXBD3jvEfyH7mAkSwS343aMMhBuJYOsB-Q"/>
-</div>
-<!-- Main Content Canvas (Navigation Suppressed as per Linear/Transactional intent) -->
-<main class="flex-grow flex flex-col items-center justify-center py-margin-desktop px-margin-mobile md:px-gutter relative z-10 w-full max-w-container-max mx-auto">
-<!-- Header Section -->
-<header class="text-center mb-12 animate-fade-in-up">
-<div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-surface-container-high border border-primary/30 mb-6 glow-accent">
-<span class="material-symbols-outlined text-4xl text-primary" style="font-variation-settings: 'FILL' 1;">
-                    school
-                </span>
-</div>
-<h1 class="font-display-lg text-display-lg text-primary mb-4 drop-shadow-md">Session Concluded</h1>
-<p class="font-headline-md text-headline-md text-on-surface-variant italic">A Scholarly Achievement</p>
-</header>
-<!-- Bento Grid Layout -->
-<div class="grid grid-cols-1 md:grid-cols-12 gap-unit max-w-5xl w-full">
-<!-- Analytics Section (Bento: Large) -->
-<section class="md:col-span-8 texture-paper rounded-xl p-8 flex flex-col justify-between transform transition-transform hover:-translate-y-1 duration-300">
-<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-6 border-b border-surface-container-highest pb-4 flex items-center gap-3">
-<span class="material-symbols-outlined text-primary">analytics</span>
-                    Scholar's Report Card
-                </h2>
-<div class="grid grid-cols-2 gap-6">
-<div class="bg-surface-container-low rounded-lg p-5 border border-outline-variant/30 relative overflow-hidden group">
-<div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-colors"></div>
-<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Total Focus Time</p>
-<p class="font-display-lg text-display-lg text-primary">2h 30m</p>
-</div>
-<div class="bg-surface-container-low rounded-lg p-5 border border-outline-variant/30 relative overflow-hidden group">
-<div class="absolute -right-4 -top-4 w-24 h-24 bg-tertiary/5 rounded-full blur-xl group-hover:bg-tertiary/10 transition-colors"></div>
-<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Pomodoros</p>
-<p class="font-display-lg text-display-lg text-tertiary">5 <span class="text-body-md text-on-surface-variant/50">sessions</span></p>
-</div>
-<div class="bg-surface-container-low rounded-lg p-5 border border-outline-variant/30 col-span-2 md:col-span-1 relative overflow-hidden group">
-<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent"></div>
-<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Deep Work Score</p>
-<div class="flex items-end gap-3">
-<p class="font-display-lg text-display-lg text-primary">A</p>
-<p class="font-body-md text-body-md text-primary-container bg-primary px-3 py-1 rounded-full mb-2 font-medium">Master of Focus</p>
-</div>
-</div>
-<div class="bg-surface-container-low rounded-lg p-5 border border-outline-variant/30 col-span-2 md:col-span-1 relative overflow-hidden group">
-<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2 flex items-center gap-2">
-<span class="material-symbols-outlined text-sm text-secondary">self_improvement</span> Restorative Time
-                        </p>
-<p class="font-headline-md text-headline-md text-secondary mt-2">20m</p>
-</div>
-</div>
-</section>
-<!-- Trophy Collection (Bento: Tall) -->
-<section class="md:col-span-4 texture-paper rounded-xl p-8 flex flex-col">
-<h2 class="font-headline-md text-headline-md text-on-surface mb-6 border-b border-surface-container-highest pb-4 flex items-center gap-3">
-<span class="material-symbols-outlined text-tertiary">emoji_events</span>
-                    Honors Earned
-                </h2>
-<div class="flex-grow flex flex-col gap-4">
-<div class="flex items-center gap-4 bg-surface-container-lowest p-4 rounded-lg border border-primary/20 hover:border-primary/50 transition-colors">
-<div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center glow-accent">
-<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">bedtime</span>
-</div>
-<div>
-<p class="font-body-md text-body-md text-on-surface font-semibold">The Night Owl</p>
-<p class="font-label-sm text-label-sm text-on-surface-variant">Studied past midnight</p>
-</div>
-</div>
-<div class="flex items-center gap-4 bg-surface-container-lowest p-4 rounded-lg border border-tertiary/20 hover:border-tertiary/50 transition-colors">
-<div class="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center">
-<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">scuba_diving</span>
-</div>
-<div>
-<p class="font-body-md text-body-md text-on-surface font-semibold">Deep Diver</p>
-<p class="font-label-sm text-label-sm text-on-surface-variant">90+ mins uninterrupted</p>
-</div>
-</div>
-<div class="flex items-center gap-4 bg-surface-container-lowest p-4 rounded-lg border border-secondary/20 hover:border-secondary/50 transition-colors">
-<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center">
-<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
-</div>
-<div>
-<p class="font-body-md text-body-md text-on-surface font-semibold">Relentless Scholar</p>
-<p class="font-label-sm text-label-sm text-on-surface-variant">5 Pomodoros completed</p>
-</div>
-</div>
-</div>
-</section>
-<!-- Goal Progress (Bento: Medium) -->
-<section class="md:col-span-6 texture-paper rounded-xl p-8">
-<h2 class="font-headline-md text-headline-md text-on-surface mb-6 border-b border-surface-container-highest pb-4 flex items-center gap-3">
-<span class="material-symbols-outlined text-on-surface-variant">task_alt</span>
-                    Session Objectives
-                </h2>
-<ul class="space-y-4">
-<li class="flex items-start gap-3 group cursor-default">
-<span class="material-symbols-outlined text-tertiary mt-0.5 group-hover:scale-110 transition-transform">check_circle</span>
-<div>
-<p class="font-body-md text-body-md text-on-surface line-through decoration-on-surface-variant/50">DBMS Normalization</p>
-<p class="font-label-sm text-label-sm text-tertiary mt-1">Complete</p>
-</div>
-</li>
-<li class="flex items-start gap-3 group cursor-default">
-<span class="material-symbols-outlined text-tertiary mt-0.5 group-hover:scale-110 transition-transform">check_circle</span>
-<div>
-<p class="font-body-md text-body-md text-on-surface line-through decoration-on-surface-variant/50">15 MCQs Practice</p>
-<p class="font-label-sm text-label-sm text-tertiary mt-1">Complete</p>
-</div>
-</li>
-<li class="flex items-start gap-3 group cursor-default opacity-60">
-<span class="material-symbols-outlined text-on-surface-variant mt-0.5">radio_button_unchecked</span>
-<div>
-<p class="font-body-md text-body-md text-on-surface">Review ER Diagrams</p>
-<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">Pending</p>
-</div>
-</li>
-</ul>
-</section>
-<!-- Weekly Progress (Bento: Medium) -->
-<section class="md:col-span-6 texture-paper rounded-xl p-8 flex flex-col justify-center">
-<h2 class="font-headline-md text-headline-md text-on-surface mb-6 border-b border-surface-container-highest pb-4 flex items-center gap-3">
-<span class="material-symbols-outlined text-on-surface-variant">calendar_month</span>
-                    Weekly Contribution
-                </h2>
-<div class="mb-4 flex justify-between items-end">
-<p class="font-body-md text-body-md text-on-surface">Target: 20 Hours</p>
-<p class="font-headline-md text-headline-md text-primary">65%</p>
-</div>
-<div class="w-full h-4 bg-surface-container-lowest rounded-full overflow-hidden border border-outline-variant/30">
-<div class="h-full bg-surface-container-high w-full flex">
-<div class="h-full bg-on-surface-variant w-1/2 opacity-50 relative group">
-<!-- Tooltip conceptual -->
-</div>
-<div class="h-full bg-primary w-[15%] relative shadow-[0_0_10px_rgba(234,188,184,0.5)] animate-pulse"></div>
-</div>
-</div>
-<p class="font-label-sm text-label-sm text-on-surface-variant mt-4 text-center">This session added 12.5% to your weekly goal.</p>
-</section>
-</div>
-<!-- Actions -->
-<div class="mt-12 flex flex-col sm:flex-row gap-6 justify-center w-full max-w-2xl">
-<button class="bg-primary text-primary-container font-body-md text-body-md font-semibold py-3 px-8 rounded-lg shadow-sm hover:bg-primary-fixed transition-colors flex-1 flex items-center justify-center gap-2 texture-wood">
-<span class="material-symbols-outlined">menu_book</span>
-                Return to Study Planner
-            </button>
-<button class="bg-surface-container-high text-on-surface font-body-md text-body-md border border-outline-variant/50 py-3 px-8 rounded-lg hover:bg-surface-container-highest transition-colors flex-1 flex items-center justify-center gap-2">
-<span class="material-symbols-outlined">ios_share</span>
-                Share Report
-            </button>
-</div>
-</main>
-</body></html>
+    <style>
+      .dl-nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        background: rgba(17, 13, 13, 0.92);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(234, 188, 184, 0.1);
+        height: 56px;
+        display: flex;
+        align-items: center;
+        padding: 0 24px;
+        gap: 4px;
+      }
+      .dl-nav a {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 7px 11px;
+        border-radius: 5px;
+        font-family: Inter, sans-serif;
+        font-size: 11.5px;
+        font-weight: 600;
+        color: #9d8d8c;
+        text-decoration: none;
+        transition: all 0.2s;
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+        border: 1px solid transparent;
+      }
+      .dl-nav a:hover {
+        color: #eabcb8;
+        background: rgba(234, 188, 184, 0.07);
+      }
+      .dl-nav a.active {
+        color: #eabcb8;
+        background: rgba(234, 188, 184, 0.1);
+        border-color: rgba(234, 188, 184, 0.15);
+      }
+      .dl-nav .logo {
+        font-family: "Playfair Display", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: #e9e1df;
+        letter-spacing: -0.01em;
+        margin-right: 6px;
+        padding: 6px 10px;
+      }
+      .dl-nav .logo:hover {
+        background: rgba(234, 188, 184, 0.05);
+        color: #eabcb8;
+      }
+      .dl-nav .sep {
+        width: 1px;
+        height: 20px;
+        background: rgba(234, 188, 184, 0.12);
+        margin: 0 6px;
+        flex-shrink: 0;
+      }
+      .dl-nav .spacer {
+        flex: 1;
+      }
+      .dl-nav .nav-v3 {
+        font-size: 11px;
+        border: 1px solid rgba(176, 205, 190, 0.25) !important;
+        border-radius: 20px;
+        color: #b0cdbe !important;
+        padding: 5px 13px !important;
+      }
+      .dl-nav .nav-v3:hover {
+        background: rgba(176, 205, 190, 0.1) !important;
+        border-color: rgba(176, 205, 190, 0.4) !important;
+      }
+      .dl-nav .material-symbols-outlined {
+        font-size: 15px !important;
+      }
+      body.with-dl-nav {
+        padding-top: 56px;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col relative overflow-x-hidden"
+  >
+    <nav class="dl-nav">
+      <a href="entrance.html" class="logo">✦ StudySaathi</a>
+      <div class="sep"></div>
+      <a href="entrance.html" data-p="entrance"
+        ><span class="material-symbols-outlined">castle</span>Library</a
+      >
+      <a href="shelves.html" data-p="shelves"
+        ><span class="material-symbols-outlined">library_books</span>Shelves</a
+      >
+      <a href="question-paper.html" data-p="question-paper"
+        ><span class="material-symbols-outlined">inventory_2</span>PYQ
+        Archive</a
+      >
+      <a href="study-desk.html" data-p="study-desk"
+        ><span class="material-symbols-outlined">desk</span>Study Desk</a
+      >
+      <a href="active-session.html" data-p="active-session"
+        ><span class="material-symbols-outlined">timer</span>Study Session</a
+      >
+      <a href="mock-session.html" data-p="mock-session"
+        ><span class="material-symbols-outlined">quiz</span>Mock Test</a
+      >
+      <a href="break-mode.html" data-p="break-mode"
+        ><span class="material-symbols-outlined">spa</span>Break</a
+      >
+      <a href="session-summary.html" data-p="session-summary"
+        ><span class="material-symbols-outlined">bar_chart</span>Summary</a
+      >
+      <div class="spacer"></div>
+      <a href="../dashboard.html" class="nav-v3"
+        ><span class="material-symbols-outlined">dashboard</span>v3 Dashboard</a
+      >
+    </nav>
+    <script>
+      (function () {
+        document.body.classList.add("with-dl-nav");
+        const p = location.pathname.split("/").pop().replace(".html", "");
+        document.querySelectorAll(".dl-nav a[data-p]").forEach((a) => {
+          if (a.dataset.p === p) a.classList.add("active");
+        });
+      })();
+    </script>
+    <!-- Background Texture/Image -->
+    <div class="fixed inset-0 z-0 pointer-events-none opacity-20">
+      <img
+        alt="Background Texture"
+        class="w-full h-full object-cover grayscale mix-blend-overlay"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxplJmYlTOLaoTkSBzH9a7_XrF4DYybRGgrAC3hzkj6BYXBbCTPiSKsZSsx0zANreqIOkYOcZ1BBz0sVzEqZcoc3X-nY0aMcd9DmQMNNYYogpGZQwQhQAxJWeF1rffg2PwIZwf5pEi1xpIlPx4Xn-VkJJrBY-MsCbioKeqbeuUGf3cx_ofUqF-EwHBZVXdnv9w4fWgfwZNJQZqkhQc6By08ENiq0v6pepqzXBD3jvEfyH7mAkSwS343aMMhBuJYOsB-Q"
+      />
+    </div>
+    <!-- Main Content Canvas (Navigation Suppressed as per Linear/Transactional intent) -->
+    <main
+      class="flex-grow flex flex-col items-center justify-center py-margin-desktop px-margin-mobile md:px-gutter relative z-10 w-full max-w-container-max mx-auto"
+    >
+      <!-- Header Section -->
+      <header class="text-center mb-12 animate-fade-in-up">
+        <div
+          class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-surface-container-high border border-primary/30 mb-6 glow-accent"
+        >
+          <span
+            class="material-symbols-outlined text-4xl text-primary"
+            style="font-variation-settings: &quot;FILL&quot; 1"
+          >
+            school
+          </span>
+        </div>
+        <h1
+          class="font-display-lg text-display-lg text-primary mb-4 drop-shadow-md"
+        >
+          Session Concluded
+        </h1>
+        <p
+          class="font-headline-md text-headline-md text-on-surface-variant italic"
+        >
+          A Scholarly Achievement
+        </p>
+      </header>
+      <!-- Bento Grid Layout -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-unit max-w-5xl w-full">
+        <!-- Analytics Section (Bento: Large) -->
+        <section
+          class="md:col-span-8 texture-paper rounded-xl p-8 flex flex-col justify-between transform transition-transform hover:-translate-y-1 duration-300"
+        >
+          <h2
+            class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-6 border-b border-surface-container-highest pb-4 flex items-center gap-3"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >analytics</span
+            >
+            Scholar's Report Card
+          </h2>
+          <div class="grid grid-cols-2 gap-6">
+            <div
+              class="bg-surface-container-low rounded-lg p-5 border border-outline-variant/30 relative overflow-hidden group"
+            >
+              <div
+                class="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-colors"
+              ></div>
+              <p
+                class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2"
+              >
+                Total Focus Time
+              </p>
+              <p class="font-display-lg text-display-lg text-primary">2h 30m</p>
+            </div>
+            <div
+              class="bg-surface-container-low rounded-lg p-5 border border-outline-variant/30 relative overflow-hidden group"
+            >
+              <div
+                class="absolute -right-4 -top-4 w-24 h-24 bg-tertiary/5 rounded-full blur-xl group-hover:bg-tertiary/10 transition-colors"
+              ></div>
+              <p
+                class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2"
+              >
+                Pomodoros
+              </p>
+              <p class="font-display-lg text-display-lg text-tertiary">
+                5
+                <span class="text-body-md text-on-surface-variant/50"
+                  >sessions</span
+                >
+              </p>
+            </div>
+            <div
+              class="bg-surface-container-low rounded-lg p-5 border border-outline-variant/30 col-span-2 md:col-span-1 relative overflow-hidden group"
+            >
+              <div
+                class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent"
+              ></div>
+              <p
+                class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2"
+              >
+                Deep Work Score
+              </p>
+              <div class="flex items-end gap-3">
+                <p class="font-display-lg text-display-lg text-primary">A</p>
+                <p
+                  class="font-body-md text-body-md text-primary-container bg-primary px-3 py-1 rounded-full mb-2 font-medium"
+                >
+                  Master of Focus
+                </p>
+              </div>
+            </div>
+            <div
+              class="bg-surface-container-low rounded-lg p-5 border border-outline-variant/30 col-span-2 md:col-span-1 relative overflow-hidden group"
+            >
+              <p
+                class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2 flex items-center gap-2"
+              >
+                <span class="material-symbols-outlined text-sm text-secondary"
+                  >self_improvement</span
+                >
+                Restorative Time
+              </p>
+              <p class="font-headline-md text-headline-md text-secondary mt-2">
+                20m
+              </p>
+            </div>
+          </div>
+        </section>
+        <!-- Trophy Collection (Bento: Tall) -->
+        <section
+          class="md:col-span-4 texture-paper rounded-xl p-8 flex flex-col"
+        >
+          <h2
+            class="font-headline-md text-headline-md text-on-surface mb-6 border-b border-surface-container-highest pb-4 flex items-center gap-3"
+          >
+            <span class="material-symbols-outlined text-tertiary"
+              >emoji_events</span
+            >
+            Honors Earned
+          </h2>
+          <div class="flex-grow flex flex-col gap-4">
+            <div
+              class="flex items-center gap-4 bg-surface-container-lowest p-4 rounded-lg border border-primary/20 hover:border-primary/50 transition-colors"
+            >
+              <div
+                class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center glow-accent"
+              >
+                <span
+                  class="material-symbols-outlined text-primary"
+                  style="font-variation-settings: &quot;FILL&quot; 1"
+                  >bedtime</span
+                >
+              </div>
+              <div>
+                <p
+                  class="font-body-md text-body-md text-on-surface font-semibold"
+                >
+                  The Night Owl
+                </p>
+                <p class="font-label-sm text-label-sm text-on-surface-variant">
+                  Studied past midnight
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex items-center gap-4 bg-surface-container-lowest p-4 rounded-lg border border-tertiary/20 hover:border-tertiary/50 transition-colors"
+            >
+              <div
+                class="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center"
+              >
+                <span
+                  class="material-symbols-outlined text-tertiary"
+                  style="font-variation-settings: &quot;FILL&quot; 1"
+                  >scuba_diving</span
+                >
+              </div>
+              <div>
+                <p
+                  class="font-body-md text-body-md text-on-surface font-semibold"
+                >
+                  Deep Diver
+                </p>
+                <p class="font-label-sm text-label-sm text-on-surface-variant">
+                  90+ mins uninterrupted
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex items-center gap-4 bg-surface-container-lowest p-4 rounded-lg border border-secondary/20 hover:border-secondary/50 transition-colors"
+            >
+              <div
+                class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center"
+              >
+                <span
+                  class="material-symbols-outlined text-secondary"
+                  style="font-variation-settings: &quot;FILL&quot; 1"
+                  >local_fire_department</span
+                >
+              </div>
+              <div>
+                <p
+                  class="font-body-md text-body-md text-on-surface font-semibold"
+                >
+                  Relentless Scholar
+                </p>
+                <p class="font-label-sm text-label-sm text-on-surface-variant">
+                  5 Pomodoros completed
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- Goal Progress (Bento: Medium) -->
+        <section class="md:col-span-6 texture-paper rounded-xl p-8">
+          <h2
+            class="font-headline-md text-headline-md text-on-surface mb-6 border-b border-surface-container-highest pb-4 flex items-center gap-3"
+          >
+            <span class="material-symbols-outlined text-on-surface-variant"
+              >task_alt</span
+            >
+            Session Objectives
+          </h2>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-3 group cursor-default">
+              <span
+                class="material-symbols-outlined text-tertiary mt-0.5 group-hover:scale-110 transition-transform"
+                >check_circle</span
+              >
+              <div>
+                <p
+                  class="font-body-md text-body-md text-on-surface line-through decoration-on-surface-variant/50"
+                >
+                  DBMS Normalization
+                </p>
+                <p class="font-label-sm text-label-sm text-tertiary mt-1">
+                  Complete
+                </p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3 group cursor-default">
+              <span
+                class="material-symbols-outlined text-tertiary mt-0.5 group-hover:scale-110 transition-transform"
+                >check_circle</span
+              >
+              <div>
+                <p
+                  class="font-body-md text-body-md text-on-surface line-through decoration-on-surface-variant/50"
+                >
+                  15 MCQs Practice
+                </p>
+                <p class="font-label-sm text-label-sm text-tertiary mt-1">
+                  Complete
+                </p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3 group cursor-default opacity-60">
+              <span
+                class="material-symbols-outlined text-on-surface-variant mt-0.5"
+                >radio_button_unchecked</span
+              >
+              <div>
+                <p class="font-body-md text-body-md text-on-surface">
+                  Review ER Diagrams
+                </p>
+                <p
+                  class="font-label-sm text-label-sm text-on-surface-variant mt-1"
+                >
+                  Pending
+                </p>
+              </div>
+            </li>
+          </ul>
+        </section>
+        <!-- Weekly Progress (Bento: Medium) -->
+        <section
+          class="md:col-span-6 texture-paper rounded-xl p-8 flex flex-col justify-center"
+        >
+          <h2
+            class="font-headline-md text-headline-md text-on-surface mb-6 border-b border-surface-container-highest pb-4 flex items-center gap-3"
+          >
+            <span class="material-symbols-outlined text-on-surface-variant"
+              >calendar_month</span
+            >
+            Weekly Contribution
+          </h2>
+          <div class="mb-4 flex justify-between items-end">
+            <p class="font-body-md text-body-md text-on-surface">
+              Target: 20 Hours
+            </p>
+            <p class="font-headline-md text-headline-md text-primary">65%</p>
+          </div>
+          <div
+            class="w-full h-4 bg-surface-container-lowest rounded-full overflow-hidden border border-outline-variant/30"
+          >
+            <div class="h-full bg-surface-container-high w-full flex">
+              <div
+                class="h-full bg-on-surface-variant w-1/2 opacity-50 relative group"
+              >
+                <!-- Tooltip conceptual -->
+              </div>
+              <div
+                class="h-full bg-primary w-[15%] relative shadow-[0_0_10px_rgba(234,188,184,0.5)] animate-pulse"
+              ></div>
+            </div>
+          </div>
+          <p
+            class="font-label-sm text-label-sm text-on-surface-variant mt-4 text-center"
+          >
+            This session added 12.5% to your weekly goal.
+          </p>
+        </section>
+      </div>
+      <!-- Actions -->
+      <div
+        class="mt-12 flex flex-col sm:flex-row gap-6 justify-center w-full max-w-2xl"
+      >
+        <button
+          class="bg-primary text-primary-container font-body-md text-body-md font-semibold py-3 px-8 rounded-lg shadow-sm hover:bg-primary-fixed transition-colors flex-1 flex items-center justify-center gap-2 texture-wood"
+        >
+          <span class="material-symbols-outlined">menu_book</span>
+          Return to Study Planner
+        </button>
+        <button
+          class="bg-surface-container-high text-on-surface font-body-md text-body-md border border-outline-variant/50 py-3 px-8 rounded-lg hover:bg-surface-container-highest transition-colors flex-1 flex items-center justify-center gap-2"
+        >
+          <span class="material-symbols-outlined">ios_share</span>
+          Share Report
+        </button>
+      </div>
+    </main>
+  </body>
+</html>

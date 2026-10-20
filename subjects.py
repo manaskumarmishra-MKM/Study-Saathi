@@ -67,7 +67,10 @@ def add_subject():
     subject_id = cursor.lastrowid
     conn.close()
 
-    return jsonify({"message": "Subject added", "id": subject_id, "subject_name": name}), 201
+    return (
+        jsonify({"message": "Subject added", "id": subject_id, "subject_name": name}),
+        201,
+    )
 
 
 @subjects_bp.route("/<int:subject_id>", methods=["DELETE"])
@@ -121,14 +124,17 @@ def add_topic(subject_id):
     topic_id = cursor.lastrowid
     conn.close()
 
-    return jsonify(
-        {
-            "message": "Topic added",
-            "id": topic_id,
-            "topic_name": topic_name,
-            "difficulty": difficulty,
-        }
-    ), 201
+    return (
+        jsonify(
+            {
+                "message": "Topic added",
+                "id": topic_id,
+                "topic_name": topic_name,
+                "difficulty": difficulty,
+            }
+        ),
+        201,
+    )
 
 
 @subjects_bp.route("/topics/<int:topic_id>", methods=["PATCH"])

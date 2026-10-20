@@ -37,7 +37,12 @@ def check_pw(pw, stored):
 
 def make_token(uid, name, email):
     """Create a signed JWT-like token containing the user payload."""
-    payload = {"id": uid, "name": name, "email": email, "exp": int(time.time()) + 86400 * 14}
+    payload = {
+        "id": uid,
+        "name": name,
+        "email": email,
+        "exp": int(time.time()) + 86400 * 14,
+    }
     encoded = base64.urlsafe_b64encode(json.dumps(payload).encode()).decode()
     signature = hmac.new(SECRET.encode(), encoded.encode(), hashlib.sha256).hexdigest()
     return f"{encoded}.{signature}"

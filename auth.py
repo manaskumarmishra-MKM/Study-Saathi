@@ -61,13 +61,16 @@ def register():
     conn.close()
 
     token = create_token(user_id)
-    return jsonify(
-        {
-            "message": "Account created successfully",
-            "token": token,
-            "user": {"id": user_id, "name": name, "email": email, "course": course},
-        }
-    ), 201
+    return (
+        jsonify(
+            {
+                "message": "Account created successfully",
+                "token": token,
+                "user": {"id": user_id, "name": name, "email": email, "course": course},
+            }
+        ),
+        201,
+    )
 
 
 @auth_bp.route("/login", methods=["POST"])

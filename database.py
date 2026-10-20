@@ -23,8 +23,7 @@ def init_db():
     conn = get_db()
     cursor = conn.cursor()
 
-    cursor.execute(
-        """
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id         INTEGER PRIMARY KEY AUTOINCREMENT,
             name       TEXT NOT NULL,
@@ -33,32 +32,26 @@ def init_db():
             course     TEXT,
             created_at TEXT DEFAULT (datetime('now'))
         )
-        """
-    )
+        """)
 
-    cursor.execute(
-        """
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS tokens (
             token      TEXT PRIMARY KEY,
             user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
             created_at TEXT DEFAULT (datetime('now'))
         )
-        """
-    )
+        """)
 
-    cursor.execute(
-        """
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS subjects (
             id           INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id      INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
             subject_name TEXT NOT NULL,
             created_at   TEXT DEFAULT (datetime('now'))
         )
-        """
-    )
+        """)
 
-    cursor.execute(
-        """
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS topics (
             id         INTEGER PRIMARY KEY AUTOINCREMENT,
             subject_id INTEGER NOT NULL REFERENCES subjects(id) ON DELETE CASCADE,
@@ -66,11 +59,9 @@ def init_db():
             difficulty TEXT DEFAULT 'Medium',
             completed  INTEGER DEFAULT 0
         )
-        """
-    )
+        """)
 
-    cursor.execute(
-        """
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS tasks (
             id       INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id  INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -80,11 +71,9 @@ def init_db():
             priority TEXT DEFAULT 'Medium',
             date     TEXT DEFAULT (date('now'))
         )
-        """
-    )
+        """)
 
-    cursor.execute(
-        """
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS exams (
             id         INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -93,11 +82,9 @@ def init_db():
             notes      TEXT,
             created_at TEXT DEFAULT (datetime('now'))
         )
-        """
-    )
+        """)
 
-    cursor.execute(
-        """
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS progress (
             id            INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id       INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -105,11 +92,9 @@ def init_db():
             hours_studied REAL DEFAULT 0,
             date          TEXT DEFAULT (date('now'))
         )
-        """
-    )
+        """)
 
-    cursor.execute(
-        """
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS study_plans (
             id          INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -118,8 +103,7 @@ def init_db():
             plan_json   TEXT NOT NULL,
             created_at  TEXT DEFAULT (datetime('now'))
         )
-        """
-    )
+        """)
 
     conn.commit()
     conn.close()

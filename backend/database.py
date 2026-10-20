@@ -22,8 +22,7 @@ def init_db():
     """Create the database and required tables when the backend starts."""
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     db = get_db()
-    db.executescript(
-        """
+    db.executescript("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
@@ -127,8 +126,7 @@ def init_db():
             plan_json TEXT NOT NULL,
             created_at TEXT DEFAULT(datetime('now'))
         );
-        """
-    )
+        """)
     db.commit()
 
     # Migration: add last_login_date column to existing users tables

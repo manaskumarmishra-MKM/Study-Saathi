@@ -83,15 +83,18 @@ def add_exam():
     exam_id = cursor.lastrowid
     conn.close()
 
-    return jsonify(
-        {
-            "message": "Exam added",
-            "id": exam_id,
-            "subject": subject,
-            "exam_date": exam_date,
-            "days_left": _days_left(exam_date),
-        }
-    ), 201
+    return (
+        jsonify(
+            {
+                "message": "Exam added",
+                "id": exam_id,
+                "subject": subject,
+                "exam_date": exam_date,
+                "days_left": _days_left(exam_date),
+            }
+        ),
+        201,
+    )
 
 
 @exams_bp.route("/<int:exam_id>", methods=["DELETE"])
@@ -102,7 +105,9 @@ def delete_exam(exam_id):
         return err
 
     conn = get_db()
-    conn.execute("DELETE FROM exams WHERE id = ? AND user_id = ?", (exam_id, user["id"]))
+    conn.execute(
+        "DELETE FROM exams WHERE id = ? AND user_id = ?", (exam_id, user["id"])
+    )
     conn.commit()
     conn.close()
     return jsonify({"message": "Exam deleted"})

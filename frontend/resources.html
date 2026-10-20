@@ -1,110 +1,372 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" data-theme="dark">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Resources — StudySaathi v3</title>
-<link rel="stylesheet" href="assets/css/main.css">
-<link rel="stylesheet" href="assets/css/graphics.css">
-<style>
-.res-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;transition:var(--trans);}
-.res-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow);}
-.res-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:14px;}
-</style>
-</head>
-<body>
-<div class="app-shell">
-  <header class="topbar"></header><nav class="sidebar"></nav>
-  <main class="main">
-    <div class="page-header"><div><div class="page-title">📦 Resource Hub</div><div class="page-sub">Notes, formula sheets, books, videos, and practice sets</div></div></div>
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('all',this)">All</button>
-      <button class="tab-btn" onclick="switchTab('notes',this)">📓 Notes</button>
-      <button class="tab-btn" onclick="switchTab('formula',this)">📐 Formula</button>
-      <button class="tab-btn" onclick="switchTab('videos',this)">🎥 Videos</button>
-      <button class="tab-btn" onclick="switchTab('books',this)">📚 Books</button>
-      <button class="tab-btn" onclick="switchTab('practice',this)">✍️ Practice</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Resources — StudySaathi v3</title>
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/graphics.css" />
+    <style>
+      .res-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--r-lg);
+        padding: 20px;
+        transition: var(--trans);
+      }
+      .res-card:hover {
+        border-color: var(--border2);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+      }
+      .res-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        margin-bottom: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar"></header>
+      <nav class="sidebar"></nav>
+      <main class="main">
+        <div class="page-header">
+          <div>
+            <div class="page-title">📦 Resource Hub</div>
+            <div class="page-sub">
+              Notes, formula sheets, books, videos, and practice sets
+            </div>
+          </div>
+        </div>
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('all', this)">
+            All
+          </button>
+          <button class="tab-btn" onclick="switchTab('notes', this)">
+            📓 Notes
+          </button>
+          <button class="tab-btn" onclick="switchTab('formula', this)">
+            📐 Formula
+          </button>
+          <button class="tab-btn" onclick="switchTab('videos', this)">
+            🎥 Videos
+          </button>
+          <button class="tab-btn" onclick="switchTab('books', this)">
+            📚 Books
+          </button>
+          <button class="tab-btn" onclick="switchTab('practice', this)">
+            ✍️ Practice
+          </button>
+        </div>
+        <div class="filter-row">
+          <span class="fpill active" onclick="filterExam('', this)"
+            >All Exams</span
+          >
+          <span class="fpill" onclick="filterExam('GATE', this)">GATE</span>
+          <span class="fpill" onclick="filterExam('JEE', this)">JEE</span>
+          <span class="fpill" onclick="filterExam('NEET', this)">NEET</span>
+          <span class="fpill" onclick="filterExam('UPSC', this)">UPSC</span>
+        </div>
+        <div id="res-grid" class="ga"></div>
+        <footer class="page-footer">
+          Copyright © Manas Kumar Mishra. All rights reserved.
+        </footer>
+      </main>
     </div>
-    <div class="filter-row">
-      <span class="fpill active" onclick="filterExam('',this)">All Exams</span>
-      <span class="fpill" onclick="filterExam('GATE',this)">GATE</span>
-      <span class="fpill" onclick="filterExam('JEE',this)">JEE</span>
-      <span class="fpill" onclick="filterExam('NEET',this)">NEET</span>
-      <span class="fpill" onclick="filterExam('UPSC',this)">UPSC</span>
-    </div>
-    <div id="res-grid" class="ga"></div>
-    <footer class="page-footer">Copyright © Manas Kumar Mishra. All rights reserved.</footer>
-  </main>
-</div>
 
-<script src="assets/js/core.js"></script><script src="assets/js/sidebar.js"></script>
-<script>
-if(!requireAuth())throw"";
-injectShell("resources.html");
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/sidebar.js"></script>
+    <script>
+      if (!requireAuth()) throw "";
+      injectShell("resources.html");
 
-const RESOURCES=[
-  {id:1,title:"GATE CS Algorithms — Complete Notes",subject:"Algorithms",exam:"GATE",type:"notes",icon:"📓",bg:"rgba(61,90,241,.15)",desc:"Sorting, graphs, DP — with time complexity cheat sheet"},
-  {id:2,title:"GATE Mathematics Formula Sheet",subject:"Engineering Mathematics",exam:"GATE",type:"formula",icon:"📐",bg:"rgba(0,201,167,.15)",desc:"Calculus, Linear Algebra, Probability — all formulas one page"},
-  {id:3,title:"GATE DBMS Quick Revision Notes",subject:"DBMS",exam:"GATE",type:"notes",icon:"📓",bg:"rgba(61,90,241,.15)",desc:"Normalization, SQL, Transactions, Indexing — exam focused"},
-  {id:4,title:"GATE OS Important Questions",subject:"Operating Systems",exam:"GATE",type:"practice",icon:"✍️",bg:"rgba(168,85,247,.15)",desc:"Scheduling, Deadlocks, Memory — 50 important questions"},
-  {id:5,title:"NPTEL Computer Networks Lectures",subject:"Computer Networks",exam:"GATE",type:"videos",icon:"🎥",bg:"rgba(249,115,22,.15)",desc:"IIT Bombay lectures on OSI, TCP/IP, Routing protocols"},
-  {id:6,title:"Introduction to Algorithms (CLRS)",subject:"Algorithms",exam:"GATE",type:"books",icon:"📚",bg:"rgba(34,197,94,.15)",desc:"Cormen, Leiserson, Rivest, Stein — the definitive textbook"},
-  {id:7,title:"JEE Physics — Mechanics Formula Sheet",subject:"Physics",exam:"JEE",type:"formula",icon:"📐",bg:"rgba(0,201,167,.15)",desc:"Kinematics, Newton's laws, work-energy, rotational motion"},
-  {id:8,title:"JEE Organic Chemistry Reaction Chart",subject:"Chemistry",exam:"JEE",type:"formula",icon:"📐",bg:"rgba(0,201,167,.15)",desc:"Named reactions, reagents, mechanisms — visual cheat sheet"},
-  {id:9,title:"JEE Mathematics — Calculus Notes",subject:"Mathematics",exam:"JEE",type:"notes",icon:"📓",bg:"rgba(61,90,241,.15)",desc:"Limits, Derivatives, Integration with solved examples"},
-  {id:10,title:"JEE Advanced 10-Year Solved Papers",subject:"All Subjects",exam:"JEE",type:"practice",icon:"✍️",bg:"rgba(168,85,247,.15)",desc:"2014–2023 solved papers with detailed solutions"},
-  {id:11,title:"HC Verma — Concepts of Physics",subject:"Physics",exam:"JEE",type:"books",icon:"📚",bg:"rgba(34,197,94,.15)",desc:"Volume 1 & 2 — most recommended JEE Physics book"},
-  {id:12,title:"Khan Academy Physics Video Series",subject:"Physics",exam:"JEE",type:"videos",icon:"🎥",bg:"rgba(249,115,22,.15)",desc:"Clear explanations of mechanics, thermodynamics, electromagnetism"},
-  {id:13,title:"UPSC Polity — Laxmikant Summary Notes",subject:"Polity",exam:"UPSC",type:"notes",icon:"📓",bg:"rgba(61,90,241,.15)",desc:"Chapter-wise notes — Constitution, Preamble, Parliament"},
-  {id:14,title:"UPSC Geography — NCERT Summary",subject:"Geography",exam:"UPSC",type:"notes",icon:"📓",bg:"rgba(61,90,241,.15)",desc:"Physical and Human Geography — consolidated from NCERT"},
-  {id:15,title:"UPSC Current Affairs Monthly Compilation",subject:"Current Affairs",exam:"UPSC",type:"practice",icon:"✍️",bg:"rgba(168,85,247,.15)",desc:"Monthly PDF with MCQs — updated regularly"},
-  {id:16,title:"UPSC Prelims Question Frequency Analysis",subject:"GS Paper 1",exam:"UPSC",type:"formula",icon:"📐",bg:"rgba(0,201,167,.15)",desc:"Topic-wise frequency from 2010–2023 Prelims papers"},
-  {id:17,title:"NEET Biology — NCERT Line by Line Notes",subject:"Biology",exam:"NEET",type:"notes",icon:"📓",bg:"rgba(61,90,241,.15)",desc:"Complete NCERT Biology notes — every important line highlighted"},
-  {id:18,title:"NEET Chemistry Formula Booklet",subject:"Chemistry",exam:"NEET",type:"formula",icon:"📐",bg:"rgba(0,201,167,.15)",desc:"Organic, Inorganic, Physical Chemistry — all formulas"},
-  {id:19,title:"NEET Biology Chapter-wise MCQs",subject:"Biology",exam:"NEET",type:"practice",icon:"✍️",bg:"rgba(168,85,247,.15)",desc:"5000+ MCQs chapter-wise with NCERT line references"},
-  {id:20,title:"NCERT Exemplar — Chemistry Solutions",subject:"Chemistry",exam:"NEET",type:"books",icon:"📚",bg:"rgba(34,197,94,.15)",desc:"NCERT Exemplar problems and solutions for Chemistry"},
-];
+      const RESOURCES = [
+        {
+          id: 1,
+          title: "GATE CS Algorithms — Complete Notes",
+          subject: "Algorithms",
+          exam: "GATE",
+          type: "notes",
+          icon: "📓",
+          bg: "rgba(61,90,241,.15)",
+          desc: "Sorting, graphs, DP — with time complexity cheat sheet",
+        },
+        {
+          id: 2,
+          title: "GATE Mathematics Formula Sheet",
+          subject: "Engineering Mathematics",
+          exam: "GATE",
+          type: "formula",
+          icon: "📐",
+          bg: "rgba(0,201,167,.15)",
+          desc: "Calculus, Linear Algebra, Probability — all formulas one page",
+        },
+        {
+          id: 3,
+          title: "GATE DBMS Quick Revision Notes",
+          subject: "DBMS",
+          exam: "GATE",
+          type: "notes",
+          icon: "📓",
+          bg: "rgba(61,90,241,.15)",
+          desc: "Normalization, SQL, Transactions, Indexing — exam focused",
+        },
+        {
+          id: 4,
+          title: "GATE OS Important Questions",
+          subject: "Operating Systems",
+          exam: "GATE",
+          type: "practice",
+          icon: "✍️",
+          bg: "rgba(168,85,247,.15)",
+          desc: "Scheduling, Deadlocks, Memory — 50 important questions",
+        },
+        {
+          id: 5,
+          title: "NPTEL Computer Networks Lectures",
+          subject: "Computer Networks",
+          exam: "GATE",
+          type: "videos",
+          icon: "🎥",
+          bg: "rgba(249,115,22,.15)",
+          desc: "IIT Bombay lectures on OSI, TCP/IP, Routing protocols",
+        },
+        {
+          id: 6,
+          title: "Introduction to Algorithms (CLRS)",
+          subject: "Algorithms",
+          exam: "GATE",
+          type: "books",
+          icon: "📚",
+          bg: "rgba(34,197,94,.15)",
+          desc: "Cormen, Leiserson, Rivest, Stein — the definitive textbook",
+        },
+        {
+          id: 7,
+          title: "JEE Physics — Mechanics Formula Sheet",
+          subject: "Physics",
+          exam: "JEE",
+          type: "formula",
+          icon: "📐",
+          bg: "rgba(0,201,167,.15)",
+          desc: "Kinematics, Newton's laws, work-energy, rotational motion",
+        },
+        {
+          id: 8,
+          title: "JEE Organic Chemistry Reaction Chart",
+          subject: "Chemistry",
+          exam: "JEE",
+          type: "formula",
+          icon: "📐",
+          bg: "rgba(0,201,167,.15)",
+          desc: "Named reactions, reagents, mechanisms — visual cheat sheet",
+        },
+        {
+          id: 9,
+          title: "JEE Mathematics — Calculus Notes",
+          subject: "Mathematics",
+          exam: "JEE",
+          type: "notes",
+          icon: "📓",
+          bg: "rgba(61,90,241,.15)",
+          desc: "Limits, Derivatives, Integration with solved examples",
+        },
+        {
+          id: 10,
+          title: "JEE Advanced 10-Year Solved Papers",
+          subject: "All Subjects",
+          exam: "JEE",
+          type: "practice",
+          icon: "✍️",
+          bg: "rgba(168,85,247,.15)",
+          desc: "2014–2023 solved papers with detailed solutions",
+        },
+        {
+          id: 11,
+          title: "HC Verma — Concepts of Physics",
+          subject: "Physics",
+          exam: "JEE",
+          type: "books",
+          icon: "📚",
+          bg: "rgba(34,197,94,.15)",
+          desc: "Volume 1 & 2 — most recommended JEE Physics book",
+        },
+        {
+          id: 12,
+          title: "Khan Academy Physics Video Series",
+          subject: "Physics",
+          exam: "JEE",
+          type: "videos",
+          icon: "🎥",
+          bg: "rgba(249,115,22,.15)",
+          desc: "Clear explanations of mechanics, thermodynamics, electromagnetism",
+        },
+        {
+          id: 13,
+          title: "UPSC Polity — Laxmikant Summary Notes",
+          subject: "Polity",
+          exam: "UPSC",
+          type: "notes",
+          icon: "📓",
+          bg: "rgba(61,90,241,.15)",
+          desc: "Chapter-wise notes — Constitution, Preamble, Parliament",
+        },
+        {
+          id: 14,
+          title: "UPSC Geography — NCERT Summary",
+          subject: "Geography",
+          exam: "UPSC",
+          type: "notes",
+          icon: "📓",
+          bg: "rgba(61,90,241,.15)",
+          desc: "Physical and Human Geography — consolidated from NCERT",
+        },
+        {
+          id: 15,
+          title: "UPSC Current Affairs Monthly Compilation",
+          subject: "Current Affairs",
+          exam: "UPSC",
+          type: "practice",
+          icon: "✍️",
+          bg: "rgba(168,85,247,.15)",
+          desc: "Monthly PDF with MCQs — updated regularly",
+        },
+        {
+          id: 16,
+          title: "UPSC Prelims Question Frequency Analysis",
+          subject: "GS Paper 1",
+          exam: "UPSC",
+          type: "formula",
+          icon: "📐",
+          bg: "rgba(0,201,167,.15)",
+          desc: "Topic-wise frequency from 2010–2023 Prelims papers",
+        },
+        {
+          id: 17,
+          title: "NEET Biology — NCERT Line by Line Notes",
+          subject: "Biology",
+          exam: "NEET",
+          type: "notes",
+          icon: "📓",
+          bg: "rgba(61,90,241,.15)",
+          desc: "Complete NCERT Biology notes — every important line highlighted",
+        },
+        {
+          id: 18,
+          title: "NEET Chemistry Formula Booklet",
+          subject: "Chemistry",
+          exam: "NEET",
+          type: "formula",
+          icon: "📐",
+          bg: "rgba(0,201,167,.15)",
+          desc: "Organic, Inorganic, Physical Chemistry — all formulas",
+        },
+        {
+          id: 19,
+          title: "NEET Biology Chapter-wise MCQs",
+          subject: "Biology",
+          exam: "NEET",
+          type: "practice",
+          icon: "✍️",
+          bg: "rgba(168,85,247,.15)",
+          desc: "5000+ MCQs chapter-wise with NCERT line references",
+        },
+        {
+          id: 20,
+          title: "NCERT Exemplar — Chemistry Solutions",
+          subject: "Chemistry",
+          exam: "NEET",
+          type: "books",
+          icon: "📚",
+          bg: "rgba(34,197,94,.15)",
+          desc: "NCERT Exemplar problems and solutions for Chemistry",
+        },
+      ];
 
-let currentExam="",currentType="all";
-const typeBadge={notes:"b-indigo",formula:"b-teal",videos:"b-orange",books:"b-green",practice:"b-purple"};
+      let currentExam = "",
+        currentType = "all";
+      const typeBadge = {
+        notes: "b-indigo",
+        formula: "b-teal",
+        videos: "b-orange",
+        books: "b-green",
+        practice: "b-purple",
+      };
 
-function renderResources(){
-  let filtered=RESOURCES;
-  if(currentExam)filtered=filtered.filter(r=>r.exam===currentExam);
-  if(currentType!=="all")filtered=filtered.filter(r=>r.type===currentType);
+      function renderResources() {
+        let filtered = RESOURCES;
+        if (currentExam)
+          filtered = filtered.filter((r) => r.exam === currentExam);
+        if (currentType !== "all")
+          filtered = filtered.filter((r) => r.type === currentType);
 
-  if(!filtered.length){document.getElementById("res-grid").innerHTML=emptyHTML("📦","No resources match. Try clearing filters.");return;}
+        if (!filtered.length) {
+          document.getElementById("res-grid").innerHTML = emptyHTML(
+            "📦",
+            "No resources match. Try clearing filters.",
+          );
+          return;
+        }
 
-  // Group by subject
-  const grouped={};filtered.forEach(r=>{if(!grouped[r.subject])grouped[r.subject]=[];grouped[r.subject].push(r);});
+        // Group by subject
+        const grouped = {};
+        filtered.forEach((r) => {
+          if (!grouped[r.subject]) grouped[r.subject] = [];
+          grouped[r.subject].push(r);
+        });
 
-  document.getElementById("res-grid").innerHTML="";
-  Object.entries(grouped).forEach(([subj,items])=>{
-    const section=document.createElement("div");
-    section.style.cssText="grid-column:1/-1;margin-bottom:4px;";
-    section.innerHTML=`<div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:12px;display:flex;align-items:center;gap:10px">${subj} <span class="badge b-muted">${items.length}</span></div>`;
-    const grid=document.createElement("div");
-    grid.className="ga";
-    grid.innerHTML=items.map(r=>`
+        document.getElementById("res-grid").innerHTML = "";
+        Object.entries(grouped).forEach(([subj, items]) => {
+          const section = document.createElement("div");
+          section.style.cssText = "grid-column:1/-1;margin-bottom:4px;";
+          section.innerHTML = `<div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:12px;display:flex;align-items:center;gap:10px">${subj} <span class="badge b-muted">${items.length}</span></div>`;
+          const grid = document.createElement("div");
+          grid.className = "ga";
+          grid.innerHTML = items
+            .map(
+              (r) => `
       <div class="res-card glow-card">
         <div class="res-icon" style="background:${r.bg}">${r.icon}</div>
         <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;margin-bottom:6px">${r.title}</div>
         <div style="font-size:.82rem;color:var(--text2);line-height:1.6;margin-bottom:12px">${r.desc}</div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          <span class="badge ${typeBadge[r.type]||'b-muted'}">${r.type}</span>
+          <span class="badge ${typeBadge[r.type] || "b-muted"}">${r.type}</span>
           <span class="badge b-muted">${r.exam}</span>
         </div>
         <a href="#" class="btn btn-ghost btn-sm btn-full" style="margin-top:12px">📥 Download / Open</a>
-      </div>`).join("");
-    const wrap=document.getElementById("res-grid");
-    wrap.appendChild(section);
-    wrap.appendChild(grid);
-  });
-}
+      </div>`,
+            )
+            .join("");
+          const wrap = document.getElementById("res-grid");
+          wrap.appendChild(section);
+          wrap.appendChild(grid);
+        });
+      }
 
-function switchTab(tab,btn){currentType=tab;document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");renderResources();}
-function filterExam(exam,pill){currentExam=exam;document.querySelectorAll(".fpill").forEach(p=>p.classList.remove("active"));pill.classList.add("active");renderResources();}
+      function switchTab(tab, btn) {
+        currentType = tab;
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderResources();
+      }
+      function filterExam(exam, pill) {
+        currentExam = exam;
+        document
+          .querySelectorAll(".fpill")
+          .forEach((p) => p.classList.remove("active"));
+        pill.classList.add("active");
+        renderResources();
+      }
 
-renderResources();
-</script>
-</body>
+      renderResources();
+    </script>
+  </body>
 </html>

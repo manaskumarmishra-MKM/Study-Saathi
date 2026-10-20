@@ -1,222 +1,324 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Study Planner – StudySaathi</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Study Planner – StudySaathi</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- ── TOP NAV ──────────────────────────────────────────────── -->
+    <nav class="topnav">
+      <a class="topnav-logo" href="dashboard.html"
+        ><span class="mark">✦</span> StudySaathi</a
+      >
+      <div class="topnav-links">
+        <span style="font-size: 0.82rem; color: var(--muted)"
+          >Hello,
+          <strong id="nav-user-name" style="color: #fff">—</strong></span
+        >
+        <a href="dashboard.html">Dashboard</a>
+        <a href="planner.html" class="active">Planner</a>
+        <a href="progress.html">Progress</a>
+        <a href="profile.html">Profile</a>
+        <button class="btn btn-ghost btn-sm" onclick="logout()">Logout</button>
+      </div>
+    </nav>
 
-<!-- ── TOP NAV ──────────────────────────────────────────────── -->
-<nav class="topnav">
-  <a class="topnav-logo" href="dashboard.html"><span class="mark">✦</span> StudySaathi</a>
-  <div class="topnav-links">
-    <span style="font-size:.82rem;color:var(--muted)">Hello, <strong id="nav-user-name" style="color:#fff">—</strong></span>
-    <a href="dashboard.html">Dashboard</a>
-    <a href="planner.html" class="active">Planner</a>
-    <a href="progress.html">Progress</a>
-    <a href="profile.html">Profile</a>
-    <button class="btn btn-ghost btn-sm" onclick="logout()">Logout</button>
-  </div>
-</nav>
+    <!-- ── SIDEBAR ──────────────────────────────────────────────── -->
+    <aside class="sidebar">
+      <div class="sidebar-label">Navigation</div>
+      <a class="sidebar-item" href="dashboard.html"
+        ><span class="si-icon">🏠</span> Dashboard</a
+      >
+      <a class="sidebar-item active" href="planner.html"
+        ><span class="si-icon">📅</span> Study Planner</a
+      >
+      <a class="sidebar-item" href="progress.html"
+        ><span class="si-icon">📈</span> Progress</a
+      >
+      <a class="sidebar-item" href="profile.html"
+        ><span class="si-icon">👤</span> Profile</a
+      >
+      <div class="sidebar-label">Planner Actions</div>
+      <div class="sidebar-item" onclick="showTab('subjects')">
+        <span class="si-icon">📚</span> Subjects
+      </div>
+      <div class="sidebar-item" onclick="showTab('generate')">
+        <span class="si-icon">🧠</span> Generate Plan
+      </div>
+      <div class="sidebar-item" onclick="showTab('saved')">
+        <span class="si-icon">💾</span> Saved Plans
+      </div>
+    </aside>
 
-<!-- ── SIDEBAR ──────────────────────────────────────────────── -->
-<aside class="sidebar">
-  <div class="sidebar-label">Navigation</div>
-  <a class="sidebar-item" href="dashboard.html"><span class="si-icon">🏠</span> Dashboard</a>
-  <a class="sidebar-item active" href="planner.html"><span class="si-icon">📅</span> Study Planner</a>
-  <a class="sidebar-item" href="progress.html"><span class="si-icon">📈</span> Progress</a>
-  <a class="sidebar-item" href="profile.html"><span class="si-icon">👤</span> Profile</a>
-  <div class="sidebar-label">Planner Actions</div>
-  <div class="sidebar-item" onclick="showTab('subjects')"><span class="si-icon">📚</span> Subjects</div>
-  <div class="sidebar-item" onclick="showTab('generate')"><span class="si-icon">🧠</span> Generate Plan</div>
-  <div class="sidebar-item" onclick="showTab('saved')"><span class="si-icon">💾</span> Saved Plans</div>
-</aside>
+    <!-- ── MAIN ─────────────────────────────────────────────────── -->
+    <main class="main-content">
+      <div class="page-body">
+        <div class="page-header">
+          <div>
+            <h2>Study Planner</h2>
+            <p>
+              Manage subjects, add topics, and generate your personalised study
+              schedule
+            </p>
+          </div>
+          <!-- Tab buttons -->
+          <div style="display: flex; gap: 8px; flex-wrap: wrap">
+            <button
+              class="btn btn-ghost btn-sm tab-btn active"
+              onclick="showTab('subjects')"
+              data-tab="subjects"
+            >
+              📚 Subjects
+            </button>
+            <button
+              class="btn btn-ghost btn-sm tab-btn"
+              onclick="showTab('generate')"
+              data-tab="generate"
+            >
+              🧠 Generate Plan
+            </button>
+            <button
+              class="btn btn-ghost btn-sm tab-btn"
+              onclick="showTab('saved')"
+              data-tab="saved"
+            >
+              💾 Saved Plans
+            </button>
+          </div>
+        </div>
 
-<!-- ── MAIN ─────────────────────────────────────────────────── -->
-<main class="main-content">
-<div class="page-body">
-
-  <div class="page-header">
-    <div>
-      <h2>Study Planner</h2>
-      <p>Manage subjects, add topics, and generate your personalised study schedule</p>
-    </div>
-    <!-- Tab buttons -->
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-ghost btn-sm tab-btn active" onclick="showTab('subjects')" data-tab="subjects">📚 Subjects</button>
-      <button class="btn btn-ghost btn-sm tab-btn" onclick="showTab('generate')" data-tab="generate">🧠 Generate Plan</button>
-      <button class="btn btn-ghost btn-sm tab-btn" onclick="showTab('saved')" data-tab="saved">💾 Saved Plans</button>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════════════════════
+        <!-- ══════════════════════════════════════════════════════
        TAB 1: SUBJECTS
   ═══════════════════════════════════════════════════════ -->
-  <div id="tab-subjects">
+        <div id="tab-subjects">
+          <!-- Add Subject form -->
+          <div class="card" style="margin-bottom: 22px">
+            <div class="card-title">➕ Add New Subject</div>
+            <div
+              style="
+                display: flex;
+                gap: 12px;
+                align-items: flex-end;
+                flex-wrap: wrap;
+              "
+            >
+              <div
+                class="form-group"
+                style="flex: 1; min-width: 160px; margin: 0"
+              >
+                <label>Subject Name</label>
+                <input
+                  type="text"
+                  id="new-subj-name"
+                  placeholder="e.g. Mathematics"
+                />
+              </div>
+              <button class="btn btn-teal" onclick="addSubject()">
+                Add Subject
+              </button>
+            </div>
+          </div>
 
-    <!-- Add Subject form -->
-    <div class="card" style="margin-bottom:22px">
-      <div class="card-title">➕ Add New Subject</div>
-      <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
-        <div class="form-group" style="flex:1;min-width:160px;margin:0">
-          <label>Subject Name</label>
-          <input type="text" id="new-subj-name" placeholder="e.g. Mathematics">
+          <!-- Subjects list -->
+          <div id="subjects-container">
+            <div class="loading-row">
+              <div class="spinner"></div>
+              Loading subjects…
+            </div>
+          </div>
         </div>
-        <button class="btn btn-teal" onclick="addSubject()">Add Subject</button>
-      </div>
-    </div>
 
-    <!-- Subjects list -->
-    <div id="subjects-container">
-      <div class="loading-row"><div class="spinner"></div> Loading subjects…</div>
-    </div>
-
-  </div>
-
-  <!-- ══════════════════════════════════════════════════════
+        <!-- ══════════════════════════════════════════════════════
        TAB 2: GENERATE PLAN
   ═══════════════════════════════════════════════════════ -->
-  <div id="tab-generate" style="display:none">
+        <div id="tab-generate" style="display: none">
+          <div class="grid-2" style="align-items: start">
+            <!-- Form -->
+            <div class="card">
+              <div class="card-title">🧠 Generate Your Study Plan</div>
 
-    <div class="grid-2" style="align-items:start">
+              <div class="form-group">
+                <label>Exam Date</label>
+                <input type="date" id="gen-exam-date" />
+              </div>
+              <div class="form-group">
+                <label>Free Study Hours Per Day</label>
+                <input
+                  type="number"
+                  id="gen-hours"
+                  placeholder="e.g. 5"
+                  min="1"
+                  max="14"
+                  step="0.5"
+                  value="5"
+                />
+              </div>
+              <div class="form-group">
+                <label>Study Style</label>
+                <select id="gen-style">
+                  <option value="deep">Deep Work (90 min blocks)</option>
+                  <option value="pomodoro">Pomodoro (25 min + 5 break)</option>
+                  <option value="flexible">Flexible Timing</option>
+                </select>
+              </div>
 
-      <!-- Form -->
-      <div class="card">
-        <div class="card-title">🧠 Generate Your Study Plan</div>
+              <!-- Subject difficulty picker (populated from user's subjects) -->
+              <div class="form-group">
+                <label>Select Subjects & Set Difficulty</label>
+                <div id="gen-subjects-picker">
+                  <div class="loading-row"><div class="spinner"></div></div>
+                </div>
+              </div>
 
-        <div class="form-group">
-          <label>Exam Date</label>
-          <input type="date" id="gen-exam-date">
-        </div>
-        <div class="form-group">
-          <label>Free Study Hours Per Day</label>
-          <input type="number" id="gen-hours" placeholder="e.g. 5" min="1" max="14" step="0.5" value="5">
-        </div>
-        <div class="form-group">
-          <label>Study Style</label>
-          <select id="gen-style">
-            <option value="deep">Deep Work (90 min blocks)</option>
-            <option value="pomodoro">Pomodoro (25 min + 5 break)</option>
-            <option value="flexible">Flexible Timing</option>
-          </select>
-        </div>
+              <button
+                class="btn btn-teal btn-full btn-lg"
+                id="gen-btn"
+                onclick="generatePlan()"
+              >
+                🧠 Generate My Plan →
+              </button>
+            </div>
 
-        <!-- Subject difficulty picker (populated from user's subjects) -->
-        <div class="form-group">
-          <label>Select Subjects & Set Difficulty</label>
-          <div id="gen-subjects-picker">
-            <div class="loading-row"><div class="spinner"></div></div>
+            <!-- Output -->
+            <div id="plan-output-col">
+              <div class="card">
+                <div class="card-title">📅 Your Plan Will Appear Here</div>
+                <div
+                  style="
+                    text-align: center;
+                    padding: 40px 20px;
+                    color: var(--muted);
+                  "
+                >
+                  <div style="font-size: 2rem; margin-bottom: 10px">🗓</div>
+                  <p style="font-size: 0.88rem">
+                    Fill in the form and click Generate to see your personalised
+                    daily schedule.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <button class="btn btn-teal btn-full btn-lg" id="gen-btn" onclick="generatePlan()">
-          🧠 Generate My Plan →
-        </button>
-      </div>
-
-      <!-- Output -->
-      <div id="plan-output-col">
-        <div class="card">
-          <div class="card-title">📅 Your Plan Will Appear Here</div>
-          <div style="text-align:center;padding:40px 20px;color:var(--muted)">
-            <div style="font-size:2rem;margin-bottom:10px">🗓</div>
-            <p style="font-size:.88rem">Fill in the form and click Generate to see your personalised daily schedule.</p>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════════════════════
+        <!-- ══════════════════════════════════════════════════════
        TAB 3: SAVED PLANS
   ═══════════════════════════════════════════════════════ -->
-  <div id="tab-saved" style="display:none">
-    <div class="card">
-      <div class="card-title">💾 Your Saved Plans</div>
-      <div id="saved-plans-list">
-        <div class="loading-row"><div class="spinner"></div></div>
+        <div id="tab-saved" style="display: none">
+          <div class="card">
+            <div class="card-title">💾 Your Saved Plans</div>
+            <div id="saved-plans-list">
+              <div class="loading-row"><div class="spinner"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-footer">© Manas Kumar Mishra. All rights reserved.</div>
+    </main>
+
+    <!-- ── ADD TOPIC MODAL ───────────────────────────────────────── -->
+    <div class="modal-overlay" id="topic-modal">
+      <div class="modal">
+        <h3>
+          📖 Add Topic to
+          <span id="modal-subj-name" style="color: var(--teal)"></span>
+        </h3>
+        <input type="hidden" id="modal-subj-id" />
+        <div class="form-group">
+          <label>Topic / Chapter Name</label>
+          <input
+            type="text"
+            id="m-topic-name"
+            placeholder="e.g. Differential Calculus"
+          />
+        </div>
+        <div class="form-group">
+          <label>Difficulty</label>
+          <select id="m-topic-diff">
+            <option>Easy</option>
+            <option selected>Medium</option>
+            <option>Hard</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-ghost" onclick="closeModal('topic-modal')">
+            Cancel
+          </button>
+          <button class="btn btn-teal" id="topic-save-btn" onclick="addTopic()">
+            Add Topic
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
-</div>
-<div class="page-footer">© Manas Kumar Mishra. All rights reserved.</div>
-</main>
-
-<!-- ── ADD TOPIC MODAL ───────────────────────────────────────── -->
-<div class="modal-overlay" id="topic-modal">
-  <div class="modal">
-    <h3>📖 Add Topic to <span id="modal-subj-name" style="color:var(--teal)"></span></h3>
-    <input type="hidden" id="modal-subj-id">
-    <div class="form-group">
-      <label>Topic / Chapter Name</label>
-      <input type="text" id="m-topic-name" placeholder="e.g. Differential Calculus">
+    <!-- ── VIEW PLAN MODAL ───────────────────────────────────────── -->
+    <div
+      class="modal-overlay"
+      id="view-plan-modal"
+      style="align-items: flex-start; padding-top: 80px"
+    >
+      <div
+        class="modal"
+        style="max-width: 700px; max-height: 80vh; overflow-y: auto"
+      >
+        <h3>📅 Saved Plan Details</h3>
+        <div id="saved-plan-detail"></div>
+        <div class="modal-footer">
+          <button class="btn btn-ghost" onclick="closeModal('view-plan-modal')">
+            Close
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="form-group">
-      <label>Difficulty</label>
-      <select id="m-topic-diff">
-        <option>Easy</option><option selected>Medium</option><option>Hard</option>
-      </select>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('topic-modal')">Cancel</button>
-      <button class="btn btn-teal" id="topic-save-btn" onclick="addTopic()">Add Topic</button>
-    </div>
-  </div>
-</div>
 
-<!-- ── VIEW PLAN MODAL ───────────────────────────────────────── -->
-<div class="modal-overlay" id="view-plan-modal" style="align-items:flex-start;padding-top:80px">
-  <div class="modal" style="max-width:700px;max-height:80vh;overflow-y:auto">
-    <h3>📅 Saved Plan Details</h3>
-    <div id="saved-plan-detail"></div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('view-plan-modal')">Close</button>
-    </div>
-  </div>
-</div>
+    <script src="script.js"></script>
+    <script>
+      requireAuth();
 
-<script src="script.js"></script>
-<script>
-  requireAuth();
+      let allSubjects = []; // cached from API
 
-  let allSubjects = [];   // cached from API
+      // ── Tab switcher ──────────────────────────────────────────────
+      function showTab(tab) {
+        ["subjects", "generate", "saved"].forEach((t) => {
+          document.getElementById("tab-" + t).style.display =
+            t === tab ? "block" : "none";
+        });
+        document.querySelectorAll(".tab-btn").forEach((b) => {
+          b.classList.toggle("active", b.dataset.tab === tab);
+        });
+        // Lazy load
+        if (tab === "generate") loadSubjectsPicker();
+        if (tab === "saved") loadSavedPlans();
+      }
 
-  // ── Tab switcher ──────────────────────────────────────────────
-  function showTab(tab) {
-    ["subjects","generate","saved"].forEach(t => {
-      document.getElementById("tab-" + t).style.display = t === tab ? "block" : "none";
-    });
-    document.querySelectorAll(".tab-btn").forEach(b => {
-      b.classList.toggle("active", b.dataset.tab === tab);
-    });
-    // Lazy load
-    if (tab === "generate") loadSubjectsPicker();
-    if (tab === "saved")    loadSavedPlans();
-  }
+      // ── Load subjects ─────────────────────────────────────────────
+      async function loadSubjects() {
+        try {
+          const data = await API.get("/subjects/");
+          allSubjects = data.subjects;
+          renderSubjects(allSubjects);
+        } catch (err) {
+          document.getElementById("subjects-container").innerHTML = emptyState(
+            "📚",
+            "Could not load subjects.",
+          );
+        }
+      }
 
-  // ── Load subjects ─────────────────────────────────────────────
-  async function loadSubjects() {
-    try {
-      const data = await API.get("/subjects/");
-      allSubjects = data.subjects;
-      renderSubjects(allSubjects);
-    } catch(err) {
-      document.getElementById("subjects-container").innerHTML =
-        emptyState("📚", "Could not load subjects.");
-    }
-  }
-
-  function renderSubjects(subjects) {
-    const wrap = document.getElementById("subjects-container");
-    if (!subjects.length) {
-      wrap.innerHTML = emptyState("📚", "No subjects yet. Add your first subject above!");
-      return;
-    }
-    wrap.innerHTML = subjects.map((s,i) => `
+      function renderSubjects(subjects) {
+        const wrap = document.getElementById("subjects-container");
+        if (!subjects.length) {
+          wrap.innerHTML = emptyState(
+            "📚",
+            "No subjects yet. Add your first subject above!",
+          );
+          return;
+        }
+        wrap.innerHTML = subjects
+          .map(
+            (s, i) => `
       <div class="card" style="margin-bottom:16px">
         <div class="card-title">
           <span>
@@ -227,18 +329,22 @@
           </span>
           <div style="display:flex;gap:8px">
             <button class="btn btn-ghost btn-sm"
-              onclick="openTopicModal(${s.id},'${s.subject_name.replace(/'/g,"\\'")}')">+ Add Topic</button>
+              onclick="openTopicModal(${s.id},'${s.subject_name.replace(/'/g, "\\'")}')">+ Add Topic</button>
             <button class="btn btn-danger btn-sm" onclick="deleteSubject(${s.id})">Delete</button>
           </div>
         </div>
 
-        ${s.topics.length ? `
+        ${
+          s.topics.length
+            ? `
           <table class="data-table">
             <thead><tr>
               <th>Topic</th><th>Difficulty</th><th>Status</th><th>Action</th>
             </tr></thead>
             <tbody>
-              ${s.topics.map(t => `
+              ${s.topics
+                .map(
+                  (t) => `
                 <tr id="topic-row-${t.id}">
                   <td>${t.topic_name}</td>
                   <td>${badgeHTML(t.difficulty, DIFFICULTY_MAP)}</td>
@@ -250,89 +356,121 @@
                     </button>
                     <button class="btn btn-danger btn-sm" onclick="deleteTopic(${t.id})">✕</button>
                   </td>
-                </tr>`).join("")}
+                </tr>`,
+                )
+                .join("")}
             </tbody>
-          </table>` : `<p style="font-size:.85rem;color:var(--muted);padding:8px 0">No topics yet — add some above.</p>`}
-      </div>`).join("");
-  }
-
-  // ── Add subject ───────────────────────────────────────────────
-  async function addSubject() {
-    const name = document.getElementById("new-subj-name").value.trim();
-    if (!name) { showToast("Enter a subject name","error"); return; }
-    try {
-      await API.post("/subjects/", { subject_name: name });
-      document.getElementById("new-subj-name").value = "";
-      showToast("📚 Subject added!");
-      loadSubjects();
-    } catch(err) { showToast(err.message,"error"); }
-  }
-
-  // ── Delete subject ────────────────────────────────────────────
-  async function deleteSubject(id) {
-    if (!confirm("Delete this subject and all its topics?")) return;
-    try {
-      await API.del(`/subjects/${id}`);
-      showToast("Subject deleted");
-      loadSubjects();
-    } catch(err) { showToast(err.message,"error"); }
-  }
-
-  // ── Open topic modal ──────────────────────────────────────────
-  function openTopicModal(subjectId, subjectName) {
-    document.getElementById("modal-subj-id").value   = subjectId;
-    document.getElementById("modal-subj-name").textContent = subjectName;
-    document.getElementById("m-topic-name").value    = "";
-    openModal("topic-modal");
-  }
-
-  // ── Add topic ─────────────────────────────────────────────────
-  async function addTopic() {
-    const subject_id = document.getElementById("modal-subj-id").value;
-    const topic_name = document.getElementById("m-topic-name").value.trim();
-    const difficulty = document.getElementById("m-topic-diff").value;
-    if (!topic_name) { showToast("Enter topic name","error"); return; }
-    const btn = document.getElementById("topic-save-btn");
-    setLoading(btn, true);
-    try {
-      await API.post(`/subjects/${subject_id}/topics`, { topic_name, difficulty });
-      closeModal("topic-modal");
-      showToast("Topic added!");
-      loadSubjects();
-    } catch(err) { showToast(err.message,"error"); }
-    finally { setLoading(btn, false); }
-  }
-
-  // ── Toggle topic complete ─────────────────────────────────────
-  async function toggleTopic(id, currentCompleted) {
-    try {
-      await API.patch(`/subjects/topics/${id}`, { completed: !currentCompleted });
-      showToast(currentCompleted ? "Topic marked pending" : "✅ Topic completed!");
-      loadSubjects();
-    } catch(err) { showToast(err.message,"error"); }
-  }
-
-  // ── Delete topic ──────────────────────────────────────────────
-  async function deleteTopic(id) {
-    try {
-      await API.del(`/subjects/topics/${id}`);
-      showToast("Topic deleted");
-      loadSubjects();
-    } catch(err) { showToast(err.message,"error"); }
-  }
-
-  // ── Load subjects picker for plan generator ───────────────────
-  async function loadSubjectsPicker() {
-    const wrap = document.getElementById("gen-subjects-picker");
-    try {
-      const data = await API.get("/subjects/");
-      allSubjects = data.subjects;
-      if (!allSubjects.length) {
-        wrap.innerHTML = `<p style="font-size:.85rem;color:var(--muted)">
-          No subjects found. <a href="#" onclick="showTab('subjects')" style="color:var(--teal)">Add subjects first →</a></p>`;
-        return;
+          </table>`
+            : `<p style="font-size:.85rem;color:var(--muted);padding:8px 0">No topics yet — add some above.</p>`
+        }
+      </div>`,
+          )
+          .join("");
       }
-      wrap.innerHTML = allSubjects.map(s => `
+
+      // ── Add subject ───────────────────────────────────────────────
+      async function addSubject() {
+        const name = document.getElementById("new-subj-name").value.trim();
+        if (!name) {
+          showToast("Enter a subject name", "error");
+          return;
+        }
+        try {
+          await API.post("/subjects/", { subject_name: name });
+          document.getElementById("new-subj-name").value = "";
+          showToast("📚 Subject added!");
+          loadSubjects();
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      }
+
+      // ── Delete subject ────────────────────────────────────────────
+      async function deleteSubject(id) {
+        if (!confirm("Delete this subject and all its topics?")) return;
+        try {
+          await API.del(`/subjects/${id}`);
+          showToast("Subject deleted");
+          loadSubjects();
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      }
+
+      // ── Open topic modal ──────────────────────────────────────────
+      function openTopicModal(subjectId, subjectName) {
+        document.getElementById("modal-subj-id").value = subjectId;
+        document.getElementById("modal-subj-name").textContent = subjectName;
+        document.getElementById("m-topic-name").value = "";
+        openModal("topic-modal");
+      }
+
+      // ── Add topic ─────────────────────────────────────────────────
+      async function addTopic() {
+        const subject_id = document.getElementById("modal-subj-id").value;
+        const topic_name = document.getElementById("m-topic-name").value.trim();
+        const difficulty = document.getElementById("m-topic-diff").value;
+        if (!topic_name) {
+          showToast("Enter topic name", "error");
+          return;
+        }
+        const btn = document.getElementById("topic-save-btn");
+        setLoading(btn, true);
+        try {
+          await API.post(`/subjects/${subject_id}/topics`, {
+            topic_name,
+            difficulty,
+          });
+          closeModal("topic-modal");
+          showToast("Topic added!");
+          loadSubjects();
+        } catch (err) {
+          showToast(err.message, "error");
+        } finally {
+          setLoading(btn, false);
+        }
+      }
+
+      // ── Toggle topic complete ─────────────────────────────────────
+      async function toggleTopic(id, currentCompleted) {
+        try {
+          await API.patch(`/subjects/topics/${id}`, {
+            completed: !currentCompleted,
+          });
+          showToast(
+            currentCompleted ? "Topic marked pending" : "✅ Topic completed!",
+          );
+          loadSubjects();
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      }
+
+      // ── Delete topic ──────────────────────────────────────────────
+      async function deleteTopic(id) {
+        try {
+          await API.del(`/subjects/topics/${id}`);
+          showToast("Topic deleted");
+          loadSubjects();
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      }
+
+      // ── Load subjects picker for plan generator ───────────────────
+      async function loadSubjectsPicker() {
+        const wrap = document.getElementById("gen-subjects-picker");
+        try {
+          const data = await API.get("/subjects/");
+          allSubjects = data.subjects;
+          if (!allSubjects.length) {
+            wrap.innerHTML = `<p style="font-size:.85rem;color:var(--muted)">
+          No subjects found. <a href="#" onclick="showTab('subjects')" style="color:var(--teal)">Add subjects first →</a></p>`;
+            return;
+          }
+          wrap.innerHTML = allSubjects
+            .map(
+              (s) => `
         <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
           <input type="checkbox" id="subj-cb-${s.id}" value="${s.subject_name}" checked
                  style="width:16px;height:16px;accent-color:var(--teal)">
@@ -340,66 +478,93 @@
           <select id="subj-diff-${s.id}" style="width:110px;padding:6px 10px">
             <option>Easy</option><option selected>Medium</option><option>Hard</option>
           </select>
-        </div>`).join("");
-    } catch(_) {
-      wrap.innerHTML = `<p style="color:var(--muted);font-size:.85rem">Could not load subjects.</p>`;
-    }
-  }
+        </div>`,
+            )
+            .join("");
+        } catch (_) {
+          wrap.innerHTML = `<p style="color:var(--muted);font-size:.85rem">Could not load subjects.</p>`;
+        }
+      }
 
-  // ── Generate plan ─────────────────────────────────────────────
-  async function generatePlan() {
-    const exam_date   = document.getElementById("gen-exam-date").value;
-    const daily_hours = parseFloat(document.getElementById("gen-hours").value);
+      // ── Generate plan ─────────────────────────────────────────────
+      async function generatePlan() {
+        const exam_date = document.getElementById("gen-exam-date").value;
+        const daily_hours = parseFloat(
+          document.getElementById("gen-hours").value,
+        );
 
-    if (!exam_date) { showToast("Select an exam date","error"); return; }
+        if (!exam_date) {
+          showToast("Select an exam date", "error");
+          return;
+        }
 
-    // Collect selected subjects
-    const subjects = [];
-    allSubjects.forEach(s => {
-      const cb   = document.getElementById("subj-cb-" + s.id);
-      const diff = document.getElementById("subj-diff-" + s.id);
-      if (cb?.checked) subjects.push({ name: s.subject_name, difficulty: diff?.value || "Medium" });
-    });
+        // Collect selected subjects
+        const subjects = [];
+        allSubjects.forEach((s) => {
+          const cb = document.getElementById("subj-cb-" + s.id);
+          const diff = document.getElementById("subj-diff-" + s.id);
+          if (cb?.checked)
+            subjects.push({
+              name: s.subject_name,
+              difficulty: diff?.value || "Medium",
+            });
+        });
 
-    if (!subjects.length) { showToast("Select at least one subject","error"); return; }
+        if (!subjects.length) {
+          showToast("Select at least one subject", "error");
+          return;
+        }
 
-    const btn = document.getElementById("gen-btn");
-    setLoading(btn, true);
-    document.getElementById("plan-output-col").innerHTML =
-      `<div class="card"><div class="loading-row"><div class="spinner"></div> Generating your personalised plan…</div></div>`;
+        const btn = document.getElementById("gen-btn");
+        setLoading(btn, true);
+        document.getElementById("plan-output-col").innerHTML =
+          `<div class="card"><div class="loading-row"><div class="spinner"></div> Generating your personalised plan…</div></div>`;
 
-    try {
-      const data = await API.post("/planner/generate", { exam_date, daily_hours, subjects });
-      renderPlanOutput(data.plan);
-      showToast("✅ Plan generated!");
-    } catch(err) {
-      document.getElementById("plan-output-col").innerHTML =
-        `<div class="card">${emptyState("❌", err.message)}</div>`;
-      showToast(err.message,"error");
-    } finally {
-      setLoading(btn, false);
-    }
-  }
+        try {
+          const data = await API.post("/planner/generate", {
+            exam_date,
+            daily_hours,
+            subjects,
+          });
+          renderPlanOutput(data.plan);
+          showToast("✅ Plan generated!");
+        } catch (err) {
+          document.getElementById("plan-output-col").innerHTML =
+            `<div class="card">${emptyState("❌", err.message)}</div>`;
+          showToast(err.message, "error");
+        } finally {
+          setLoading(btn, false);
+        }
+      }
 
-  // ── Render generated plan ─────────────────────────────────────
-  function renderPlanOutput(plan) {
-    const col = document.getElementById("plan-output-col");
-    const dayLimit = 7; // show first 7 days, rest summarised
+      // ── Render generated plan ─────────────────────────────────────
+      function renderPlanOutput(plan) {
+        const col = document.getElementById("plan-output-col");
+        const dayLimit = 7; // show first 7 days, rest summarised
 
-    const aiHTML = plan.ai_suggestions.map(s => `
+        const aiHTML = plan.ai_suggestions
+          .map(
+            (s) => `
       <div class="suggestion-card sug-ok" style="margin-bottom:8px">
         <div class="su-msg">💡 ${s}</div>
-      </div>`).join("");
+      </div>`,
+          )
+          .join("");
 
-    const daysHTML = plan.days.slice(0, dayLimit).map(day => `
+        const daysHTML = plan.days
+          .slice(0, dayLimit)
+          .map(
+            (day) => `
       <div style="margin-bottom:18px">
         <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;
                     color:var(--teal);margin-bottom:8px">${day.label || day.date}
           ${day.label?.includes("Revision") ? '<span class="badge badge-teal" style="margin-left:8px">Revision</span>' : ""}
         </div>
-        ${day.slots.map(slot => `
+        ${day.slots
+          .map(
+            (slot) => `
           <div class="time-block">
-            <div class="tb-time">${slot.start}${slot.end&&slot.end!=='...' ? '<br><small style="font-size:.7rem">→ '+slot.end+'</small>' : ''}</div>
+            <div class="tb-time">${slot.start}${slot.end && slot.end !== "..." ? '<br><small style="font-size:.7rem">→ ' + slot.end + "</small>" : ""}</div>
             <div class="tb-content ${slot.type}">
               <div class="tb-subject">
                 ${slot.type === "break" ? "☕ " : slot.type === "revision" ? "🔄 " : "📖 "}
@@ -408,12 +573,16 @@
               </div>
               ${slot.tip ? `<div class="tb-detail">${slot.tip}</div>` : ""}
             </div>
-          </div>`).join("")}
-      </div>`).join("");
+          </div>`,
+          )
+          .join("")}
+      </div>`,
+          )
+          .join("");
 
-    const remaining = plan.days.length - dayLimit;
+        const remaining = plan.days.length - dayLimit;
 
-    col.innerHTML = `
+        col.innerHTML = `
       <div class="card" style="margin-bottom:16px">
         <div class="card-title">📅 Your ${plan.total_study_days}-Day Study Plan</div>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px">
@@ -424,74 +593,94 @@
         </div>
         <div style="margin-bottom:16px">${aiHTML}</div>
         ${daysHTML}
-        ${remaining > 0 ? `<p style="text-align:center;color:var(--muted);font-size:.85rem;padding:12px 0">
-          + ${remaining} more days saved. <a style="color:var(--teal);cursor:pointer" onclick="showTab('saved')">View in Saved Plans →</a></p>` : ""}
+        ${
+          remaining > 0
+            ? `<p style="text-align:center;color:var(--muted);font-size:.85rem;padding:12px 0">
+          + ${remaining} more days saved. <a style="color:var(--teal);cursor:pointer" onclick="showTab('saved')">View in Saved Plans →</a></p>`
+            : ""
+        }
       </div>`;
-  }
-
-  // ── Load saved plans ──────────────────────────────────────────
-  async function loadSavedPlans() {
-    const wrap = document.getElementById("saved-plans-list");
-    try {
-      const data = await API.get("/planner/plans");
-      if (!data.plans.length) {
-        wrap.innerHTML = emptyState("📅","No saved plans yet. Generate a plan to see it here!");
-        return;
       }
-      wrap.innerHTML = `
+
+      // ── Load saved plans ──────────────────────────────────────────
+      async function loadSavedPlans() {
+        const wrap = document.getElementById("saved-plans-list");
+        try {
+          const data = await API.get("/planner/plans");
+          if (!data.plans.length) {
+            wrap.innerHTML = emptyState(
+              "📅",
+              "No saved plans yet. Generate a plan to see it here!",
+            );
+            return;
+          }
+          wrap.innerHTML = `
         <table class="data-table">
           <thead><tr><th>Plan ID</th><th>Exam Date</th><th>Hours/Day</th><th>Created</th><th>Action</th></tr></thead>
           <tbody>
-            ${data.plans.map(p => `
+            ${data.plans
+              .map(
+                (p) => `
               <tr>
                 <td>#${p.id}</td>
                 <td>${formatDate(p.exam_date)}</td>
                 <td>${p.daily_hours}h</td>
                 <td>${formatDate(p.created_at?.split("T")[0] || p.created_at?.split(" ")[0])}</td>
                 <td><button class="btn btn-ghost btn-sm" onclick="viewSavedPlan(${p.id})">View →</button></td>
-              </tr>`).join("")}
+              </tr>`,
+              )
+              .join("")}
           </tbody>
         </table>`;
-    } catch(err) {
-      wrap.innerHTML = emptyState("❌", err.message);
-    }
-  }
+        } catch (err) {
+          wrap.innerHTML = emptyState("❌", err.message);
+        }
+      }
 
-  // ── View a saved plan ─────────────────────────────────────────
-  async function viewSavedPlan(id) {
-    const wrap = document.getElementById("saved-plan-detail");
-    wrap.innerHTML = `<div class="loading-row"><div class="spinner"></div></div>`;
-    openModal("view-plan-modal");
-    try {
-      const data = await API.get(`/planner/plans/${id}`);
-      const plan = data.plan;
-      wrap.innerHTML = `
+      // ── View a saved plan ─────────────────────────────────────────
+      async function viewSavedPlan(id) {
+        const wrap = document.getElementById("saved-plan-detail");
+        wrap.innerHTML = `<div class="loading-row"><div class="spinner"></div></div>`;
+        openModal("view-plan-modal");
+        try {
+          const data = await API.get(`/planner/plans/${id}`);
+          const plan = data.plan;
+          wrap.innerHTML = `
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px">
           <div class="stat-card"><div class="sc-label">Exam Date</div><div style="font-weight:700;margin-top:6px">${formatDate(plan.exam_date)}</div></div>
           <div class="stat-card"><div class="sc-label">Days Left</div><div class="sc-value" style="font-size:1.4rem">${plan.days_left}</div></div>
           <div class="stat-card"><div class="sc-label">Hours/Day</div><div class="sc-value" style="font-size:1.4rem">${plan.daily_hours}h</div></div>
         </div>
-        ${plan.ai_suggestions.map(s => `<div class="suggestion-card sug-ok" style="margin-bottom:8px"><div class="su-msg">💡 ${s}</div></div>`).join("")}
+        ${plan.ai_suggestions.map((s) => `<div class="suggestion-card sug-ok" style="margin-bottom:8px"><div class="su-msg">💡 ${s}</div></div>`).join("")}
         <div style="margin-top:16px">
-          ${plan.days.slice(0,5).map(day => `
+          ${plan.days
+            .slice(0, 5)
+            .map(
+              (day) => `
             <div style="margin-bottom:14px">
-              <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;color:var(--teal);margin-bottom:6px">${day.label||day.date}</div>
-              ${day.slots.map(s => `
+              <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;color:var(--teal);margin-bottom:6px">${day.label || day.date}</div>
+              ${day.slots
+                .map(
+                  (s) => `
                 <div style="display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:.82rem">
                   <span style="width:90px;color:var(--muted)">${s.start}</span>
                   <span>${s.subject}</span>
-                  ${s.difficulty ? badgeHTML(s.difficulty,DIFFICULTY_MAP) : ""}
-                </div>`).join("")}
-            </div>`).join("")}
-          ${plan.days.length > 5 ? `<p style="color:var(--muted);font-size:.82rem;text-align:center">+ ${plan.days.length-5} more days…</p>` : ""}
+                  ${s.difficulty ? badgeHTML(s.difficulty, DIFFICULTY_MAP) : ""}
+                </div>`,
+                )
+                .join("")}
+            </div>`,
+            )
+            .join("")}
+          ${plan.days.length > 5 ? `<p style="color:var(--muted);font-size:.82rem;text-align:center">+ ${plan.days.length - 5} more days…</p>` : ""}
         </div>`;
-    } catch(err) {
-      wrap.innerHTML = emptyState("❌", err.message);
-    }
-  }
+        } catch (err) {
+          wrap.innerHTML = emptyState("❌", err.message);
+        }
+      }
 
-  // ── Init ──────────────────────────────────────────────────────
-  loadSubjects();
-</script>
-</body>
+      // ── Init ──────────────────────────────────────────────────────
+      loadSubjects();
+    </script>
+  </body>
 </html>

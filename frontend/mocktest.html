@@ -1,129 +1,485 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" data-theme="dark">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mock Tests — StudySaathi v3</title>
-<link rel="stylesheet" href="assets/css/main.css">
-<link rel="stylesheet" href="assets/css/graphics.css">
-</head>
-<body>
-<div class="app-shell">
-  <header class="topbar"></header><nav class="sidebar"></nav>
-  <main class="main" id="main-area">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Mock Tests — StudySaathi v3</title>
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/graphics.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar"></header>
+      <nav class="sidebar"></nav>
+      <main class="main" id="main-area">
+        <!-- LIST VIEW -->
+        <div id="view-list">
+          <div class="page-header">
+            <div>
+              <div class="page-title">🧪 Mock Tests</div>
+              <div class="page-sub">
+                MCQ tests with timer, score ring, grade & topic analysis
+              </div>
+            </div>
+          </div>
+          <div
+            class="stats-grid"
+            style="grid-template-columns: repeat(4, 1fr); margin-bottom: 22px"
+          >
+            <div class="stat-card sc-teal">
+              <div class="sc-label">Tests Taken</div>
+              <div class="sc-val accent" id="mt-taken">0</div>
+            </div>
+            <div class="stat-card sc-indigo">
+              <div class="sc-label">Avg Score</div>
+              <div class="sc-val" id="mt-avg">—</div>
+            </div>
+            <div class="stat-card sc-green">
+              <div class="sc-label">Best Score</div>
+              <div class="sc-val" style="color: var(--green)" id="mt-best">
+                —
+              </div>
+            </div>
+            <div class="stat-card sc-purple">
+              <div class="sc-label">Available</div>
+              <div class="sc-val" style="color: var(--purple)" id="mt-avail">
+                0
+              </div>
+            </div>
+          </div>
+          <div class="filter-row" id="exam-filter-row">
+            <span class="fpill active" onclick="filterTests('', this)"
+              >All</span
+            >
+            <span class="fpill" onclick="filterTests('GATE', this)">GATE</span>
+            <span class="fpill" onclick="filterTests('JEE', this)">JEE</span>
+            <span class="fpill" onclick="filterTests('NEET', this)">NEET</span>
+            <span class="fpill" onclick="filterTests('UPSC', this)">UPSC</span>
+            <span class="fpill" onclick="filterTests('Engineering', this)"
+              >Engineering</span
+            >
+          </div>
+          <div class="ga" id="test-cards"></div>
+          <div class="card glow-card" style="margin-top: 24px">
+            <div class="card-title">📊 Test History</div>
+            <div id="test-history"></div>
+          </div>
+          <footer class="page-footer">
+            Copyright © Manas Kumar Mishra. All rights reserved.
+          </footer>
+        </div>
 
-    <!-- LIST VIEW -->
-    <div id="view-list">
-      <div class="page-header"><div><div class="page-title">🧪 Mock Tests</div><div class="page-sub">MCQ tests with timer, score ring, grade & topic analysis</div></div></div>
-      <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:22px">
-        <div class="stat-card sc-teal"><div class="sc-label">Tests Taken</div><div class="sc-val accent" id="mt-taken">0</div></div>
-        <div class="stat-card sc-indigo"><div class="sc-label">Avg Score</div><div class="sc-val" id="mt-avg">—</div></div>
-        <div class="stat-card sc-green"><div class="sc-label">Best Score</div><div class="sc-val" style="color:var(--green)" id="mt-best">—</div></div>
-        <div class="stat-card sc-purple"><div class="sc-label">Available</div><div class="sc-val" style="color:var(--purple)" id="mt-avail">0</div></div>
-      </div>
-      <div class="filter-row" id="exam-filter-row">
-        <span class="fpill active" onclick="filterTests('',this)">All</span>
-        <span class="fpill" onclick="filterTests('GATE',this)">GATE</span>
-        <span class="fpill" onclick="filterTests('JEE',this)">JEE</span>
-        <span class="fpill" onclick="filterTests('NEET',this)">NEET</span>
-        <span class="fpill" onclick="filterTests('UPSC',this)">UPSC</span>
-        <span class="fpill" onclick="filterTests('Engineering',this)">Engineering</span>
-      </div>
-      <div class="ga" id="test-cards"></div>
-      <div class="card glow-card" style="margin-top:24px"><div class="card-title">📊 Test History</div><div id="test-history"></div></div>
-      <footer class="page-footer">Copyright © Manas Kumar Mishra. All rights reserved.</footer>
+        <!-- TEST VIEW -->
+        <div id="view-test" style="display: none">
+          <div style="max-width: 840px; margin: 0 auto">
+            <div class="test-bar">
+              <div>
+                <div
+                  style="
+                    font-family: &quot;Syne&quot;, sans-serif;
+                    font-weight: 700;
+                    font-size: 1rem;
+                  "
+                  id="test-title-bar"
+                >
+                  Test
+                </div>
+                <div
+                  style="font-size: 0.82rem; color: var(--text2)"
+                  id="test-meta-bar"
+                >
+                  —
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px">
+                <span style="font-size: 1.1rem">⏱</span>
+                <div class="timer-disp" id="timer">00:00</div>
+              </div>
+              <button class="btn btn-danger btn-sm" onclick="confirmSubmit()">
+                Submit Test
+              </button>
+            </div>
+            <div class="card glow-card" style="margin-bottom: 18px">
+              <div
+                style="
+                  font-size: 0.78rem;
+                  color: var(--text2);
+                  margin-bottom: 10px;
+                "
+              >
+                Question Navigator
+              </div>
+              <div class="q-nav" id="q-nav"></div>
+              <div
+                style="
+                  display: flex;
+                  gap: 16px;
+                  margin-top: 10px;
+                  font-size: 0.76rem;
+                  color: var(--text2);
+                  flex-wrap: wrap;
+                "
+              >
+                <span><span style="color: var(--indigo2)">■</span> Current</span
+                ><span><span style="color: var(--green)">■</span> Answered</span
+                ><span><span style="color: var(--gold)">■</span> Marked</span
+                ><span>□ Not visited</span>
+              </div>
+            </div>
+            <div class="card glow-card" id="q-area"></div>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 18px;
+                flex-wrap: wrap;
+                gap: 10px;
+              "
+            >
+              <div style="display: flex; gap: 8px">
+                <button class="btn btn-ghost" onclick="prevQ()">
+                  ← Previous</button
+                ><button class="btn btn-ghost" onclick="markQ()">🔖 Mark</button
+                ><button class="btn btn-ghost" onclick="nextQ()">Next →</button>
+              </div>
+              <button class="btn btn-teal" onclick="confirmSubmit()">
+                Submit & Get Results
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RESULTS VIEW -->
+        <div id="view-results" style="display: none">
+          <div style="max-width: 840px; margin: 0 auto">
+            <div class="result-hero">
+              <div
+                style="
+                  font-size: 0.78rem;
+                  color: rgba(255, 255, 255, 0.55);
+                  letter-spacing: 0.5px;
+                  text-transform: uppercase;
+                  margin-bottom: 14px;
+                "
+              >
+                Your Score
+              </div>
+              <div id="score-ring"></div>
+              <div id="result-grade" style="margin-top: 14px"></div>
+              <div
+                id="result-msg"
+                style="
+                  margin-top: 8px;
+                  font-size: 0.9rem;
+                  color: rgba(255, 255, 255, 0.6);
+                "
+              ></div>
+            </div>
+            <div class="r-grid" id="r-stats"></div>
+            <div class="card glow-card" style="margin-bottom: 18px">
+              <div class="card-title">📉 Weak Topics — Revise These</div>
+              <div id="weak-list"></div>
+            </div>
+            <div class="card glow-card">
+              <div class="card-title">📋 Detailed Answer Review</div>
+              <div id="answer-review"></div>
+            </div>
+            <div
+              style="
+                display: flex;
+                gap: 10px;
+                margin-top: 20px;
+                flex-wrap: wrap;
+              "
+            >
+              <button
+                class="btn btn-teal"
+                onclick="
+                  showView('list');
+                  loadTests();
+                  loadHistory();
+                "
+              >
+                ← Back to Tests
+              </button>
+              <a href="chatbot.html?ctx=mocktest" class="btn btn-indigo"
+                >🤖 Ask AI for Help</a
+              >
+              <a href="pyq.html" class="btn btn-ghost">📝 Practice PYQs</a>
+            </div>
+            <footer class="page-footer">
+              Copyright © Manas Kumar Mishra. All rights reserved.
+            </footer>
+          </div>
+        </div>
+      </main>
     </div>
 
-    <!-- TEST VIEW -->
-    <div id="view-test" style="display:none">
-      <div style="max-width:840px;margin:0 auto">
-        <div class="test-bar">
-          <div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem" id="test-title-bar">Test</div><div style="font-size:.82rem;color:var(--text2)" id="test-meta-bar">—</div></div>
-          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:1.1rem">⏱</span><div class="timer-disp" id="timer">00:00</div></div>
-          <button class="btn btn-danger btn-sm" onclick="confirmSubmit()">Submit Test</button>
-        </div>
-        <div class="card glow-card" style="margin-bottom:18px">
-          <div style="font-size:.78rem;color:var(--text2);margin-bottom:10px">Question Navigator</div>
-          <div class="q-nav" id="q-nav"></div>
-          <div style="display:flex;gap:16px;margin-top:10px;font-size:.76rem;color:var(--text2);flex-wrap:wrap"><span><span style="color:var(--indigo2)">■</span> Current</span><span><span style="color:var(--green)">■</span> Answered</span><span><span style="color:var(--gold)">■</span> Marked</span><span>□ Not visited</span></div>
-        </div>
-        <div class="card glow-card" id="q-area"></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px;flex-wrap:wrap;gap:10px">
-          <div style="display:flex;gap:8px"><button class="btn btn-ghost" onclick="prevQ()">← Previous</button><button class="btn btn-ghost" onclick="markQ()">🔖 Mark</button><button class="btn btn-ghost" onclick="nextQ()">Next →</button></div>
-          <button class="btn btn-teal" onclick="confirmSubmit()">Submit & Get Results</button>
-        </div>
-      </div>
-    </div>
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/sidebar.js"></script>
+    <script>
+      if (!requireAuth()) throw "";
+      injectShell("mocktest.html");
+      let curTest = null,
+        curQIdx = 0,
+        answers = {},
+        marked = new Set(),
+        timerInt = null,
+        timeLeft = 0,
+        startTime = null,
+        allTests = [];
 
-    <!-- RESULTS VIEW -->
-    <div id="view-results" style="display:none">
-      <div style="max-width:840px;margin:0 auto">
-        <div class="result-hero">
-          <div style="font-size:.78rem;color:rgba(255,255,255,.55);letter-spacing:.5px;text-transform:uppercase;margin-bottom:14px">Your Score</div>
-          <div id="score-ring"></div>
-          <div id="result-grade" style="margin-top:14px"></div>
-          <div id="result-msg" style="margin-top:8px;font-size:.9rem;color:rgba(255,255,255,.6)"></div>
-        </div>
-        <div class="r-grid" id="r-stats"></div>
-        <div class="card glow-card" style="margin-bottom:18px"><div class="card-title">📉 Weak Topics — Revise These</div><div id="weak-list"></div></div>
-        <div class="card glow-card"><div class="card-title">📋 Detailed Answer Review</div><div id="answer-review"></div></div>
-        <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap">
-          <button class="btn btn-teal" onclick="showView('list');loadTests();loadHistory()">← Back to Tests</button>
-          <a href="chatbot.html?ctx=mocktest" class="btn btn-indigo">🤖 Ask AI for Help</a>
-          <a href="pyq.html" class="btn btn-ghost">📝 Practice PYQs</a>
-        </div>
-        <footer class="page-footer">Copyright © Manas Kumar Mishra. All rights reserved.</footer>
-      </div>
-    </div>
-  </main>
-</div>
+      function showView(v) {
+        ["list", "test", "results"].forEach(
+          (x) => (document.getElementById("view-" + x).style.display = "none"),
+        );
+        document.getElementById("view-" + v).style.display = "block";
+      }
 
-<script src="assets/js/core.js"></script><script src="assets/js/sidebar.js"></script>
-<script>
-if(!requireAuth())throw"";
-injectShell("mocktest.html");
-let curTest=null,curQIdx=0,answers={},marked=new Set(),timerInt=null,timeLeft=0,startTime=null,allTests=[];
+      async function loadTests(filter = "") {
+        try {
+          const d = await API.get("/mocktests");
+          allTests = d.tests || [];
+          document.getElementById("mt-avail").textContent = allTests.length;
+          renderCards(
+            filter
+              ? allTests.filter(
+                  (t) =>
+                    t.subject.includes(filter) ||
+                    t.title.toLowerCase().includes(filter.toLowerCase()),
+                )
+              : allTests,
+          );
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      }
+      function filterTests(f, pill) {
+        document
+          .querySelectorAll(".fpill")
+          .forEach((p) => p.classList.remove("active"));
+        pill.classList.add("active");
+        renderCards(
+          f
+            ? allTests.filter(
+                (t) =>
+                  t.subject === f ||
+                  t.title.toLowerCase().includes(f.toLowerCase()),
+              )
+            : allTests,
+        );
+      }
+      function renderCards(tests) {
+        document.getElementById("test-cards").innerHTML = tests.length
+          ? tests
+              .map(
+                (t) =>
+                  `<div class="stat-card glow-card" style="cursor:pointer" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><span class="badge b-indigo">${t.subject}</span><span style="font-size:.78rem;color:var(--text2)">${t.duration} min</span></div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.92rem;margin-bottom:6px">${t.title}</div><div style="font-size:.82rem;color:var(--text2);margin-bottom:14px">${t.questions.length} questions · ${t.total_marks} marks</div><button class="btn btn-teal btn-full btn-sm" onclick="startTest(${t.id})">Start Test →</button></div>`,
+              )
+              .join("")
+          : emptyHTML("🧪", "No tests match this filter.");
+      }
 
-function showView(v){["list","test","results"].forEach(x=>document.getElementById("view-"+x).style.display="none");document.getElementById("view-"+v).style.display="block";}
+      async function loadHistory() {
+        try {
+          const d = await API.get("/scores");
+          const scores = d.scores || [];
+          document.getElementById("mt-taken").textContent = scores.length;
+          if (scores.length) {
+            document.getElementById("mt-avg").textContent =
+              Math.round(
+                scores.reduce((s, x) => s + x.pct, 0) / scores.length,
+              ) + "%";
+            document.getElementById("mt-best").textContent =
+              Math.max(...scores.map((s) => s.pct)) + "%";
+          }
+          document.getElementById("test-history").innerHTML = scores.length
+            ? `<div class="tbl-wrap"><table><thead><tr><th>Test</th><th>Score</th><th>Correct</th><th>Wrong</th><th>Time</th><th>Date</th></tr></thead><tbody>${scores
+                .slice(0, 10)
+                .map(
+                  (s) =>
+                    `<tr><td style="font-size:.84rem">${s.test_title}</td><td><span class="grade-${s.grade}" style="padding:2px 10px;font-size:.78rem">${s.grade}</span> ${s.pct}%</td><td style="color:var(--green)">${s.correct}</td><td style="color:var(--red)">${s.wrong}</td><td style="color:var(--text2);font-size:.8rem">${s.time_taken}s</td><td style="color:var(--text2);font-size:.8rem">${fmtDate(s.date)}</td></tr>`,
+                )
+                .join("")}</tbody></table></div>`
+            : emptyHTML("📊", "No tests taken yet.");
+        } catch (_) {}
+      }
 
-async function loadTests(filter=""){try{const d=await API.get("/mocktests");allTests=d.tests||[];document.getElementById("mt-avail").textContent=allTests.length;renderCards(filter?allTests.filter(t=>t.subject.includes(filter)||t.title.toLowerCase().includes(filter.toLowerCase())):allTests);}catch(err){showToast(err.message,"error");}}
-function filterTests(f,pill){document.querySelectorAll(".fpill").forEach(p=>p.classList.remove("active"));pill.classList.add("active");renderCards(f?allTests.filter(t=>t.subject===f||t.title.toLowerCase().includes(f.toLowerCase())):allTests);}
-function renderCards(tests){document.getElementById("test-cards").innerHTML=tests.length?tests.map(t=>`<div class="stat-card glow-card" style="cursor:pointer" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform=''"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><span class="badge b-indigo">${t.subject}</span><span style="font-size:.78rem;color:var(--text2)">${t.duration} min</span></div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.92rem;margin-bottom:6px">${t.title}</div><div style="font-size:.82rem;color:var(--text2);margin-bottom:14px">${t.questions.length} questions · ${t.total_marks} marks</div><button class="btn btn-teal btn-full btn-sm" onclick="startTest(${t.id})">Start Test →</button></div>`).join(""):emptyHTML("🧪","No tests match this filter.");}
+      async function startTest(id) {
+        try {
+          const d = await API.get("/mocktests/" + id);
+          curTest = d.test;
+          curQIdx = 0;
+          answers = {};
+          marked = new Set();
+          startTime = Date.now();
+          document.getElementById("test-title-bar").textContent = curTest.title;
+          document.getElementById("test-meta-bar").textContent =
+            `${curTest.questions.length} questions · ${curTest.total_marks} marks`;
+          buildNav();
+          renderQ(0);
+          startTimer(curTest.duration * 60);
+          showView("test");
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      }
 
-async function loadHistory(){try{const d=await API.get("/scores");const scores=d.scores||[];document.getElementById("mt-taken").textContent=scores.length;if(scores.length){document.getElementById("mt-avg").textContent=Math.round(scores.reduce((s,x)=>s+x.pct,0)/scores.length)+"%";document.getElementById("mt-best").textContent=Math.max(...scores.map(s=>s.pct))+"%";}document.getElementById("test-history").innerHTML=scores.length?`<div class="tbl-wrap"><table><thead><tr><th>Test</th><th>Score</th><th>Correct</th><th>Wrong</th><th>Time</th><th>Date</th></tr></thead><tbody>${scores.slice(0,10).map(s=>`<tr><td style="font-size:.84rem">${s.test_title}</td><td><span class="grade-${s.grade}" style="padding:2px 10px;font-size:.78rem">${s.grade}</span> ${s.pct}%</td><td style="color:var(--green)">${s.correct}</td><td style="color:var(--red)">${s.wrong}</td><td style="color:var(--text2);font-size:.8rem">${s.time_taken}s</td><td style="color:var(--text2);font-size:.8rem">${fmtDate(s.date)}</td></tr>`).join("")}</tbody></table></div>`:emptyHTML("📊","No tests taken yet.");}catch(_){}}
+      function buildNav() {
+        document.getElementById("q-nav").innerHTML = curTest.questions
+          .map(
+            (q, i) =>
+              `<div class="qn-btn ${i === 0 ? "active" : ""}" id="nav-${q.id}" onclick="jumpTo(${i})">${i + 1}</div>`,
+          )
+          .join("");
+      }
+      function refreshNav() {
+        curTest.questions.forEach((q, i) => {
+          const btn = document.getElementById("nav-" + q.id);
+          if (!btn) return;
+          btn.className = "qn-btn";
+          if (i === curQIdx) btn.classList.add("active");
+          else if (marked.has(q.id)) btn.classList.add("mrk");
+          else if (answers[q.id] !== undefined) btn.classList.add("ans");
+        });
+      }
 
-async function startTest(id){try{const d=await API.get("/mocktests/"+id);curTest=d.test;curQIdx=0;answers={};marked=new Set();startTime=Date.now();document.getElementById("test-title-bar").textContent=curTest.title;document.getElementById("test-meta-bar").textContent=`${curTest.questions.length} questions · ${curTest.total_marks} marks`;buildNav();renderQ(0);startTimer(curTest.duration*60);showView("test");}catch(err){showToast(err.message,"error");}}
+      function renderQ(idx) {
+        const q = curTest.questions[idx],
+          LABELS = ["A", "B", "C", "D"];
+        document.getElementById("q-area").innerHTML =
+          `<div style="font-size:.76rem;color:var(--text2);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px">Question ${idx + 1} of ${curTest.questions.length} · ${q.marks} mark${q.marks > 1 ? "s" : ""} · <span style="color:var(--text3)">${q.subj}</span></div><div style="font-size:.95rem;line-height:1.7;margin-bottom:18px;font-weight:500">${q.text}</div><div>${q.opts.map((opt, i) => `<div class="q-opt ${answers[q.id] === i ? "selected" : ""}" onclick="selectAns(${q.id},${i},this)"><span class="q-lbl">${LABELS[i]}</span>${opt}</div>`).join("")}</div>`;
+        refreshNav();
+      }
 
-function buildNav(){document.getElementById("q-nav").innerHTML=curTest.questions.map((q,i)=>`<div class="qn-btn ${i===0?"active":""}" id="nav-${q.id}" onclick="jumpTo(${i})">${i+1}</div>`).join("");}
-function refreshNav(){curTest.questions.forEach((q,i)=>{const btn=document.getElementById("nav-"+q.id);if(!btn)return;btn.className="qn-btn";if(i===curQIdx)btn.classList.add("active");else if(marked.has(q.id))btn.classList.add("mrk");else if(answers[q.id]!==undefined)btn.classList.add("ans");});}
+      function selectAns(qid, idx, el) {
+        answers[qid] = idx;
+        el.closest(".card")
+          .querySelectorAll(".q-opt")
+          .forEach((o) => o.classList.remove("selected"));
+        el.classList.add("selected");
+        refreshNav();
+      }
+      function nextQ() {
+        if (curQIdx < curTest.questions.length - 1) {
+          curQIdx++;
+          renderQ(curQIdx);
+        } else showToast("Last question!", "info");
+      }
+      function prevQ() {
+        if (curQIdx > 0) {
+          curQIdx--;
+          renderQ(curQIdx);
+        }
+      }
+      function jumpTo(i) {
+        curQIdx = i;
+        renderQ(i);
+      }
+      function markQ() {
+        const qid = curTest.questions[curQIdx].id;
+        if (marked.has(qid)) {
+          marked.delete(qid);
+          showToast("Bookmark removed");
+        } else {
+          marked.add(qid);
+          showToast("🔖 Bookmarked");
+        }
+        refreshNav();
+      }
 
-function renderQ(idx){const q=curTest.questions[idx],LABELS=["A","B","C","D"];document.getElementById("q-area").innerHTML=`<div style="font-size:.76rem;color:var(--text2);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px">Question ${idx+1} of ${curTest.questions.length} · ${q.marks} mark${q.marks>1?"s":""} · <span style="color:var(--text3)">${q.subj}</span></div><div style="font-size:.95rem;line-height:1.7;margin-bottom:18px;font-weight:500">${q.text}</div><div>${q.opts.map((opt,i)=>`<div class="q-opt ${answers[q.id]===i?"selected":""}" onclick="selectAns(${q.id},${i},this)"><span class="q-lbl">${LABELS[i]}</span>${opt}</div>`).join("")}</div>`;refreshNav();}
+      function startTimer(secs) {
+        timeLeft = secs;
+        clearInterval(timerInt);
+        timerInt = setInterval(() => {
+          timeLeft--;
+          const m = Math.floor(timeLeft / 60),
+            s = timeLeft % 60;
+          const el = document.getElementById("timer");
+          el.textContent = `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+          el.className =
+            "timer-disp" +
+            (timeLeft <= 120 ? " warn" : "") +
+            (timeLeft <= 30 ? " danger" : "");
+          if (timeLeft <= 0) {
+            clearInterval(timerInt);
+            submitTest(true);
+          }
+        }, 1000);
+      }
 
-function selectAns(qid,idx,el){answers[qid]=idx;el.closest(".card").querySelectorAll(".q-opt").forEach(o=>o.classList.remove("selected"));el.classList.add("selected");refreshNav();}
-function nextQ(){if(curQIdx<curTest.questions.length-1){curQIdx++;renderQ(curQIdx);}else showToast("Last question!","info");}
-function prevQ(){if(curQIdx>0){curQIdx--;renderQ(curQIdx);}}
-function jumpTo(i){curQIdx=i;renderQ(i);}
-function markQ(){const qid=curTest.questions[curQIdx].id;if(marked.has(qid)){marked.delete(qid);showToast("Bookmark removed");}else{marked.add(qid);showToast("🔖 Bookmarked");}refreshNav();}
+      function confirmSubmit() {
+        const ans = Object.keys(answers).length,
+          tot = curTest.questions.length;
+        if (
+          ans < tot &&
+          !confirm(`You've answered ${ans}/${tot} questions. Submit anyway?`)
+        )
+          return;
+        clearInterval(timerInt);
+        submitTest(false);
+      }
 
-function startTimer(secs){timeLeft=secs;clearInterval(timerInt);timerInt=setInterval(()=>{timeLeft--;const m=Math.floor(timeLeft/60),s=timeLeft%60;const el=document.getElementById("timer");el.textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;el.className="timer-disp"+(timeLeft<=120?" warn":"")+(timeLeft<=30?" danger":"");if(timeLeft<=0){clearInterval(timerInt);submitTest(true);}},1000);}
+      async function submitTest(auto) {
+        const timeTaken = Math.round((Date.now() - startTime) / 1000);
+        if (auto) showToast("⏱ Time's up! Auto-submitting…", "info");
+        try {
+          const d = await API.post("/mocktests/submit", {
+            test_id: curTest.id,
+            answers,
+            time_taken: timeTaken,
+          });
+          showResults(d);
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      }
 
-function confirmSubmit(){const ans=Object.keys(answers).length,tot=curTest.questions.length;if(ans<tot&&!confirm(`You've answered ${ans}/${tot} questions. Submit anyway?`))return;clearInterval(timerInt);submitTest(false);}
+      function showResults(d) {
+        const s = d.score,
+          pct = s.pct;
+        const msgs = {
+          A: "Excellent! 🏆 Outstanding performance!",
+          B: "Great job! 🎉 Keep up the good work.",
+          C: "Good effort! 📖 Review weak topics.",
+          D: "Need more practice. 💪 Analyse wrong answers.",
+        };
+        const R = 54,
+          C = 2 * Math.PI * R,
+          fill = C - (pct / 100) * C;
+        document.getElementById("score-ring").innerHTML =
+          `<div class="pring-wrap"><svg width="140" height="140" viewBox="0 0 140 140"><circle class="pring-track" cx="70" cy="70" r="${R}"/><circle class="pring-fill" cx="70" cy="70" r="${R}" stroke="${pct >= 80 ? "var(--green)" : pct >= 50 ? "var(--teal)" : "var(--red)"}" stroke-dasharray="${C}" stroke-dashoffset="${fill}"/></svg><div class="pring-label" style="font-size:1.8rem">${pct}%</div></div>`;
+        document.getElementById("result-grade").innerHTML =
+          `<span class="grade-${d.grade}">Grade ${d.grade}</span>`;
+        document.getElementById("result-msg").textContent = msgs[d.grade];
+        document.getElementById("r-stats").innerHTML =
+          `<div class="r-stat"><div class="r-val" style="color:var(--green)">${s.correct}</div><div class="r-lbl">Correct</div></div><div class="r-stat"><div class="r-val" style="color:var(--red)">${s.wrong}</div><div class="r-lbl">Wrong</div></div><div class="r-stat"><div class="r-val" style="color:var(--text2)">${s.skipped}</div><div class="r-lbl">Skipped</div></div><div class="r-stat"><div class="r-val" style="color:var(--gold)">${s.obtained}/${s.total_marks}</div><div class="r-lbl">Marks</div></div>`;
+        document.getElementById("weak-list").innerHTML = d.weak_topics.length
+          ? d.weak_topics
+              .map(
+                (t) =>
+                  `<div class="rec-card rc-weak"><div class="rc-icon">📉</div><div><div class="rc-title">${t.subject} — ${t.correct}/${t.total} correct</div><div class="rc-msg">Revise this topic. <a href="pyq.html?subject=${encodeURIComponent(t.subject)}" style="color:var(--teal)">Find PYQs →</a></div></div></div>`,
+              )
+              .join("")
+          : `<div class="rec-card rc-good"><div class="rc-icon">✅</div><div><div class="rc-title">No weak topics!</div><div class="rc-msg">Great performance across all areas.</div></div></div>`;
+        const LABELS = ["A", "B", "C", "D"];
+        document.getElementById("answer-review").innerHTML = d.detailed
+          .map(
+            (q, i) =>
+              `<div style="border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden"><div style="padding:12px 16px;background:var(--bg2);font-size:.87rem;border-bottom:1px solid var(--border)">${q.is_correct ? "✅" : q.skipped ? "⏭" : "❌"} <strong>Q${i + 1}:</strong> ${q.text}</div><div style="padding:10px 16px">${q.opts.map((opt, j) => `<div style="padding:7px 12px;border-radius:var(--r-sm);margin-bottom:5px;font-size:.85rem;${j === q.correct ? "background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:var(--green)" : j === q.user_answer && !q.is_correct ? "background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:var(--red)" : "background:var(--bg3)"}">${LABELS[j]}. ${opt} ${j === q.correct ? "✓" : ""} ${j === q.user_answer && !q.is_correct ? "✗" : ""}</div>`).join("")}</div></div>`,
+          )
+          .join("");
+        showView("results");
+      }
 
-async function submitTest(auto){const timeTaken=Math.round((Date.now()-startTime)/1000);if(auto)showToast("⏱ Time's up! Auto-submitting…","info");try{const d=await API.post("/mocktests/submit",{test_id:curTest.id,answers,time_taken:timeTaken});showResults(d);}catch(err){showToast(err.message,"error");}}
-
-function showResults(d){const s=d.score,pct=s.pct;const msgs={A:"Excellent! 🏆 Outstanding performance!",B:"Great job! 🎉 Keep up the good work.",C:"Good effort! 📖 Review weak topics.",D:"Need more practice. 💪 Analyse wrong answers."};
-const R=54,C=2*Math.PI*R,fill=C-(pct/100)*C;
-document.getElementById("score-ring").innerHTML=`<div class="pring-wrap"><svg width="140" height="140" viewBox="0 0 140 140"><circle class="pring-track" cx="70" cy="70" r="${R}"/><circle class="pring-fill" cx="70" cy="70" r="${R}" stroke="${pct>=80?"var(--green)":pct>=50?"var(--teal)":"var(--red)"}" stroke-dasharray="${C}" stroke-dashoffset="${fill}"/></svg><div class="pring-label" style="font-size:1.8rem">${pct}%</div></div>`;
-document.getElementById("result-grade").innerHTML=`<span class="grade-${d.grade}">Grade ${d.grade}</span>`;
-document.getElementById("result-msg").textContent=msgs[d.grade];
-document.getElementById("r-stats").innerHTML=`<div class="r-stat"><div class="r-val" style="color:var(--green)">${s.correct}</div><div class="r-lbl">Correct</div></div><div class="r-stat"><div class="r-val" style="color:var(--red)">${s.wrong}</div><div class="r-lbl">Wrong</div></div><div class="r-stat"><div class="r-val" style="color:var(--text2)">${s.skipped}</div><div class="r-lbl">Skipped</div></div><div class="r-stat"><div class="r-val" style="color:var(--gold)">${s.obtained}/${s.total_marks}</div><div class="r-lbl">Marks</div></div>`;
-document.getElementById("weak-list").innerHTML=d.weak_topics.length?d.weak_topics.map(t=>`<div class="rec-card rc-weak"><div class="rc-icon">📉</div><div><div class="rc-title">${t.subject} — ${t.correct}/${t.total} correct</div><div class="rc-msg">Revise this topic. <a href="pyq.html?subject=${encodeURIComponent(t.subject)}" style="color:var(--teal)">Find PYQs →</a></div></div></div>`).join(""):`<div class="rec-card rc-good"><div class="rc-icon">✅</div><div><div class="rc-title">No weak topics!</div><div class="rc-msg">Great performance across all areas.</div></div></div>`;
-const LABELS=["A","B","C","D"];
-document.getElementById("answer-review").innerHTML=d.detailed.map((q,i)=>`<div style="border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden"><div style="padding:12px 16px;background:var(--bg2);font-size:.87rem;border-bottom:1px solid var(--border)">${q.is_correct?"✅":q.skipped?"⏭":"❌"} <strong>Q${i+1}:</strong> ${q.text}</div><div style="padding:10px 16px">${q.opts.map((opt,j)=>`<div style="padding:7px 12px;border-radius:var(--r-sm);margin-bottom:5px;font-size:.85rem;${j===q.correct?"background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:var(--green)":j===q.user_answer&&!q.is_correct?"background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:var(--red)":"background:var(--bg3)"}">${LABELS[j]}. ${opt} ${j===q.correct?"✓":""} ${j===q.user_answer&&!q.is_correct?"✗":""}</div>`).join("")}</div></div>`).join("");
-showView("results");}
-
-const urlId=new URLSearchParams(location.search).get("id");
-if(urlId)document.addEventListener("DOMContentLoaded",()=>setTimeout(()=>startTest(parseInt(urlId)),300));
-loadTests();loadHistory();
-</script>
-</body>
+      const urlId = new URLSearchParams(location.search).get("id");
+      if (urlId)
+        document.addEventListener("DOMContentLoaded", () =>
+          setTimeout(() => startTest(parseInt(urlId)), 300),
+        );
+      loadTests();
+      loadHistory();
+    </script>
+  </body>
 </html>

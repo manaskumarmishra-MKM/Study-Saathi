@@ -1,26 +1,31 @@
 /* sidebar.js — StudySaathi v3 © Manas Kumar Mishra */
-function injectShell(activePage){
-  const links=[
-    {href:"dashboard.html",icon:"📊",label:"Dashboard"},
-    {href:"subjects.html",icon:"📚",label:"Subjects"},
-    {href:"syllabus.html",icon:"📋",label:"Syllabus",badge:"new"},
-    {href:"planner.html",icon:"📅",label:"Planner"},
-    {href:"pyq.html",icon:"📝",label:"PYQ Bank"},
-    {href:"mocktest.html",icon:"🧪",label:"Mock Tests"},
-    {href:"analytics.html",icon:"📈",label:"Analytics"},
-    {href:"resources.html",icon:"📦",label:"Resources",badge:"new"},
-    {href:"chatbot.html",icon:"🤖",label:"AI Assistant"},
-    {href:"digital-library/index.html",icon:"🏛️",label:"Digital Library",badge:"new"},
+function injectShell(activePage) {
+  const links = [
+    { href: "dashboard.html", icon: "📊", label: "Dashboard" },
+    { href: "subjects.html", icon: "📚", label: "Subjects" },
+    { href: "syllabus.html", icon: "📋", label: "Syllabus", badge: "new" },
+    { href: "planner.html", icon: "📅", label: "Planner" },
+    { href: "pyq.html", icon: "📝", label: "PYQ Bank" },
+    { href: "mocktest.html", icon: "🧪", label: "Mock Tests" },
+    { href: "analytics.html", icon: "📈", label: "Analytics" },
+    { href: "resources.html", icon: "📦", label: "Resources", badge: "new" },
+    { href: "chatbot.html", icon: "🤖", label: "AI Assistant" },
+    {
+      href: "digital-library/index.html",
+      icon: "🏛️",
+      label: "Digital Library",
+      badge: "new",
+    },
   ];
-  const sbHTML=`
+  const sbHTML = `
     <div class="sb-section">Main</div>
-    ${links.map(l=>`<a class="sb-item ${l.href===activePage?"active":""}" href="${l.href}"><span class="si">${l.icon}</span>${l.label}${l.badge?`<span class="sb-new">${l.badge}</span>`:""}</a>`).join("")}
+    ${links.map((l) => `<a class="sb-item ${l.href === activePage ? "active" : ""}" href="${l.href}"><span class="si">${l.icon}</span>${l.label}${l.badge ? `<span class="sb-new">${l.badge}</span>` : ""}</a>`).join("")}
     <div class="sb-div"></div>
     <div class="sb-section">Account</div>
-    <a class="sb-item ${activePage==="profile.html"?"active":""}" href="profile.html"><span class="si">👤</span> Profile</a>
+    <a class="sb-item ${activePage === "profile.html" ? "active" : ""}" href="profile.html"><span class="si">👤</span> Profile</a>
     <a class="sb-item" onclick="logout()" style="cursor:pointer"><span class="si">🚪</span> Logout</a>
   `;
-  const tbHTML=`
+  const tbHTML = `
     <div style="display:flex;align-items:center;gap:12px">
       <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
       <div class="topbar-brand"><div class="brand-mark">✦</div>StudySaathi <span class="brand-v3">v3</span></div>
@@ -46,7 +51,7 @@ function injectShell(activePage){
       </div>
     </div>
   `;
-  const fabHTML=`
+  const fabHTML = `
     <button class="chat-fab">🤖</button>
     <div class="chat-panel">
       <div class="chat-ph"><div class="bot-av">🤖</div><div><div class="bot-name">StudySaathi AI</div><div class="bot-status">● Online</div></div><button class="chat-close">✕</button></div>
@@ -55,7 +60,9 @@ function injectShell(activePage){
     </div>
     <div id="toast-container"></div>
   `;
-  const tb=document.querySelector(".topbar");if(tb)tb.innerHTML=tbHTML;
-  const sb=document.querySelector(".sidebar");if(sb)sb.innerHTML=sbHTML;
-  document.body.insertAdjacentHTML("beforeend",fabHTML);
+  const tb = document.querySelector(".topbar");
+  if (tb) tb.innerHTML = tbHTML;
+  const sb = document.querySelector(".sidebar");
+  if (sb) sb.innerHTML = sbHTML;
+  document.body.insertAdjacentHTML("beforeend", fabHTML);
 }

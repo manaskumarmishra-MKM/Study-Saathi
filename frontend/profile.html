@@ -1,72 +1,311 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" data-theme="dark">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Profile — StudySaathi v3</title>
-<link rel="stylesheet" href="assets/css/main.css">
-<link rel="stylesheet" href="assets/css/graphics.css">
-</head>
-<body>
-<div class="app-shell">
-  <header class="topbar"></header><nav class="sidebar"></nav>
-  <main class="main">
-    <div class="page-header"><div><div class="page-title">👤 Profile & Settings</div><div class="page-sub">Manage your account, course settings, and preferences</div></div></div>
-    <div class="g2" style="align-items:start">
-      <div>
-        <div class="card glow-card" style="margin-bottom:20px">
-          <div class="card-title">Account Info</div>
-          <div style="display:flex;align-items:center;gap:16px;margin-bottom:22px">
-            <div style="width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,var(--indigo),var(--teal));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem;color:#fff;flex-shrink:0" id="prof-av">U</div>
-            <div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.05rem" id="prof-name">—</div><div style="font-size:.84rem;color:var(--text2)" id="prof-email">—</div></div>
-          </div>
-          <div class="form-group"><label>Full Name</label><input type="text" id="p-name"></div>
-          <div class="form-group"><label>Email</label><input type="email" id="p-email" disabled style="opacity:.6;cursor:not-allowed"></div>
-          <button class="btn btn-teal" onclick="saveProfile()">Save Changes</button>
-        </div>
-        <div class="card glow-card" style="border-color:rgba(239,68,68,.2)">
-          <div class="card-title" style="color:var(--red)">⚠️ Danger Zone</div>
-          <p style="font-size:.85rem;color:var(--text2);margin-bottom:14px">These actions are irreversible.</p>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <button class="btn btn-danger" onclick="clearData()">🗑 Clear All Study Data</button>
-            <button class="btn btn-danger" onclick="logout()">🚪 Logout</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Profile — StudySaathi v3</title>
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/graphics.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar"></header>
+      <nav class="sidebar"></nav>
+      <main class="main">
+        <div class="page-header">
+          <div>
+            <div class="page-title">👤 Profile & Settings</div>
+            <div class="page-sub">
+              Manage your account, course settings, and preferences
+            </div>
           </div>
         </div>
-      </div>
-      <div>
-        <div class="card glow-card" style="margin-bottom:20px">
-          <div class="card-title">🎓 Course & Exam Settings</div>
-          <div class="form-group"><label>Course</label><select id="p-course"><option value="">— Select —</option><option value="btech-cse">B.Tech CSE</option><option value="btech-ece">B.Tech ECE</option><option value="gate">GATE CS</option><option value="jee">JEE</option><option value="neet">NEET</option><option value="upsc">UPSC CSE</option><option value="cat">CAT</option></select></div>
-          <div class="form-row">
-            <div class="form-group"><label>Semester</label><select id="p-sem"><option value="">N/A</option><option value="1">Sem 1</option><option value="2">Sem 2</option><option value="3">Sem 3</option><option value="4">Sem 4</option><option value="5">Sem 5</option><option value="6">Sem 6</option><option value="7">Sem 7</option><option value="8">Sem 8</option></select></div>
-            <div class="form-group"><label>Exam Target</label><select id="p-exam"><option value="">—</option><option>GATE</option><option>JEE</option><option>NEET</option><option>UPSC</option><option>CAT</option><option>Semester Exams</option></select></div>
+        <div class="g2" style="align-items: start">
+          <div>
+            <div class="card glow-card" style="margin-bottom: 20px">
+              <div class="card-title">Account Info</div>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 16px;
+                  margin-bottom: 22px;
+                "
+              >
+                <div
+                  style="
+                    width: 60px;
+                    height: 60px;
+                    border-radius: 16px;
+                    background: linear-gradient(
+                      135deg,
+                      var(--indigo),
+                      var(--teal)
+                    );
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-family: &quot;Syne&quot;, sans-serif;
+                    font-weight: 800;
+                    font-size: 1.5rem;
+                    color: #fff;
+                    flex-shrink: 0;
+                  "
+                  id="prof-av"
+                >
+                  U
+                </div>
+                <div>
+                  <div
+                    style="
+                      font-family: &quot;Syne&quot;, sans-serif;
+                      font-weight: 700;
+                      font-size: 1.05rem;
+                    "
+                    id="prof-name"
+                  >
+                    —
+                  </div>
+                  <div
+                    style="font-size: 0.84rem; color: var(--text2)"
+                    id="prof-email"
+                  >
+                    —
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Full Name</label><input type="text" id="p-name" />
+              </div>
+              <div class="form-group">
+                <label>Email</label
+                ><input
+                  type="email"
+                  id="p-email"
+                  disabled
+                  style="opacity: 0.6; cursor: not-allowed"
+                />
+              </div>
+              <button class="btn btn-teal" onclick="saveProfile()">
+                Save Changes
+              </button>
+            </div>
+            <div
+              class="card glow-card"
+              style="border-color: rgba(239, 68, 68, 0.2)"
+            >
+              <div class="card-title" style="color: var(--red)">
+                ⚠️ Danger Zone
+              </div>
+              <p
+                style="
+                  font-size: 0.85rem;
+                  color: var(--text2);
+                  margin-bottom: 14px;
+                "
+              >
+                These actions are irreversible.
+              </p>
+              <div style="display: flex; flex-direction: column; gap: 8px">
+                <button class="btn btn-danger" onclick="clearData()">
+                  🗑 Clear All Study Data
+                </button>
+                <button class="btn btn-danger" onclick="logout()">
+                  🚪 Logout
+                </button>
+              </div>
+            </div>
           </div>
-          <div class="form-group"><label>Daily Study Goal — <span id="goal-val" style="color:var(--teal);font-weight:700">6h</span></label><input type="range" id="p-goal" min="1" max="14" value="6" oninput="document.getElementById('goal-val').textContent=this.value+'h'"></div>
-          <button class="btn btn-teal" onclick="saveCourse()">Save Settings</button>
+          <div>
+            <div class="card glow-card" style="margin-bottom: 20px">
+              <div class="card-title">🎓 Course & Exam Settings</div>
+              <div class="form-group">
+                <label>Course</label
+                ><select id="p-course">
+                  <option value="">— Select —</option>
+                  <option value="btech-cse">B.Tech CSE</option>
+                  <option value="btech-ece">B.Tech ECE</option>
+                  <option value="gate">GATE CS</option>
+                  <option value="jee">JEE</option>
+                  <option value="neet">NEET</option>
+                  <option value="upsc">UPSC CSE</option>
+                  <option value="cat">CAT</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Semester</label
+                  ><select id="p-sem">
+                    <option value="">N/A</option>
+                    <option value="1">Sem 1</option>
+                    <option value="2">Sem 2</option>
+                    <option value="3">Sem 3</option>
+                    <option value="4">Sem 4</option>
+                    <option value="5">Sem 5</option>
+                    <option value="6">Sem 6</option>
+                    <option value="7">Sem 7</option>
+                    <option value="8">Sem 8</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Exam Target</label
+                  ><select id="p-exam">
+                    <option value="">—</option>
+                    <option>GATE</option>
+                    <option>JEE</option>
+                    <option>NEET</option>
+                    <option>UPSC</option>
+                    <option>CAT</option>
+                    <option>Semester Exams</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label
+                  >Daily Study Goal —
+                  <span
+                    id="goal-val"
+                    style="color: var(--teal); font-weight: 700"
+                    >6h</span
+                  ></label
+                ><input
+                  type="range"
+                  id="p-goal"
+                  min="1"
+                  max="14"
+                  value="6"
+                  oninput="
+                    document.getElementById('goal-val').textContent =
+                      this.value + 'h'
+                  "
+                />
+              </div>
+              <button class="btn btn-teal" onclick="saveCourse()">
+                Save Settings
+              </button>
+            </div>
+            <div class="card glow-card" style="margin-bottom: 20px">
+              <div class="card-title">📊 Quick Stats</div>
+              <div id="prof-stats">
+                <div class="loading"><span class="spinner"></span></div>
+              </div>
+            </div>
+            <div class="card glow-card">
+              <div class="card-title">🏆 Achievements</div>
+              <div
+                id="prof-ach"
+                style="
+                  display: grid;
+                  grid-template-columns: repeat(4, 1fr);
+                  gap: 8px;
+                "
+              ></div>
+            </div>
+          </div>
         </div>
-        <div class="card glow-card" style="margin-bottom:20px">
-          <div class="card-title">📊 Quick Stats</div>
-          <div id="prof-stats"><div class="loading"><span class="spinner"></span></div></div>
-        </div>
-        <div class="card glow-card">
-          <div class="card-title">🏆 Achievements</div>
-          <div id="prof-ach" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px"></div>
-        </div>
-      </div>
+        <footer class="page-footer">
+          Copyright © Manas Kumar Mishra. All rights reserved.
+        </footer>
+      </main>
     </div>
-    <footer class="page-footer">Copyright © Manas Kumar Mishra. All rights reserved.</footer>
-  </main>
-</div>
 
-<script src="assets/js/core.js"></script><script src="assets/js/sidebar.js"></script>
-<script>
-if(!requireAuth())throw"";
-injectShell("profile.html");
-function loadProfile(){const u=Auth.user();if(!u)return;document.getElementById("prof-av").textContent=(u.name||"U")[0].toUpperCase();document.getElementById("prof-name").textContent=u.name||"—";document.getElementById("prof-email").textContent=u.email||"—";document.getElementById("p-name").value=u.name||"";document.getElementById("p-email").value=u.email||"";document.getElementById("p-course").value=u.course||"";document.getElementById("p-sem").value=u.semester||"";document.getElementById("p-exam").value=u.exam||"";}
-async function loadStats(){try{const[prog,scores,subs,ach]=await Promise.all([API.get("/progress"),API.get("/scores"),API.get("/subjects"),API.get("/achievements")]);const allT=(prog.topic_completion||[]).reduce((s,x)=>s+x.total,0),doneT=(prog.topic_completion||[]).reduce((s,x)=>s+x.done,0);const avgScore=(scores.scores||[]).length?Math.round((scores.scores||[]).reduce((s,x)=>s+x.pct,0)/(scores.scores||[]).length):0;document.getElementById("prof-stats").innerHTML=`<div class="stats-grid" style="grid-template-columns:1fr 1fr;gap:10px;margin-bottom:0"><div class="stat-card sc-teal"><div class="sc-label">Subjects</div><div class="sc-val accent" style="font-size:1.4rem">${(subs.subjects||[]).length}</div></div><div class="stat-card sc-green"><div class="sc-label">Topics Done</div><div class="sc-val" style="color:var(--green);font-size:1.4rem">${doneT}/${allT}</div></div><div class="stat-card sc-gold"><div class="sc-label">Study Streak</div><div class="sc-val" style="color:var(--gold);font-size:1.4rem">${prog.streak||0} 🔥</div></div><div class="stat-card sc-indigo"><div class="sc-label">Avg Mock</div><div class="sc-val" style="color:var(--teal);font-size:1.4rem">${avgScore?avgScore+"%":"—"}</div></div></div>${allT?`<div style="margin-top:12px">${progBarHTML("Syllabus Completion",Math.round(doneT/allT*100),"var(--teal)")}</div>`:""}`;document.getElementById("prof-ach").innerHTML=(ach.achievements||[]).map(a=>`<div class="ach-card ${a.unlocked?'':'locked'}" title="${a.desc}"><div class="ach-icon">${a.icon}</div><div class="ach-name" style="font-size:.72rem">${a.name}</div></div>`).join("");}catch(_){}}
-async function saveProfile(){const name=document.getElementById("p-name").value.trim();if(!name){showToast("Name cannot be empty","error");return;}try{await API.patch("/auth/profile",{name});const u=Auth.user();u.name=name;Auth.save(Auth.token(),u);populateNav();loadProfile();showToast("Profile updated! ✅");}catch(err){showToast(err.message,"error");}}
-function saveCourse(){const course=document.getElementById("p-course").value,semester=parseInt(document.getElementById("p-sem").value)||1,exam=document.getElementById("p-exam").value;const u=Auth.user();Object.assign(u,{course,semester,exam});Auth.save(Auth.token(),u);showToast("Course settings saved! 🎓");}
-function clearData(){if(!confirm("Delete ALL your study data? This cannot be undone."))return;const uid=DB.uid();["subs_","tasks_","exams_","prog_","plans_","scores_","pyqs_u_"].forEach(k=>localStorage.removeItem("ss3_"+k+uid));showToast("All data cleared.","info");setTimeout(()=>location.href="dashboard.html",1200);}
-loadProfile();loadStats();
-</script>
-</body>
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/sidebar.js"></script>
+    <script>
+      if (!requireAuth()) throw "";
+      injectShell("profile.html");
+      function loadProfile() {
+        const u = Auth.user();
+        if (!u) return;
+        document.getElementById("prof-av").textContent = (u.name ||
+          "U")[0].toUpperCase();
+        document.getElementById("prof-name").textContent = u.name || "—";
+        document.getElementById("prof-email").textContent = u.email || "—";
+        document.getElementById("p-name").value = u.name || "";
+        document.getElementById("p-email").value = u.email || "";
+        document.getElementById("p-course").value = u.course || "";
+        document.getElementById("p-sem").value = u.semester || "";
+        document.getElementById("p-exam").value = u.exam || "";
+      }
+      async function loadStats() {
+        try {
+          const [prog, scores, subs, ach] = await Promise.all([
+            API.get("/progress"),
+            API.get("/scores"),
+            API.get("/subjects"),
+            API.get("/achievements"),
+          ]);
+          const allT = (prog.topic_completion || []).reduce(
+              (s, x) => s + x.total,
+              0,
+            ),
+            doneT = (prog.topic_completion || []).reduce(
+              (s, x) => s + x.done,
+              0,
+            );
+          const avgScore = (scores.scores || []).length
+            ? Math.round(
+                (scores.scores || []).reduce((s, x) => s + x.pct, 0) /
+                  (scores.scores || []).length,
+              )
+            : 0;
+          document.getElementById("prof-stats").innerHTML =
+            `<div class="stats-grid" style="grid-template-columns:1fr 1fr;gap:10px;margin-bottom:0"><div class="stat-card sc-teal"><div class="sc-label">Subjects</div><div class="sc-val accent" style="font-size:1.4rem">${(subs.subjects || []).length}</div></div><div class="stat-card sc-green"><div class="sc-label">Topics Done</div><div class="sc-val" style="color:var(--green);font-size:1.4rem">${doneT}/${allT}</div></div><div class="stat-card sc-gold"><div class="sc-label">Study Streak</div><div class="sc-val" style="color:var(--gold);font-size:1.4rem">${prog.streak || 0} 🔥</div></div><div class="stat-card sc-indigo"><div class="sc-label">Avg Mock</div><div class="sc-val" style="color:var(--teal);font-size:1.4rem">${avgScore ? avgScore + "%" : "—"}</div></div></div>${allT ? `<div style="margin-top:12px">${progBarHTML("Syllabus Completion", Math.round((doneT / allT) * 100), "var(--teal)")}</div>` : ""}`;
+          document.getElementById("prof-ach").innerHTML = (
+            ach.achievements || []
+          )
+            .map(
+              (a) =>
+                `<div class="ach-card ${a.unlocked ? "" : "locked"}" title="${a.desc}"><div class="ach-icon">${a.icon}</div><div class="ach-name" style="font-size:.72rem">${a.name}</div></div>`,
+            )
+            .join("");
+        } catch (_) {}
+      }
+      async function saveProfile() {
+        const name = document.getElementById("p-name").value.trim();
+        if (!name) {
+          showToast("Name cannot be empty", "error");
+          return;
+        }
+        try {
+          await API.patch("/auth/profile", { name });
+          const u = Auth.user();
+          u.name = name;
+          Auth.save(Auth.token(), u);
+          populateNav();
+          loadProfile();
+          showToast("Profile updated! ✅");
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      }
+      function saveCourse() {
+        const course = document.getElementById("p-course").value,
+          semester = parseInt(document.getElementById("p-sem").value) || 1,
+          exam = document.getElementById("p-exam").value;
+        const u = Auth.user();
+        Object.assign(u, { course, semester, exam });
+        Auth.save(Auth.token(), u);
+        showToast("Course settings saved! 🎓");
+      }
+      function clearData() {
+        if (!confirm("Delete ALL your study data? This cannot be undone."))
+          return;
+        const uid = DB.uid();
+        [
+          "subs_",
+          "tasks_",
+          "exams_",
+          "prog_",
+          "plans_",
+          "scores_",
+          "pyqs_u_",
+        ].forEach((k) => localStorage.removeItem("ss3_" + k + uid));
+        showToast("All data cleared.", "info");
+        setTimeout(() => (location.href = "dashboard.html"), 1200);
+      }
+      loadProfile();
+      loadStats();
+    </script>
+  </body>
 </html>

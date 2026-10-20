@@ -1,124 +1,444 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" data-theme="dark">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Subjects — StudySaathi v3</title>
-<link rel="stylesheet" href="assets/css/main.css">
-<link rel="stylesheet" href="assets/css/graphics.css">
-<style>
-.subj-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;transition:var(--trans);cursor:pointer;}
-.subj-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow);}
-.add-card{background:var(--bg2);border:2px dashed var(--border2);border-radius:var(--r-lg);padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;min-height:180px;transition:var(--trans);color:var(--text2);}
-.add-card:hover{border-color:var(--teal);color:var(--teal);}
-</style>
-</head>
-<body>
-<div class="app-shell">
-  <header class="topbar"></header><nav class="sidebar"></nav>
-  <main class="main">
-    <div class="page-header">
-      <div><div class="page-title">📚 Subjects</div><div class="page-sub">Manage subjects, topics with AI priority tagging</div></div>
-      <button class="btn btn-teal" onclick="openModal('modal-add-subj')">+ Add Subject</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Subjects — StudySaathi v3</title>
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/graphics.css" />
+    <style>
+      .subj-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--r-lg);
+        padding: 20px;
+        transition: var(--trans);
+        cursor: pointer;
+      }
+      .subj-card:hover {
+        border-color: var(--border2);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+      }
+      .add-card {
+        background: var(--bg2);
+        border: 2px dashed var(--border2);
+        border-radius: var(--r-lg);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+        min-height: 180px;
+        transition: var(--trans);
+        color: var(--text2);
+      }
+      .add-card:hover {
+        border-color: var(--teal);
+        color: var(--teal);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar"></header>
+      <nav class="sidebar"></nav>
+      <main class="main">
+        <div class="page-header">
+          <div>
+            <div class="page-title">📚 Subjects</div>
+            <div class="page-sub">
+              Manage subjects, topics with AI priority tagging
+            </div>
+          </div>
+          <button class="btn btn-teal" onclick="openModal('modal-add-subj')">
+            + Add Subject
+          </button>
+        </div>
+        <div
+          class="stats-grid"
+          style="grid-template-columns: repeat(4, 1fr); margin-bottom: 22px"
+        >
+          <div class="stat-card sc-teal">
+            <div class="sc-label">Subjects</div>
+            <div class="sc-val accent" id="st-subjs">0</div>
+          </div>
+          <div class="stat-card sc-indigo">
+            <div class="sc-label">Total Topics</div>
+            <div class="sc-val" id="st-topics">0</div>
+          </div>
+          <div class="stat-card sc-green">
+            <div class="sc-label">Completed</div>
+            <div class="sc-val" style="color: var(--green)" id="st-done">0</div>
+          </div>
+          <div class="stat-card sc-purple">
+            <div class="sc-label">Overall %</div>
+            <div class="sc-val" style="color: var(--purple)" id="st-pct">
+              0%
+            </div>
+          </div>
+        </div>
+        <div id="subj-grid" class="ga">
+          <div class="loading"><span class="spinner"></span> Loading…</div>
+        </div>
+        <footer class="page-footer">
+          Copyright © Manas Kumar Mishra. All rights reserved.
+        </footer>
+      </main>
     </div>
-    <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:22px">
-      <div class="stat-card sc-teal"><div class="sc-label">Subjects</div><div class="sc-val accent" id="st-subjs">0</div></div>
-      <div class="stat-card sc-indigo"><div class="sc-label">Total Topics</div><div class="sc-val" id="st-topics">0</div></div>
-      <div class="stat-card sc-green"><div class="sc-label">Completed</div><div class="sc-val" style="color:var(--green)" id="st-done">0</div></div>
-      <div class="stat-card sc-purple"><div class="sc-label">Overall %</div><div class="sc-val" style="color:var(--purple)" id="st-pct">0%</div></div>
-    </div>
-    <div id="subj-grid" class="ga"><div class="loading"><span class="spinner"></span> Loading…</div></div>
-    <footer class="page-footer">Copyright © Manas Kumar Mishra. All rights reserved.</footer>
-  </main>
-</div>
 
-<!-- Add Subject Modal -->
-<div class="modal-ov" id="modal-add-subj">
-  <div class="modal">
-    <div class="modal-hdr"><div class="modal-ttl">📚 Add Subject</div><button class="modal-close" onclick="closeModal('modal-add-subj')">✕</button></div>
-    <div class="form-group"><label>Subject Name</label><input type="text" id="as-name" placeholder="e.g. Engineering Mathematics"></div>
-    <div class="form-group"><label>Or pick from your course</label><div class="chip-row" id="course-chips" style="max-height:140px;overflow-y:auto"></div></div>
-    <button class="btn btn-teal btn-full" onclick="addSubject()">Add Subject</button>
-  </div>
-</div>
-
-<!-- Subject Detail Modal -->
-<div class="modal-ov" id="modal-subj-detail">
-  <div class="modal modal-lg">
-    <div class="modal-hdr"><div class="modal-ttl" id="sd-title">Subject</div><button class="modal-close" onclick="closeModal('modal-subj-detail')">✕</button></div>
-    <div id="sd-progress" style="margin-bottom:18px"></div>
-    <div class="tabs"><button class="tab-btn active" onclick="switchSDTab('topics',this)">Topics</button><button class="tab-btn" onclick="switchSDTab('pyq',this)">PYQs</button><button class="tab-btn" onclick="switchSDTab('tests',this)">Mock Tests</button></div>
-    <div class="tab-pane active" id="sdtab-topics">
-      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-        <input type="text" id="tp-name" placeholder="Topic name" style="flex:2;min-width:140px">
-        <select id="tp-pri" style="flex:1;min-width:100px"><option value="High">High Priority</option><option value="Medium" selected>Medium</option><option value="Low">Low</option></select>
-        <button class="btn btn-teal btn-sm" onclick="addTopic()">+ Add</button>
+    <!-- Add Subject Modal -->
+    <div class="modal-ov" id="modal-add-subj">
+      <div class="modal">
+        <div class="modal-hdr">
+          <div class="modal-ttl">📚 Add Subject</div>
+          <button class="modal-close" onclick="closeModal('modal-add-subj')">
+            ✕
+          </button>
+        </div>
+        <div class="form-group">
+          <label>Subject Name</label
+          ><input
+            type="text"
+            id="as-name"
+            placeholder="e.g. Engineering Mathematics"
+          />
+        </div>
+        <div class="form-group">
+          <label>Or pick from your course</label>
+          <div
+            class="chip-row"
+            id="course-chips"
+            style="max-height: 140px; overflow-y: auto"
+          ></div>
+        </div>
+        <button class="btn btn-teal btn-full" onclick="addSubject()">
+          Add Subject
+        </button>
       </div>
-      <div id="sd-topics"></div>
     </div>
-    <div class="tab-pane" id="sdtab-pyq"><div id="sd-pyqs"></div></div>
-    <div class="tab-pane" id="sdtab-tests"><div id="sd-tests"></div></div>
-  </div>
-</div>
 
-<script src="assets/js/core.js"></script><script src="assets/js/sidebar.js"></script>
-<script>
-if(!requireAuth())throw"";
-injectShell("subjects.html");
-let allSubjects=[],currentSid=null;
+    <!-- Subject Detail Modal -->
+    <div class="modal-ov" id="modal-subj-detail">
+      <div class="modal modal-lg">
+        <div class="modal-hdr">
+          <div class="modal-ttl" id="sd-title">Subject</div>
+          <button class="modal-close" onclick="closeModal('modal-subj-detail')">
+            ✕
+          </button>
+        </div>
+        <div id="sd-progress" style="margin-bottom: 18px"></div>
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchSDTab('topics', this)">
+            Topics</button
+          ><button class="tab-btn" onclick="switchSDTab('pyq', this)">
+            PYQs</button
+          ><button class="tab-btn" onclick="switchSDTab('tests', this)">
+            Mock Tests
+          </button>
+        </div>
+        <div class="tab-pane active" id="sdtab-topics">
+          <div
+            style="
+              display: flex;
+              gap: 8px;
+              margin-bottom: 14px;
+              flex-wrap: wrap;
+            "
+          >
+            <input
+              type="text"
+              id="tp-name"
+              placeholder="Topic name"
+              style="flex: 2; min-width: 140px"
+            />
+            <select id="tp-pri" style="flex: 1; min-width: 100px">
+              <option value="High">High Priority</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="Low">Low</option>
+            </select>
+            <button class="btn btn-teal btn-sm" onclick="addTopic()">
+              + Add
+            </button>
+          </div>
+          <div id="sd-topics"></div>
+        </div>
+        <div class="tab-pane" id="sdtab-pyq"><div id="sd-pyqs"></div></div>
+        <div class="tab-pane" id="sdtab-tests"><div id="sd-tests"></div></div>
+      </div>
+    </div>
 
-async function loadSubjects(){
-  try{const d=await API.get("/subjects");allSubjects=d.subjects||[];renderGrid(allSubjects);updateStats(allSubjects);renderCourseChips();}catch(err){showToast(err.message,"error");}
-}
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/sidebar.js"></script>
+    <script>
+      if (!requireAuth()) throw "";
+      injectShell("subjects.html");
+      let allSubjects = [],
+        currentSid = null;
 
-function renderGrid(subs){
-  const g=document.getElementById("subj-grid");
-  if(!subs.length){g.innerHTML=`<div class="add-card" onclick="openModal('modal-add-subj')"><div style="font-size:2rem">➕</div><div style="font-weight:600">Add your first subject</div></div>`;return;}
-  g.innerHTML=subs.map((s,i)=>{
-    const tot=(s.topics||[]).length,done=(s.topics||[]).filter(t=>t.status==="completed").length,pct=tot?Math.round(done/tot*100):0,color=PALETTE[i%PALETTE.length];
-    const highPri=(s.topics||[]).filter(t=>t.priority==="High"&&t.status!=="completed").length;
-    return`<div class="subj-card glow-card" onclick="openSubject(${s.id})">
+      async function loadSubjects() {
+        try {
+          const d = await API.get("/subjects");
+          allSubjects = d.subjects || [];
+          renderGrid(allSubjects);
+          updateStats(allSubjects);
+          renderCourseChips();
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      }
+
+      function renderGrid(subs) {
+        const g = document.getElementById("subj-grid");
+        if (!subs.length) {
+          g.innerHTML = `<div class="add-card" onclick="openModal('modal-add-subj')"><div style="font-size:2rem">➕</div><div style="font-weight:600">Add your first subject</div></div>`;
+          return;
+        }
+        g.innerHTML =
+          subs
+            .map((s, i) => {
+              const tot = (s.topics || []).length,
+                done = (s.topics || []).filter(
+                  (t) => t.status === "completed",
+                ).length,
+                pct = tot ? Math.round((done / tot) * 100) : 0,
+                color = PALETTE[i % PALETTE.length];
+              const highPri = (s.topics || []).filter(
+                (t) => t.priority === "High" && t.status !== "completed",
+              ).length;
+              return `<div class="subj-card glow-card" onclick="openSubject(${s.id})">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
         <div style="width:10px;height:10px;border-radius:50%;background:${color};flex-shrink:0"></div>
         <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;flex:1">${s.name}</div>
         <span class="badge b-muted">${tot} topics</span>
       </div>
-      ${highPri?`<div style="font-size:.76rem;color:var(--red);margin-bottom:8px">⚠ ${highPri} high-priority pending</div>`:""}
+      ${highPri ? `<div style="font-size:.76rem;color:var(--red);margin-bottom:8px">⚠ ${highPri} high-priority pending</div>` : ""}
       <div style="font-size:.8rem;color:var(--text2);margin-bottom:10px">${done}/${tot} completed</div>
       <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${color}"></div></div>
-      <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:.76rem;color:var(--text2)"><span>${pct}%</span><span style="color:${color}">${pct>=80?"✅ Almost done":pct>=50?"📖 In progress":"🎯 Just started"}</span></div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:.76rem;color:var(--text2)"><span>${pct}%</span><span style="color:${color}">${pct >= 80 ? "✅ Almost done" : pct >= 50 ? "📖 In progress" : "🎯 Just started"}</span></div>
       <div style="display:flex;gap:8px;margin-top:12px" onclick="event.stopPropagation()">
         <button class="btn btn-ghost btn-sm" onclick="openSubject(${s.id})">View Topics</button>
         <button class="btn btn-danger btn-sm" onclick="deleteSubject(${s.id})">Delete</button>
       </div>
     </div>`;
-  }).join("")+`<div class="add-card" onclick="openModal('modal-add-subj')"><div style="font-size:1.5rem">➕</div><div style="font-weight:600;font-size:.88rem">Add Subject</div></div>`;
-}
+            })
+            .join("") +
+          `<div class="add-card" onclick="openModal('modal-add-subj')"><div style="font-size:1.5rem">➕</div><div style="font-weight:600;font-size:.88rem">Add Subject</div></div>`;
+      }
 
-function updateStats(subs){const allT=subs.flatMap(s=>s.topics||[]),done=allT.filter(t=>t.status==="completed").length;document.getElementById("st-subjs").textContent=subs.length;document.getElementById("st-topics").textContent=allT.length;document.getElementById("st-done").textContent=done;document.getElementById("st-pct").textContent=allT.length?Math.round(done/allT.length*100)+"%":"0%";}
+      function updateStats(subs) {
+        const allT = subs.flatMap((s) => s.topics || []),
+          done = allT.filter((t) => t.status === "completed").length;
+        document.getElementById("st-subjs").textContent = subs.length;
+        document.getElementById("st-topics").textContent = allT.length;
+        document.getElementById("st-done").textContent = done;
+        document.getElementById("st-pct").textContent = allT.length
+          ? Math.round((done / allT.length) * 100) + "%"
+          : "0%";
+      }
 
-function renderCourseChips(){const u=Auth.user();if(!u?.course||!COURSES[u.course])return;const sem=u.semester||1;const cs=COURSES[u.course].subjects[sem]||[];const existing=allSubjects.map(s=>s.name);const avail=cs.filter(s=>!existing.includes(s));const wrap=document.getElementById("course-chips");wrap.innerHTML=avail.length?avail.map(s=>`<span class="chip" onclick="document.getElementById('as-name').value='${s}';this.classList.toggle('sel')">${s}</span>`).join(""):emptyHTML("✅","All course subjects already added");}
+      function renderCourseChips() {
+        const u = Auth.user();
+        if (!u?.course || !COURSES[u.course]) return;
+        const sem = u.semester || 1;
+        const cs = COURSES[u.course].subjects[sem] || [];
+        const existing = allSubjects.map((s) => s.name);
+        const avail = cs.filter((s) => !existing.includes(s));
+        const wrap = document.getElementById("course-chips");
+        wrap.innerHTML = avail.length
+          ? avail
+              .map(
+                (s) =>
+                  `<span class="chip" onclick="document.getElementById('as-name').value='${s}';this.classList.toggle('sel')">${s}</span>`,
+              )
+              .join("")
+          : emptyHTML("✅", "All course subjects already added");
+      }
 
-async function addSubject(){const name=document.getElementById("as-name").value.trim();if(!name){showToast("Enter subject name","error");return;}try{await API.post("/subjects",{name});document.getElementById("as-name").value="";closeModal("modal-add-subj");showToast("Subject added!");loadSubjects();}catch(err){showToast(err.message,"error");}}
-async function deleteSubject(id){if(!confirm("Delete this subject?"))return;try{await API.del("/subjects/"+id);showToast("Deleted");loadSubjects();}catch(err){showToast(err.message,"error");}}
+      async function addSubject() {
+        const name = document.getElementById("as-name").value.trim();
+        if (!name) {
+          showToast("Enter subject name", "error");
+          return;
+        }
+        try {
+          await API.post("/subjects", { name });
+          document.getElementById("as-name").value = "";
+          closeModal("modal-add-subj");
+          showToast("Subject added!");
+          loadSubjects();
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      }
+      async function deleteSubject(id) {
+        if (!confirm("Delete this subject?")) return;
+        try {
+          await API.del("/subjects/" + id);
+          showToast("Deleted");
+          loadSubjects();
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      }
 
-function openSubject(id){currentSid=id;const sub=allSubjects.find(s=>s.id===id);if(!sub)return;document.getElementById("sd-title").textContent="📚 "+sub.name;const tot=(sub.topics||[]).length,done=(sub.topics||[]).filter(t=>t.status==="completed").length,pct=tot?Math.round(done/tot*100):0;document.getElementById("sd-progress").innerHTML=progBarHTML(sub.name+" progress",pct,"var(--teal)");renderTopics(sub);loadSubjectPYQs(sub.name);loadSubjectTests(sub.name);openModal("modal-subj-detail");}
+      function openSubject(id) {
+        currentSid = id;
+        const sub = allSubjects.find((s) => s.id === id);
+        if (!sub) return;
+        document.getElementById("sd-title").textContent = "📚 " + sub.name;
+        const tot = (sub.topics || []).length,
+          done = (sub.topics || []).filter(
+            (t) => t.status === "completed",
+          ).length,
+          pct = tot ? Math.round((done / tot) * 100) : 0;
+        document.getElementById("sd-progress").innerHTML = progBarHTML(
+          sub.name + " progress",
+          pct,
+          "var(--teal)",
+        );
+        renderTopics(sub);
+        loadSubjectPYQs(sub.name);
+        loadSubjectTests(sub.name);
+        openModal("modal-subj-detail");
+      }
 
-function renderTopics(sub){
-  const topics=sub.topics||[];const byPri={High:[],Medium:[],Low:[]};topics.forEach(t=>(byPri[t.priority||"Medium"]).push(t));
-  let html="";["High","Medium","Low"].forEach(pri=>{const ts=byPri[pri];if(!ts.length)return;html+=`<div style="font-size:.72rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text3);padding:10px 0 5px">${pri} Priority</div>`;ts.forEach(t=>{const icon=t.status==="completed"?"✅":t.status==="in_progress"?"📖":"○";html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:1rem;cursor:pointer" onclick="cycleTopicStatus(${t.id},${sub.id},'${t.status}')">${icon}</span><span style="flex:1;font-size:.87rem;${t.status==='completed'?'text-decoration:line-through;color:var(--text2)':''}">${t.name}</span><span class="${t.priority==='High'?'p-high':t.priority==='Low'?'p-low':'p-medium'}">${t.priority}</span><button class="btn btn-danger btn-sm" style="padding:3px 8px" onclick="deleteTopic(${t.id})">✕</button></div>`;});});
-  document.getElementById("sd-topics").innerHTML=html||emptyHTML("📖","No topics yet — add one above!");
-}
+      function renderTopics(sub) {
+        const topics = sub.topics || [];
+        const byPri = { High: [], Medium: [], Low: [] };
+        topics.forEach((t) => byPri[t.priority || "Medium"].push(t));
+        let html = "";
+        ["High", "Medium", "Low"].forEach((pri) => {
+          const ts = byPri[pri];
+          if (!ts.length) return;
+          html += `<div style="font-size:.72rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text3);padding:10px 0 5px">${pri} Priority</div>`;
+          ts.forEach((t) => {
+            const icon =
+              t.status === "completed"
+                ? "✅"
+                : t.status === "in_progress"
+                  ? "📖"
+                  : "○";
+            html += `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:1rem;cursor:pointer" onclick="cycleTopicStatus(${t.id},${sub.id},'${t.status}')">${icon}</span><span style="flex:1;font-size:.87rem;${t.status === "completed" ? "text-decoration:line-through;color:var(--text2)" : ""}">${t.name}</span><span class="${t.priority === "High" ? "p-high" : t.priority === "Low" ? "p-low" : "p-medium"}">${t.priority}</span><button class="btn btn-danger btn-sm" style="padding:3px 8px" onclick="deleteTopic(${t.id})">✕</button></div>`;
+          });
+        });
+        document.getElementById("sd-topics").innerHTML =
+          html || emptyHTML("📖", "No topics yet — add one above!");
+      }
 
-async function cycleTopicStatus(tid,sid,current){const order=["not_started","in_progress","completed"];const next=order[(order.indexOf(current)+1)%order.length];try{await API.patch("/subjects/topics/"+tid,{status:next});showToast(next==="completed"?"✅ Complete!":next==="in_progress"?"📖 In progress":"Marked not started");await loadSubjects();const sub=allSubjects.find(s=>s.id===sid);if(sub){renderTopics(sub);const tot=(sub.topics||[]).length,done=(sub.topics||[]).filter(t=>t.status==="completed").length,pct=tot?Math.round(done/tot*100):0;document.getElementById("sd-progress").innerHTML=progBarHTML(sub.name+" progress",pct,"var(--teal)");}}catch(err){showToast(err.message,"error");}}
+      async function cycleTopicStatus(tid, sid, current) {
+        const order = ["not_started", "in_progress", "completed"];
+        const next = order[(order.indexOf(current) + 1) % order.length];
+        try {
+          await API.patch("/subjects/topics/" + tid, { status: next });
+          showToast(
+            next === "completed"
+              ? "✅ Complete!"
+              : next === "in_progress"
+                ? "📖 In progress"
+                : "Marked not started",
+          );
+          await loadSubjects();
+          const sub = allSubjects.find((s) => s.id === sid);
+          if (sub) {
+            renderTopics(sub);
+            const tot = (sub.topics || []).length,
+              done = (sub.topics || []).filter(
+                (t) => t.status === "completed",
+              ).length,
+              pct = tot ? Math.round((done / tot) * 100) : 0;
+            document.getElementById("sd-progress").innerHTML = progBarHTML(
+              sub.name + " progress",
+              pct,
+              "var(--teal)",
+            );
+          }
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      }
 
-async function addTopic(){const name=document.getElementById("tp-name").value.trim(),priority=document.getElementById("tp-pri").value;if(!name){showToast("Enter topic name","error");return;}try{await API.post("/subjects/"+currentSid+"/topics",{name,priority});document.getElementById("tp-name").value="";showToast("Topic added!");await loadSubjects();const sub=allSubjects.find(s=>s.id===currentSid);if(sub)renderTopics(sub);}catch(err){showToast(err.message,"error");}}
-async function deleteTopic(tid){try{await API.del("/subjects/topics/"+tid);showToast("Deleted");await loadSubjects();const sub=allSubjects.find(s=>s.id===currentSid);if(sub)renderTopics(sub);}catch(err){showToast(err.message,"error");}}
+      async function addTopic() {
+        const name = document.getElementById("tp-name").value.trim(),
+          priority = document.getElementById("tp-pri").value;
+        if (!name) {
+          showToast("Enter topic name", "error");
+          return;
+        }
+        try {
+          await API.post("/subjects/" + currentSid + "/topics", {
+            name,
+            priority,
+          });
+          document.getElementById("tp-name").value = "";
+          showToast("Topic added!");
+          await loadSubjects();
+          const sub = allSubjects.find((s) => s.id === currentSid);
+          if (sub) renderTopics(sub);
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      }
+      async function deleteTopic(tid) {
+        try {
+          await API.del("/subjects/topics/" + tid);
+          showToast("Deleted");
+          await loadSubjects();
+          const sub = allSubjects.find((s) => s.id === currentSid);
+          if (sub) renderTopics(sub);
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      }
 
-async function loadSubjectPYQs(name){try{const d=await API.get("/pyqs?subject="+encodeURIComponent(name));document.getElementById("sd-pyqs").innerHTML=d.pyqs.length?d.pyqs.map(q=>`<div class="pyq-card"><div class="pyq-meta"><span class="badge b-indigo">${q.exam}</span><span class="badge b-gold">${q.year}</span>${badgeHTML(q.difficulty,DMAP)}</div><div class="pyq-q">${q.question}</div><div style="color:var(--teal);font-size:.84rem">Answer: ${q.answer}</div></div>`).join(""):emptyHTML("📝","No PYQs for this subject. <a href='pyq.html' style='color:var(--teal)'>Browse PYQ Bank →</a>");}catch(_){}}
-function loadSubjectTests(name){const tests=TEST_SEED.filter(t=>t.title.toLowerCase().includes(name.toLowerCase())||t.subject===name);document.getElementById("sd-tests").innerHTML=tests.length?tests.map(t=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--bg2);margin-bottom:8px"><div><div style="font-weight:600;font-size:.88rem">${t.title}</div><div style="font-size:.76rem;color:var(--text2)">${t.questions.length} questions · ${t.duration} min</div></div><a href="mocktest.html?id=${t.id}" class="btn btn-teal btn-sm">Start</a></div>`).join(""):emptyHTML("🧪","<a href='mocktest.html' style='color:var(--teal)'>Browse all mock tests →</a>");}
-function switchSDTab(tab,btn){document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");document.querySelectorAll(".tab-pane").forEach(p=>p.classList.remove("active"));document.getElementById("sdtab-"+tab).classList.add("active");}
+      async function loadSubjectPYQs(name) {
+        try {
+          const d = await API.get("/pyqs?subject=" + encodeURIComponent(name));
+          document.getElementById("sd-pyqs").innerHTML = d.pyqs.length
+            ? d.pyqs
+                .map(
+                  (q) =>
+                    `<div class="pyq-card"><div class="pyq-meta"><span class="badge b-indigo">${q.exam}</span><span class="badge b-gold">${q.year}</span>${badgeHTML(q.difficulty, DMAP)}</div><div class="pyq-q">${q.question}</div><div style="color:var(--teal);font-size:.84rem">Answer: ${q.answer}</div></div>`,
+                )
+                .join("")
+            : emptyHTML(
+                "📝",
+                "No PYQs for this subject. <a href='pyq.html' style='color:var(--teal)'>Browse PYQ Bank →</a>",
+              );
+        } catch (_) {}
+      }
+      function loadSubjectTests(name) {
+        const tests = TEST_SEED.filter(
+          (t) =>
+            t.title.toLowerCase().includes(name.toLowerCase()) ||
+            t.subject === name,
+        );
+        document.getElementById("sd-tests").innerHTML = tests.length
+          ? tests
+              .map(
+                (t) =>
+                  `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--bg2);margin-bottom:8px"><div><div style="font-weight:600;font-size:.88rem">${t.title}</div><div style="font-size:.76rem;color:var(--text2)">${t.questions.length} questions · ${t.duration} min</div></div><a href="mocktest.html?id=${t.id}" class="btn btn-teal btn-sm">Start</a></div>`,
+              )
+              .join("")
+          : emptyHTML(
+              "🧪",
+              "<a href='mocktest.html' style='color:var(--teal)'>Browse all mock tests →</a>",
+            );
+      }
+      function switchSDTab(tab, btn) {
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        document
+          .querySelectorAll(".tab-pane")
+          .forEach((p) => p.classList.remove("active"));
+        document.getElementById("sdtab-" + tab).classList.add("active");
+      }
 
-loadSubjects();
-</script>
-</body>
+      loadSubjects();
+    </script>
+  </body>
 </html>

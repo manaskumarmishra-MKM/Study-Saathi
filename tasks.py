@@ -69,16 +69,19 @@ def create_task():
     task_id = cursor.lastrowid
     conn.close()
 
-    return jsonify(
-        {
-            "message": "Task created",
-            "id": task_id,
-            "task": task_text,
-            "status": "pending",
-            "priority": priority,
-            "date": task_date,
-        }
-    ), 201
+    return (
+        jsonify(
+            {
+                "message": "Task created",
+                "id": task_id,
+                "task": task_text,
+                "status": "pending",
+                "priority": priority,
+                "date": task_date,
+            }
+        ),
+        201,
+    )
 
 
 @tasks_bp.route("/<int:task_id>", methods=["PATCH"])
@@ -123,7 +126,9 @@ def delete_task(task_id):
         return err
 
     conn = get_db()
-    conn.execute("DELETE FROM tasks WHERE id = ? AND user_id = ?", (task_id, user["id"]))
+    conn.execute(
+        "DELETE FROM tasks WHERE id = ? AND user_id = ?", (task_id, user["id"])
+    )
     conn.commit()
     conn.close()
     return jsonify({"message": "Task deleted"})

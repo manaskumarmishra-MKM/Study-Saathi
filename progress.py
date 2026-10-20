@@ -60,7 +60,12 @@ def log_progress():
 
     conn.commit()
     conn.close()
-    return jsonify({"message": "Progress logged", "subject": subject, "hours": hours_studied}), 201
+    return (
+        jsonify(
+            {"message": "Progress logged", "subject": subject, "hours": hours_studied}
+        ),
+        201,
+    )
 
 
 @progress_bp.route("/", methods=["GET"])
@@ -80,7 +85,13 @@ def get_summary():
             "SELECT COALESCE(SUM(hours_studied), 0) as total FROM progress WHERE user_id=? AND date=?",
             (user["id"], day_str),
         ).fetchone()
-        weekly.append({"date": day_str, "label": day.strftime("%a"), "hours": round(row["total"], 1)})
+        weekly.append(
+            {
+                "date": day_str,
+                "label": day.strftime("%a"),
+                "hours": round(row["total"], 1),
+            }
+        )
 
     subject_rows = conn.execute(
         """
@@ -224,26 +235,32 @@ def get_suggestions():
     suggestions = []
     if subject_hours:
         weakest = subject_hours[0]["subject"]
-        suggestions.append({
-            "type": "weak_subject",
-            "icon": "⚠️",
-            "message": f"Your weakest subject is {weakest}. Consider adding a focused revision block this week.",
-        })
+        suggestions.append(
+            {
+                "type": "weak_subject",
+                "icon": "⚠️",
+                "message": f"Your weakest subject is {weakest}. Consider adding a focused revision block this week.",
+            }
+        )
 
     if hard_pending:
         pending = hard_pending[0]
-        suggestions.append({
-            "type": "hard_topic",
-            "icon": "📘",
-            "message": f"Priority topic: {pending['topic_name']} in {pending['subject_name']}. Aim to finish it before your next study session.",
-        })
+        suggestions.append(
+            {
+                "type": "hard_topic",
+                "icon": "📘",
+                "message": f"Priority topic: {pending['topic_name']} in {pending['subject_name']}. Aim to finish it before your next study session.",
+            }
+        )
 
     if urgent_exams:
         next_exam = urgent_exams[0]
-        suggestions.append({
-            "type": "exam_focus",
-            "icon": "🎯",
-            "message": f"Upcoming exam: {next_exam['subject']} on {next_exam['exam_date']}. Increase revision time for this subject.",
-        })
+        suggestions.append(
+            {
+                "type": "exam_focus",
+                "icon": "🎯",
+                "message": f"Upcoming exam: {next_exam['subject']} on {next_exam['exam_date']}. Increase revision time for this subject.",
+            }
+        )
 
     return jsonify({"suggestions": suggestions})
