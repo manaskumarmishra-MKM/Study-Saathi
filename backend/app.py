@@ -8,10 +8,31 @@ from flask_cors import CORS
 from database import init_db, get_db
 from models import auth_required, hash_pw, check_pw, make_token
 from datetime import date, timedelta
-import json, random
+import json, random, os, secrets, urllib.request, urllib.parse
+
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+NEVERBOUNCE_API_KEY = os.environ.get("NEVERBOUNCE_API_KEY", "")
+
+def verify_email_neverbounce(email):
+    """Validate an email address using NeverBounce single check API."""
+    if not NEVERBOUNCE_API_KEY:
+        return {"result": "unknown", "error": "NEVERBOUNCE_API_KEY not configured"}
+    url = (
+        "https://api.neverbounce.com/v4/single/check"
+        + "?key=" + urllib.parse.quote(NEVERBOUNCE_API_KEY)
+        + "&email=" + urllib.parse.quote(email)
+    )
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "StudySaathi/1.0"})
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            return json.loads(resp.read().decode())
+    except Exception as e:
+        return {"result": "unknown", "error": str(e)}
 
 # ── Auth ──────────────────────────────────────────────────────
 @app.route("/api/auth/register", methods=["POST"])
@@ -23,12 +44,24 @@ def register():
     db=get_db()
     if db.execute("SELECT id FROM users WHERE email=?",[email]).fetchone():
         return jsonify({"error":"Email already registered"}),409
-    db.execute("INSERT INTO users(name,email,password,course,semester,exam) VALUES(?,?,?,?,?,?)",
+    # ── Email validation via NeverBounce ─────────────────────────
+    ev = verify_email_neverbounce(email)
+    ev_result = ev.get("result", "unknown")
+    if ev_result in ("invalid", "disposable"):
+        return jsonify({"error": f"Email appears to be {ev_result}. Please use a valid, deliverable email address."}),400
+    # ── Insert user (unverified until email confirmed) ──────────
+    db.execute("INSERT INTO users(name,email,password,course,semester,exam,email_verified) VALUES(?,?,?,?,?,?,0)",
                [name,email,hash_pw(pw),d.get("course",""),d.get("semester",1),d.get("exam","")])
     db.commit()
     user=db.execute("SELECT * FROM users WHERE email=?",[email]).fetchone()
+    # Generate verification token
+    vt = secrets.token_urlsafe(32)
+    db.execute("UPDATE users SET verification_token=? WHERE id=?",[vt,user["id"]])
+    db.commit()
     return jsonify({"token":make_token(user["id"],user["name"],user["email"]),
-                    "user":_ud(user)}),201
+                    "user":_ud(user),
+                    "email_verified":False,
+                    "verification_token":vt}),201
 
 @app.route("/api/auth/login", methods=["POST"])
 def login():
@@ -57,7 +90,34 @@ def update_profile(u):
     db.commit(); user=db.execute("SELECT * FROM users WHERE id=?",[u["id"]]).fetchone()
     return jsonify({"user":_ud(user)})
 
-def _ud(u): return {k:u[k] for k in ["id","name","email","course","semester","exam","daily_goal","streak","study_days"] if k in u.keys()}
+def _ud(u): return {k:u[k] for k in ["id","name","email","course","semester","exam","daily_goal","streak","study_days","email_verified"] if k in u.keys()}
+
+# ── Email Verification ──────────────────────────────────────────
+@app.route("/api/auth/verify-email", methods=["GET"])
+def verify_email():
+    token = request.args.get("token", "").strip()
+    if not token:
+        return jsonify({"error": "Verification token required"}), 400
+    db = get_db()
+    user = db.execute("SELECT * FROM users WHERE verification_token=?", [token]).fetchone()
+    if not user:
+        return jsonify({"error": "Invalid or expired verification token"}), 400
+    db.execute("UPDATE users SET email_verified=1, verification_token='' WHERE id=?", [user["id"]])
+    db.commit()
+    return jsonify({"message": "Email verified successfully", "email_verified": True})
+
+@app.route("/api/auth/resend-verification", methods=["POST"])
+@auth_required
+def resend_verification(u):
+    db = get_db()
+    if u["email_verified"]:
+        return jsonify({"message": "Email already verified"}), 200
+    vt = secrets.token_urlsafe(32)
+    db.execute("UPDATE users SET verification_token=? WHERE id=?", [vt, u["id"]])
+    db.commit()
+    # In production, send vt to user's email via your email provider.
+    return jsonify({"message": "Verification token generated", "verification_token": vt,
+                    "note": "Send this token to the user's email. In production, integrate an email provider (SMTP/SendGrid/Mailgun) to deliver it."})
 
 # ── Dashboard ─────────────────────────────────────────────────
 @app.route("/api/dashboard")
