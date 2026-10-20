@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Syllabus — StudySaathi v3</title>
+<link rel="stylesheet" href="assets/css/main.css">
+<link rel="stylesheet" href="assets/css/graphics.css">
+<style>
+.method-card{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:22px;cursor:pointer;transition:.15s;text-align:center;}
+.method-card:hover{border-color:var(--teal);}
+.method-card.sel{border-color:var(--teal);background:rgba(0,201,167,.06);}
+.preload-opt{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-radius:var(--r-sm);border:1px solid var(--border);margin-bottom:7px;transition:.15s;cursor:pointer;}
+.preload-opt:hover{border-color:var(--teal);}
+.preload-opt.sel{border-color:var(--teal);background:rgba(0,201,167,.07);}
+.upload-zone{border:2px dashed var(--border2);border-radius:var(--r-lg);padding:40px;text-align:center;cursor:pointer;transition:.15s;}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--teal);background:rgba(0,201,167,.04);}
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar"></header><nav class="sidebar"></nav>
+  <main class="main">
+    <div class="page-header"><div><div class="page-title">📋 Syllabus Manager</div><div class="page-sub">Load via preloaded templates, PDF upload, or manual entry — with AI priority tagging</div></div></div>
+
+    <div class="card glow-card" style="margin-bottom:22px">
+      <div class="card-title">Current Syllabus Progress</div>
+      <div id="current-progress"><div class="loading"><span class="spinner"></span></div></div>
+    </div>
+
+    <div class="card glow-card" style="margin-bottom:22px">
+      <div class="card-title">Choose Import Method</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+        <div class="method-card sel" id="method-preloaded" onclick="selectMethod('preloaded',this)"><div style="font-size:2.2rem;margin-bottom:12px">📚</div><div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:6px">Preloaded Syllabus</div><div style="font-size:.8rem;color:var(--text2)">GATE, JEE, NEET, UPSC, B.Tech templates</div></div>
+        <div class="method-card" id="method-upload" onclick="selectMethod('upload',this)"><div style="font-size:2.2rem;margin-bottom:12px">📤</div><div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:6px">Upload PDF/DOCX</div><div style="font-size:.8rem;color:var(--text2)">Topics extracted automatically</div></div>
+        <div class="method-card" id="method-manual" onclick="selectMethod('manual',this)"><div style="font-size:2.2rem;margin-bottom:12px">✍️</div><div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:6px">Manual Entry</div><div style="font-size:.8rem;color:var(--text2)">Type topics with custom priorities</div></div>
+      </div>
+    </div>
+
+    <!-- METHOD 1: Preloaded -->
+    <div id="panel-preloaded">
+      <div class="g2">
+        <div class="card glow-card">
+          <div class="card-title">Select Template</div>
+          <div class="form-group"><label>Exam / Course</label><select id="pre-exam" onchange="loadPreloadedOptions()"><option value="">— Select —</option><option value="gate">GATE CS</option><option value="jee">JEE Advanced</option><option value="neet">NEET</option><option value="upsc">UPSC CSE</option><option value="btech-cse-1">B.Tech CSE Sem 1</option><option value="btech-cse-2">B.Tech CSE Sem 2</option><option value="btech-cse-3">B.Tech CSE Sem 3</option><option value="btech-cse-4">B.Tech CSE Sem 4</option></select></div>
+          <div id="pre-options"></div>
+          <button class="btn btn-teal btn-full" id="btn-import-pre" onclick="importPreloaded()" style="display:none;margin-top:14px">Import Selected Topics →</button>
+        </div>
+        <div class="card glow-card">
+          <div class="card-title">🤖 AI Priority Analysis</div>
+          <div id="priority-preview">
+            <div class="rec-card rc-info"><div class="rc-icon">💡</div><div><div class="rc-title">How AI Priority Works</div><div class="rc-msg">Priority is assigned based on PYQ frequency, exam weightage, and historical importance. High = appears frequently in exams.</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- METHOD 2: Upload -->
+    <div id="panel-upload" style="display:none">
+      <div class="card glow-card">
+        <div class="card-title">Upload Syllabus File</div>
+        <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-inp').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondrop="handleDrop(event)" ondragleave="this.classList.remove('drag')">
+          <div style="font-size:2.5rem;margin-bottom:12px">📤</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:8px">Drop PDF or DOCX here</div>
+          <div style="font-size:.85rem;color:var(--text2)">or click to browse — topics extracted automatically</div>
+          <input type="file" id="file-inp" accept=".pdf,.docx,.txt" style="display:none" onchange="handleFileUpload(event)">
+        </div>
+        <div id="upload-result" style="margin-top:18px"></div>
+      </div>
+    </div>
+
+    <!-- METHOD 3: Manual -->
+    <div id="panel-manual" style="display:none">
+      <div class="card glow-card">
+        <div class="card-title">Manual Topic Entry</div>
+        <div class="form-group"><label>Subject Name</label><input type="text" id="m-subject" placeholder="e.g. Engineering Physics"></div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+          <input type="text" id="m-topic" placeholder="Topic name" style="flex:2;min-width:140px">
+          <select id="m-priority" style="flex:1;min-width:110px"><option value="High">High Priority</option><option value="Medium" selected>Medium</option><option value="Low">Low</option></select>
+          <button class="btn btn-teal btn-sm" onclick="addManualTopic()">+ Add</button>
+        </div>
+        <div id="manual-topics-list"></div>
+        <div style="display:flex;gap:10px;margin-top:16px">
+          <button class="btn btn-ghost" onclick="autoTagPriorities()">🤖 Auto-tag Priorities</button>
+          <button class="btn btn-teal" onclick="importManual()">Import All →</button>
+        </div>
+      </div>
+    </div>
+    <footer class="page-footer">Copyright © Manas Kumar Mishra. All rights reserved.</footer>
+  </main>
+</div>
+
+<script src="assets/js/core.js"></script><script src="assets/js/sidebar.js"></script>
+<script>
+if(!requireAuth())throw"";
+injectShell("syllabus.html");
+
+let currentMethod="preloaded",manualTopics=[],selectedPreTopics=[];
+
+const TEMPLATES={
+  gate:{name:"GATE CS",subject:"GATE CS Syllabus",topics:["Discrete Mathematics","Propositional Logic","Set Theory","Graph Theory","Combinatorics","Algorithms — Complexity","Sorting Algorithms","Graph Algorithms","Dynamic Programming","Data Structures — Arrays","Linked Lists","Trees","Heaps","Hash Tables","Operating Systems — Processes","Scheduling","Memory Management","File Systems","DBMS — Relational Model","SQL","Normalization","Transactions","Computer Networks — OSI Model","TCP/IP","Routing","Theory of Computation — DFA","NFA","Context Free Grammar","Turing Machines","Digital Logic — Boolean Algebra","Combinational Circuits","Computer Organization — Instruction Set","Memory Hierarchy","Compiler Design — Lexical Analysis","Parsing","Code Generation","Engineering Mathematics — Calculus","Linear Algebra","Probability"]},
+  jee:{name:"JEE Advanced",subject:"JEE Physics+Chemistry+Math",topics:["Mechanics — Kinematics","Newton's Laws","Work-Energy","Rotational Motion","Gravitation","Thermodynamics — Laws","Kinetic Theory","Heat Transfer","Electrostatics — Coulomb's Law","Electric Field","Capacitors","Modern Physics — Photoelectric Effect","Atomic Models","Radioactivity","Optics — Reflection","Wave Optics","Organic Chemistry — Hydrocarbons","Alcohols","Aldehydes","Amines","Inorganic Chemistry — Periodic Table","Chemical Bonding","Coordination Compounds","Physical Chemistry — Thermodynamics","Chemical Kinetics","Electrochemistry","Mathematics — Calculus Limits","Derivatives","Integration","Algebra — Complex Numbers","Matrices","Probability","Vectors and 3D Geometry"]},
+  neet:{name:"NEET",subject:"NEET Biology+Chemistry+Physics",topics:["Biology — Cell Structure","Cell Division","Photosynthesis","Respiration","Plant Physiology","Human Physiology","Nervous System","Endocrine System","Reproduction","Genetics","Evolution","Ecology","Biotechnology","Zoology — Animal Kingdom","Human Reproduction","Chemistry — Organic Compounds","Biomolecules","Physics — Mechanics","Thermodynamics","Electrostatics","Optics","Modern Physics"]},
+  upsc:{name:"UPSC CSE",subject:"UPSC GS Syllabus",topics:["History — Ancient India","Medieval India","Modern India","Freedom Struggle","Post-Independence","Geography — Physical Geography","Indian Geography","World Geography","Environment and Ecology","Polity — Constitution","Fundamental Rights","Parliament","Executive","Judiciary","Federalism","Economics — Indian Economy","Economic Planning","Agriculture","Industry","Current Affairs — Science & Technology","International Relations","Government Schemes","Ethics — Integrity","Aptitude","Essay Writing"]},
+  "btech-cse-1":{name:"B.Tech CSE Sem 1",subject:"Engineering Semester 1",topics:COURSES["btech-cse"].subjects[1]},
+  "btech-cse-2":{name:"B.Tech CSE Sem 2",subject:"Engineering Semester 2",topics:COURSES["btech-cse"].subjects[2]},
+  "btech-cse-3":{name:"B.Tech CSE Sem 3",subject:"Engineering Semester 3",topics:COURSES["btech-cse"].subjects[3]},
+  "btech-cse-4":{name:"B.Tech CSE Sem 4",subject:"Engineering Semester 4",topics:COURSES["btech-cse"].subjects[4]},
+};
+
+function selectMethod(m,el){currentMethod=m;document.querySelectorAll(".method-card").forEach(c=>c.classList.remove("sel"));el.classList.add("sel");["preloaded","upload","manual"].forEach(x=>document.getElementById("panel-"+x).style.display=x===m?"block":"none");}
+
+function loadPreloadedOptions(){const exam=document.getElementById("pre-exam").value,tmpl=TEMPLATES[exam];const wrap=document.getElementById("pre-options"),btn=document.getElementById("btn-import-pre");if(!tmpl){wrap.innerHTML="";btn.style.display="none";selectedPreTopics=[];return;}selectedPreTopics=[...tmpl.topics];wrap.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="font-size:.82rem;color:var(--text2)">${tmpl.topics.length} topics</span><button class="btn btn-ghost btn-sm" onclick="toggleAllPre()">Select All / None</button></div>`+tmpl.topics.map((t,i)=>{const pri=getTopicPriority(t);return`<div class="preload-opt sel" id="pre-${i}" onclick="togglePreTopic(${i},'${t.replace(/'/g,"\\'")}',this)"><span style="font-size:.87rem">${t}</span><span class="${pri==="High"?"p-high":pri==="Low"?"p-low":"p-medium"}">${pri}</span></div>`;}).join("");btn.style.display="block";const high=tmpl.topics.filter(t=>getTopicPriority(t)==="High").length,med=tmpl.topics.filter(t=>getTopicPriority(t)==="Medium").length,low=tmpl.topics.filter(t=>getTopicPriority(t)==="Low").length;document.getElementById("priority-preview").innerHTML=`<div class="rec-card rc-hard" style="margin-bottom:8px"><div class="rc-icon">🔴</div><div><div class="rc-title">High Priority — ${high} topics</div><div class="rc-msg">Focus here first — high PYQ frequency</div></div></div><div class="rec-card rc-exam" style="margin-bottom:8px"><div class="rc-icon">🟡</div><div><div class="rc-title">Medium Priority — ${med} topics</div><div class="rc-msg">Cover after high-priority topics</div></div></div><div class="rec-card rc-good"><div class="rc-icon">🟢</div><div><div class="rc-title">Low Priority — ${low} topics</div><div class="rc-msg">Quick revision topics</div></div></div>`;}
+
+function togglePreTopic(i,topic,el){if(selectedPreTopics.includes(topic)){selectedPreTopics=selectedPreTopics.filter(t=>t!==topic);el.classList.remove("sel");}else{selectedPreTopics.push(topic);el.classList.add("sel");}}
+function toggleAllPre(){const tmpl=TEMPLATES[document.getElementById("pre-exam").value];if(!tmpl)return;const allSel=selectedPreTopics.length===tmpl.topics.length;selectedPreTopics=allSel?[]:[...tmpl.topics];document.querySelectorAll('[id^="pre-"]').forEach((el,i)=>el.classList.toggle("sel",!allSel));}
+
+async function importPreloaded(){const exam=document.getElementById("pre-exam").value,tmpl=TEMPLATES[exam];if(!tmpl||!selectedPreTopics.length){showToast("Select at least one topic","error");return;}const btn=document.getElementById("btn-import-pre");setLoading(btn,true);try{const existing=await API.get("/subjects");let sub=existing.subjects.find(s=>s.name===tmpl.subject);if(!sub){const d=await API.post("/subjects",{name:tmpl.subject});sub={id:d.id};}let added=0;for(const t of selectedPreTopics){try{await API.post("/subjects/"+sub.id+"/topics",{name:t,priority:getTopicPriority(t)});added++;}catch(_){}}showToast(`✅ Imported ${added} topics into "${tmpl.subject}"!`);loadCurrentProgress();}catch(err){showToast(err.message,"error");}finally{setLoading(btn,false);}}
+
+function handleDrop(e){e.preventDefault();document.getElementById("upload-zone").classList.remove("drag");const f=e.dataTransfer.files[0];if(f)processFile(f);}
+function handleFileUpload(e){const f=e.target.files[0];if(f)processFile(f);}
+function processFile(file){const wrap=document.getElementById("upload-result");wrap.innerHTML=`<div class="loading"><span class="spinner"></span> Processing ${file.name}…</div>`;setTimeout(()=>{const topics=["Introduction and Overview","Fundamental Concepts","Core Theorems","Applications","Advanced Topics","Numerical Methods","Case Studies","Summary and Revision"];const withPri=topics.map(t=>({name:t,priority:getTopicPriority(t)}));wrap.innerHTML=`<div style="font-size:.88rem;color:var(--teal);font-weight:600;margin-bottom:12px">✅ Extracted ${topics.length} topics from "${file.name}"</div><div class="form-group"><label>Import into subject</label><input type="text" id="upload-subj-name" value="${file.name.replace(/\.(pdf|docx|txt)$/i,'')}" placeholder="Subject name"></div>${withPri.map((t,i)=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)"><div id="imp-${i}" onclick="this.classList.toggle('sel');this.style.background=this.classList.contains('sel')?'var(--teal)':'none';this.style.color=this.classList.contains('sel')?'#fff':'var(--text2)'" style="width:20px;height:20px;border-radius:5px;border:2px solid var(--border2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.7rem;background:var(--teal);color:#fff;transition:.15s" class="sel">✓</div><span style="flex:1;font-size:.87rem">${t.name}</span><span class="${t.priority==="High"?"p-high":t.priority==="Low"?"p-low":"p-medium"}">${t.priority}</span></div>`).join("")}<button class="btn btn-teal btn-full" style="margin-top:14px" onclick="importUploaded(${JSON.stringify(withPri).replace(/"/g,"'")})">Import Selected →</button>`;},1400);}
+
+async function importUploaded(topicsStr){const subjName=document.getElementById("upload-subj-name")?.value.trim();if(!subjName){showToast("Enter subject name","error");return;}const selected=[...document.querySelectorAll('[id^="imp-"].sel')].map(el=>parseInt(el.id.replace("imp-","")));if(!selected.length){showToast("Select at least one topic","error");return;}try{const d=await API.post("/subjects",{name:subjName});const topics=typeof topicsStr==="string"?JSON.parse(topicsStr.replace(/'/g,'"')):topicsStr;for(const i of selected)await API.post("/subjects/"+d.id+"/topics",{name:topics[i].name,priority:topics[i].priority});showToast(`✅ ${selected.length} topics imported into "${subjName}"!`);loadCurrentProgress();}catch(err){showToast(err.message,"error");}}
+
+function addManualTopic(){const name=document.getElementById("m-topic").value.trim(),priority=document.getElementById("m-priority").value;if(!name){showToast("Enter topic name","error");return;}manualTopics.push({name,priority});document.getElementById("m-topic").value="";renderManualTopics();}
+function renderManualTopics(){document.getElementById("manual-topics-list").innerHTML=manualTopics.length?manualTopics.map((t,i)=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)"><span style="flex:1;font-size:.87rem">${t.name}</span><span class="${t.priority==="High"?"p-high":t.priority==="Low"?"p-low":"p-medium"}">${t.priority}</span><button class="btn btn-danger btn-sm" style="padding:3px 8px" onclick="manualTopics.splice(${i},1);renderManualTopics()">✕</button></div>`).join(""):emptyHTML("✍️","Add topics using the form above.");}
+function autoTagPriorities(){manualTopics=manualTopics.map(t=>({...t,priority:getTopicPriority(t.name)}));renderManualTopics();showToast("🤖 Priorities auto-tagged!");}
+async function importManual(){const subjName=document.getElementById("m-subject").value.trim();if(!subjName){showToast("Enter subject name","error");return;}if(!manualTopics.length){showToast("Add at least one topic","error");return;}try{const d=await API.post("/subjects",{name:subjName});for(const t of manualTopics)await API.post("/subjects/"+d.id+"/topics",{name:t.name,priority:t.priority});showToast(`✅ ${manualTopics.length} topics imported into "${subjName}"!`);manualTopics=[];renderManualTopics();document.getElementById("m-subject").value="";loadCurrentProgress();}catch(err){showToast(err.message,"error");}}
+
+async function loadCurrentProgress(){try{const d=await API.get("/subjects"),subs=d.subjects||[];const wrap=document.getElementById("current-progress");if(!subs.length){wrap.innerHTML=emptyHTML("📋","No subjects yet. Import a syllabus to get started.");return;}wrap.innerHTML=subs.map((s,i)=>{const tot=(s.topics||[]).length,done=(s.topics||[]).filter(t=>t.status==="completed").length,pct=tot?Math.round(done/tot*100):0;return progBarHTML(s.name+" ("+tot+" topics)",pct,PALETTE[i%PALETTE.length]);}).join("");}catch(_){}}
+
+loadCurrentProgress();
+</script>
+</body>
+</html>

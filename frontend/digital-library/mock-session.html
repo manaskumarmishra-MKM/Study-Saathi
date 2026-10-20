@@ -1,0 +1,382 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Schedule Mock Session - Digital Atheneum</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "on-primary-fixed": "#2e1413",
+                            "outline-variant": "#504443",
+                            "surface-container-low": "#1e1b1a",
+                            "on-tertiary-fixed-variant": "#324c40",
+                            "surface-container-highest": "#383433",
+                            "surface-container": "#221f1e",
+                            "on-error": "#690005",
+                            "secondary-fixed-dim": "#b7c8de",
+                            "surface-variant": "#383433",
+                            "surface-container-high": "#2d2929",
+                            "on-secondary-container": "#a9bad0",
+                            "primary-container": "#4a2c2a",
+                            "surface-bright": "#3d3838",
+                            "tertiary": "#b0cdbe",
+                            "on-tertiary-container": "#86a394",
+                            "on-secondary-fixed": "#0b1d2d",
+                            "primary-fixed": "#ffdad7",
+                            "inverse-surface": "#e9e1df",
+                            "primary": "#eabcb8",
+                            "on-primary": "#462827",
+                            "tertiary-fixed": "#cbe9d9",
+                            "on-surface-variant": "#d4c3c1",
+                            "primary-fixed-dim": "#eabcb8",
+                            "on-primary-fixed-variant": "#5f3e3c",
+                            "tertiary-container": "#1f392e",
+                            "surface-container-lowest": "#110d0d",
+                            "on-secondary-fixed-variant": "#38485a",
+                            "tertiary-fixed-dim": "#b0cdbe",
+                            "on-primary-container": "#bd928f",
+                            "secondary-container": "#3a4b5d",
+                            "error": "#ffb4ab",
+                            "secondary": "#b7c8de",
+                            "surface-tint": "#eabcb8",
+                            "on-surface": "#e9e1df",
+                            "on-tertiary-fixed": "#052016",
+                            "on-secondary": "#213243",
+                            "inverse-primary": "#795553",
+                            "on-error-container": "#ffdad6",
+                            "outline": "#9d8d8c",
+                            "surface": "#161312",
+                            "on-background": "#e9e1df",
+                            "error-container": "#93000a",
+                            "background": "#161312",
+                            "secondary-fixed": "#d2e4fb",
+                            "inverse-on-surface": "#342f2f",
+                            "on-tertiary": "#1b352b",
+                            "surface-dim": "#161312"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.125rem",
+                            "lg": "0.25rem",
+                            "xl": "0.5rem",
+                            "full": "0.75rem"
+                    },
+                    "spacing": {
+                            "container-max": "1280px",
+                            "margin-desktop": "40px",
+                            "gutter": "24px",
+                            "unit": "8px",
+                            "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                            "headline-lg": [
+                                    "Playfair Display"
+                            ],
+                            "body-lg": [
+                                    "Inter"
+                            ],
+                            "body-md": [
+                                    "Inter"
+                            ],
+                            "label-sm": [
+                                    "Inter"
+                            ],
+                            "headline-lg-mobile": [
+                                    "Playfair Display"
+                            ],
+                            "display-lg": [
+                                    "Playfair Display"
+                            ],
+                            "headline-md": [
+                                    "Playfair Display"
+                            ]
+                    },
+                    "fontSize": {
+                            "headline-lg": [
+                                    "32px",
+                                    {
+                                            "lineHeight": "1.3",
+                                            "fontWeight": "600"
+                                    }
+                            ],
+                            "body-lg": [
+                                    "18px",
+                                    {
+                                            "lineHeight": "1.6",
+                                            "fontWeight": "400"
+                                    }
+                            ],
+                            "body-md": [
+                                    "16px",
+                                    {
+                                            "lineHeight": "1.5",
+                                            "fontWeight": "400"
+                                    }
+                            ],
+                            "label-sm": [
+                                    "12px",
+                                    {
+                                            "lineHeight": "1",
+                                            "letterSpacing": "0.05em",
+                                            "fontWeight": "600"
+                                    }
+                            ],
+                            "headline-lg-mobile": [
+                                    "28px",
+                                    {
+                                            "lineHeight": "1.3",
+                                            "fontWeight": "600"
+                                    }
+                            ],
+                            "display-lg": [
+                                    "48px",
+                                    {
+                                            "lineHeight": "1.2",
+                                            "letterSpacing": "-0.02em",
+                                            "fontWeight": "700"
+                                    }
+                            ],
+                            "headline-md": [
+                                    "24px",
+                                    {
+                                            "lineHeight": "1.4",
+                                            "fontWeight": "500"
+                                    }
+                            ]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Wood and Paper Textures */
+        .wood-texture {
+            background-color: #2e1413;
+            background-image: linear-gradient(to right, rgba(46, 20, 19, 0.95), rgba(46, 20, 19, 0.85)), url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+            border-top: 1px solid rgba(234, 188, 184, 0.2);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .paper-texture {
+            background-color: #383433;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+        }
+
+        .gold-accent {
+            color: #d4c3c1;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .input-recessed {
+            background-color: #221f1e;
+            border: 1px solid #504443;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        /* Modal Animation */
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        .modal-animate {
+            animation: modalFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Ambient Glow */
+        .glow-effect {
+            box-shadow: 0 0 24px rgba(234, 188, 184, 0.05), inset 0 1px 1px rgba(255,255,255,0.05);
+        }
+    </style>
+<style type="text/css"></style><style>
+.dl-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(17,13,13,0.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(234,188,184,0.1);height:56px;display:flex;align-items:center;padding:0 24px;gap:4px;}
+.dl-nav a{display:flex;align-items:center;gap:5px;padding:7px 11px;border-radius:5px;font-family:Inter,sans-serif;font-size:11.5px;font-weight:600;color:#9d8d8c;text-decoration:none;transition:all 0.2s;letter-spacing:.04em;white-space:nowrap;border:1px solid transparent;}
+.dl-nav a:hover{color:#eabcb8;background:rgba(234,188,184,0.07);}
+.dl-nav a.active{color:#eabcb8;background:rgba(234,188,184,0.1);border-color:rgba(234,188,184,0.15);}
+.dl-nav .logo{font-family:"Playfair Display",serif;font-size:15px;font-weight:700;color:#e9e1df;letter-spacing:-0.01em;margin-right:6px;padding:6px 10px;}
+.dl-nav .logo:hover{background:rgba(234,188,184,0.05);color:#eabcb8;}
+.dl-nav .sep{width:1px;height:20px;background:rgba(234,188,184,0.12);margin:0 6px;flex-shrink:0;}
+.dl-nav .spacer{flex:1;}
+.dl-nav .nav-v3{font-size:11px;border:1px solid rgba(176,205,190,0.25)!important;border-radius:20px;color:#b0cdbe!important;padding:5px 13px!important;}
+.dl-nav .nav-v3:hover{background:rgba(176,205,190,0.1)!important;border-color:rgba(176,205,190,0.4)!important;}
+.dl-nav .material-symbols-outlined{font-size:15px!important;}
+body.with-dl-nav{padding-top:56px;}
+</style>
+</head>
+<body class="bg-background text-on-background font-body-md h-screen w-screen overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<nav class="dl-nav">
+  <a href="entrance.html" class="logo">✦ StudySaathi</a>
+  <div class="sep"></div>
+  <a href="entrance.html" data-p="entrance"><span class="material-symbols-outlined">castle</span>Library</a>
+  <a href="shelves.html" data-p="shelves"><span class="material-symbols-outlined">library_books</span>Shelves</a>
+  <a href="question-paper.html" data-p="question-paper"><span class="material-symbols-outlined">inventory_2</span>PYQ Archive</a>
+  <a href="study-desk.html" data-p="study-desk"><span class="material-symbols-outlined">desk</span>Study Desk</a>
+  <a href="active-session.html" data-p="active-session"><span class="material-symbols-outlined">timer</span>Study Session</a>
+  <a href="mock-session.html" data-p="mock-session"><span class="material-symbols-outlined">quiz</span>Mock Test</a>
+  <a href="break-mode.html" data-p="break-mode"><span class="material-symbols-outlined">spa</span>Break</a>
+  <a href="session-summary.html" data-p="session-summary"><span class="material-symbols-outlined">bar_chart</span>Summary</a>
+  <div class="spacer"></div>
+  <a href="../dashboard.html" class="nav-v3"><span class="material-symbols-outlined">dashboard</span>v3 Dashboard</a>
+</nav>
+<script>
+(function(){
+  document.body.classList.add("with-dl-nav");
+  const p=location.pathname.split("/").pop().replace(".html","");
+  document.querySelectorAll(".dl-nav a[data-p]").forEach(a=>{if(a.dataset.p===p)a.classList.add("active");});
+})();
+</script>
+<!-- Background Image (Study Planner Screen) -->
+<div class="absolute inset-0 z-0">
+<img alt="Study Planner Background" class="w-full h-full object-cover opacity-60 blur-[2px]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAY8SdeBzDuiT9CDUq3JNMLEERRNZzuvpsRPq8RhX5lrwGItLfZS-ybFdHTTyggQUUDPkZjRIYgGnvUtp8Is9MukYaQNYDJ3azL13pqIatoPoXWgJuG1CqycAXl1ucxncASJI-oi31vaB1k7KLrCD7zgFWVcfv8ehaSqv1iAm2d4rUnbPzJBaFG-u3XdH5tIOT2nXokP7CStDHc4LPR7-QERA4m_kwJqzsz6XLqqHGc4Sgihb72l4xa">
+</div>
+<!-- Dark Overlay -->
+<div class="absolute inset-0 z-10 bg-black/70 backdrop-blur-md"></div>
+<!-- Modal Container -->
+<div class="relative z-20 flex items-center justify-center w-full h-full p-4">
+<!-- Modal Content -->
+<div class="paper-texture glow-effect rounded-xl w-full max-w-lg border border-outline-variant shadow-[0_16px_40px_rgba(0,0,0,0.6)] modal-animate overflow-hidden">
+<!-- Modal Header (Wood Trim) -->
+<div class="wood-texture px-6 py-5 flex justify-between items-center relative">
+<h2 class="font-headline-md text-headline-md text-primary tracking-tight">Architect a Mock Session</h2>
+<button aria-label="Close modal" class="text-on-surface-variant hover:text-primary transition-colors duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">close</span>
+</button>
+<!-- subtle highlight on wood -->
+<div class="absolute top-0 left-0 w-full h-[1px] bg-primary/10"></div>
+</div>
+<!-- Modal Body -->
+<div class="px-6 py-8 space-y-6">
+<!-- Subject Selection -->
+<div class="space-y-2">
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Subject of Study</label>
+<div class="relative">
+<select class="input-recessed w-full appearance-none rounded-lg px-4 py-3 text-on-surface font-body-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors cursor-pointer">
+<option disabled="" selected="" value="">Select a tome...</option>
+<option value="os">Operating Systems</option>
+<option value="dbms">Database Management</option>
+<option value="algo">Algorithms &amp; Data Structures</option>
+<option value="arch">Computer Architecture</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant">
+<span class="material-symbols-outlined">arrow_drop_down</span>
+</div>
+</div>
+</div>
+<!-- Duration & Paper Row -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Duration -->
+<div class="space-y-2">
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Duration (Hrs)</label>
+<div class="relative">
+<input class="input-recessed w-full rounded-lg px-4 py-3 text-on-surface font-body-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors" max="12" min="1" type="number" value="3">
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">schedule</span>
+</div>
+</div>
+</div>
+<!-- Paper Selection -->
+<div class="space-y-2">
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Paper Selection</label>
+<div class="relative">
+<select class="input-recessed w-full appearance-none rounded-lg px-4 py-3 text-on-surface font-body-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors cursor-pointer">
+<option>Nov 2023 End Sem</option>
+<option>May 2023 Mid Sem</option>
+<option>Custom Archive</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant">
+<span class="material-symbols-outlined">inventory_2</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Deep Work Toggle -->
+<div class="pt-4 border-t border-outline-variant/30 flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-3 cursor-pointer" onclick="toggleDeepWork()">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center border border-outline-variant/50 shadow-inner">
+<span class="material-symbols-outlined text-tertiary" id="deepWorkIcon">self_improvement</span>
+</div>
+<div>
+<h3 class="font-body-md text-on-surface font-medium">Enable Deep Work Silence</h3>
+<p class="font-label-sm text-on-surface-variant mt-1 normal-case tracking-normal">Blocks distractions &amp; activates Pomodoro.</p><div class="space-y-2 mb-4"><label class="block font-label-sm text-[10px] text-on-surface-variant uppercase tracking-wider">Pomodoro Presets</label><div class="flex flex-wrap gap-2"><button class="px-3 py-1.5 rounded-lg border border-outline-variant/30 text-[10px] font-label-sm text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors">The Classic (25/5)</button><button class="px-3 py-1.5 rounded-lg border border-outline-variant/30 text-[10px] font-label-sm text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors">Long Haul (50/10)</button><button class="px-3 py-1.5 rounded-lg border border-outline-variant/30 text-[10px] font-label-sm text-on-surface-variant hover:bg-surface-variant hover:text-primary transition-colors">Turbo (15/3)</button></div></div><div class="mt-4 grid grid-cols-3 gap-3 pt-4 border-t border-outline-variant/20">
+<div class="space-y-1">
+<label class="block font-label-sm text-[10px] text-on-surface-variant uppercase tracking-wider">Focus</label>
+<div class="relative">
+<input class="input-recessed w-full rounded-lg px-2 py-1.5 text-on-surface font-body-md text-sm focus:outline-none focus:ring-1 focus:ring-primary" max="90" min="15" type="number" value="25">
+<span class="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-on-surface-variant">m</span>
+</div>
+</div>
+<div class="space-y-1">
+<label class="block font-label-sm text-[10px] text-on-surface-variant uppercase tracking-wider">Short</label>
+<div class="relative">
+<input class="input-recessed w-full rounded-lg px-2 py-1.5 text-on-surface font-body-md text-sm focus:outline-none focus:ring-1 focus:ring-primary" max="15" min="3" type="number" value="5">
+<span class="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-on-surface-variant">m</span>
+</div>
+</div>
+<div class="space-y-1">
+<label class="block font-label-sm text-[10px] text-on-surface-variant uppercase tracking-wider">Long</label>
+<div class="relative">
+<input class="input-recessed w-full rounded-lg px-2 py-1.5 text-on-surface font-body-md text-sm focus:outline-none focus:ring-1 focus:ring-primary" type="number" value="15">
+<span class="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-on-surface-variant">m</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Custom Brass Toggle -->
+<div class="relative">
+<div class="w-12 h-6 bg-surface-container-low rounded-full border border-outline-variant shadow-inner transition-colors duration-300" id="toggleBg"></div>
+<div class="absolute left-1 top-1 w-4 h-4 rounded-full bg-outline shadow-md transition-transform duration-300 flex items-center justify-center" id="toggleKnob">
+<div class="w-1 h-1 bg-surface rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="px-6 py-5 bg-surface-container-highest border-t border-outline-variant flex justify-end gap-3">
+<button class="px-5 py-2.5 rounded-lg font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-variant transition-colors border border-transparent hover:border-outline-variant">
+                    Save for Later
+                </button>
+<button class="wood-texture px-6 py-2.5 rounded-lg font-label-sm text-label-sm text-primary hover:text-primary-fixed-dim transition-colors shadow-md hover:shadow-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">edit_document</span>
+                    Commence Session
+                </button>
+</div>
+</div>
+</div>
+<script>
+        let isDeepWorkEnabled = false;
+
+        function toggleDeepWork() {
+            isDeepWorkEnabled = !isDeepWorkEnabled;
+            
+            const bg = document.getElementById('toggleBg');
+            const knob = document.getElementById('toggleKnob');
+            const icon = document.getElementById('deepWorkIcon');
+
+            if (isDeepWorkEnabled) {
+                bg.classList.replace('bg-surface-container-low', 'bg-tertiary-container');
+                bg.classList.replace('border-outline-variant', 'border-tertiary');
+                knob.classList.add('translate-x-6');
+                knob.classList.replace('bg-outline', 'bg-tertiary');
+                icon.style.fontVariationSettings = "'FILL' 1";
+                icon.classList.add('animate-pulse');
+            } else {
+                bg.classList.replace('bg-tertiary-container', 'bg-surface-container-low');
+                bg.classList.replace('border-tertiary', 'border-outline-variant');
+                knob.classList.remove('translate-x-6');
+                knob.classList.replace('bg-tertiary', 'bg-outline');
+                icon.style.fontVariationSettings = "'FILL' 0";
+                icon.classList.remove('animate-pulse');
+            }
+        }
+    </script>
+
+
+</body></html>

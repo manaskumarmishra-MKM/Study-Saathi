@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Digital Library — StudySaathi</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:Inter,sans-serif;background:#110d0d;color:#e9e1df;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+.hub{max-width:760px;width:100%;text-align:center;}
+h1{font-family:"Playfair Display",serif;font-size:clamp(2rem,5vw,3rem);font-weight:700;letter-spacing:-0.02em;margin-bottom:12px;}
+h1 span{color:#eabcb8;}
+p{color:#9d8d8c;font-size:1rem;line-height:1.65;max-width:520px;margin:0 auto 40px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:32px;}
+.card{background:#1e1b1a;border:1px solid #504443;border-radius:8px;padding:24px 18px;text-align:center;cursor:pointer;transition:all .2s;text-decoration:none;color:#e9e1df;display:block;}
+.card:hover{border-color:#eabcb8;background:#221f1e;transform:translateY(-3px);box-shadow:0 8px 24px rgba(234,188,184,.12);}
+.card-icon{font-size:1.8rem;margin-bottom:10px;}
+.card-title{font-family:"Playfair Display",serif;font-size:.95rem;font-weight:600;margin-bottom:5px;}
+.card-sub{font-size:.77rem;color:#9d8d8c;line-height:1.5;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,#504443,transparent);margin:24px 0;}
+.back-link{display:inline-flex;align-items:center;gap:8px;color:#b0cdbe;font-size:.85rem;border:1px solid rgba(176,205,190,.2);border-radius:20px;padding:8px 18px;text-decoration:none;transition:.2s;}
+.back-link:hover{background:rgba(176,205,190,.08);border-color:rgba(176,205,190,.4);}
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter&display=swap');
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="hub">
+  <h1>The <span>Digital Library</span></h1>
+  <p>A scholarly, focused environment designed for deep work. Choose where you'd like to begin your session.</p>
+  <div class="grid">
+    <a href="entrance.html" class="card"><div class="card-icon">🏛️</div><div class="card-title">Library Entrance</div><div class="card-sub">Main dashboard with today's plan & Saathi AI</div></a>
+    <a href="shelves.html" class="card"><div class="card-icon">📚</div><div class="card-title">Subject Shelves</div><div class="card-sub">Browse subjects, notes & study materials</div></a>
+    <a href="question-paper.html" class="card"><div class="card-icon">🗂️</div><div class="card-title">PYQ Archive</div><div class="card-sub">Year-wise previous year question papers</div></a>
+    <a href="study-desk.html" class="card"><div class="card-icon">🖊️</div><div class="card-title">Study Desk</div><div class="card-sub">Focused reading with Saathi AI sidekick</div></a>
+    <a href="active-session.html" class="card"><div class="card-icon">⏱️</div><div class="card-title">Active Session</div><div class="card-sub">Pomodoro timer with live progress tracking</div></a>
+    <a href="mock-session.html" class="card"><div class="card-icon">📝</div><div class="card-title">Mock Test</div><div class="card-sub">Schedule & run timed mock sessions</div></a>
+    <a href="break-mode.html" class="card"><div class="card-icon">🌿</div><div class="card-title">Break Mode</div><div class="card-sub">4-7-8 breathing & micro-meditation</div></a>
+    <a href="session-summary.html" class="card"><div class="card-icon">📊</div><div class="card-title">Session Summary</div><div class="card-sub">Post-session stats, XP & achievements</div></a>
+  </div>
+  <div class="divider"></div>
+  <a href="../dashboard.html" class="back-link">← Back to v3 Dashboard</a>
+</div>
+</body>
+</html>

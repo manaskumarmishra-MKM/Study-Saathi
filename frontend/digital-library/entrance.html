@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>StudySaathi - Digital Library</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container": "#221f1e",
+                      "on-primary": "#462827",
+                      "primary": "#eabcb8",
+                      "on-background": "#e9e1df",
+                      "inverse-on-surface": "#342f2f",
+                      "on-surface-variant": "#d4c3c1",
+                      "on-secondary": "#213243",
+                      "surface-container-highest": "#383433",
+                      "on-secondary-container": "#a9bad0",
+                      "on-primary-fixed-variant": "#5f3e3c",
+                      "secondary-container": "#3a4b5d",
+                      "error-container": "#93000a",
+                      "on-tertiary": "#1b352b",
+                      "secondary-fixed": "#d2e4fb",
+                      "error": "#ffb4ab",
+                      "outline-variant": "#504443",
+                      "surface-dim": "#161312",
+                      "on-error-container": "#ffdad6",
+                      "outline": "#9d8d8c",
+                      "inverse-surface": "#e9e1df",
+                      "surface": "#161312",
+                      "inverse-primary": "#795553",
+                      "on-secondary-fixed": "#0b1d2d",
+                      "on-tertiary-container": "#86a394",
+                      "on-tertiary-fixed-variant": "#324c40",
+                      "tertiary-container": "#1f392e",
+                      "surface-variant": "#383433",
+                      "tertiary-fixed-dim": "#b0cdbe",
+                      "surface-tint": "#eabcb8",
+                      "tertiary": "#b0cdbe",
+                      "surface-bright": "#3d3838",
+                      "surface-container-lowest": "#110d0d",
+                      "tertiary-fixed": "#cbe9d9",
+                      "on-tertiary-fixed": "#052016",
+                      "on-primary-container": "#bd928f",
+                      "primary-fixed": "#ffdad7",
+                      "on-secondary-fixed-variant": "#38485a",
+                      "secondary": "#b7c8de",
+                      "surface-container-high": "#2d2929",
+                      "surface-container-low": "#1e1b1a",
+                      "background": "#161312",
+                      "on-error": "#690005",
+                      "primary-container": "#4a2c2a",
+                      "on-surface": "#e9e1df",
+                      "on-primary-fixed": "#2e1413",
+                      "primary-fixed-dim": "#eabcb8",
+                      "secondary-fixed-dim": "#b7c8de"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "margin-mobile": "16px",
+                      "margin-desktop": "40px",
+                      "unit": "8px",
+                      "container-max": "1280px"
+              },
+              "fontFamily": {
+                      "display-lg": [
+                              "Playfair Display"
+                      ],
+                      "headline-md": [
+                              "Playfair Display"
+                      ],
+                      "headline-lg": [
+                              "Playfair Display"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Playfair Display"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "1",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        /* Custom styles for 2.5D effects and specific textures */
+        .wood-texture {
+            background-color: #2a1f1a;
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.1) 10px, rgba(0,0,0,0.1) 20px);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.05), inset 0 -4px 8px rgba(0,0,0,0.5);
+        }
+        .leather-btn {
+            background: linear-gradient(145deg, #4a362c, #36261f);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.1);
+            border: 1px solid #5a4539;
+            transition: all 0.3s ease;
+        }
+        .leather-btn:hover {
+            background: linear-gradient(145deg, #563f33, #3a2a23);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 15px rgba(234,188,184,0.15), inset 0 1px 1px rgba(255,255,255,0.15);
+        }
+        .glass-panel {
+            background: rgba(34, 31, 30, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(234, 188, 184, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+        .parchment-bg {
+            background-color: #e9e1df;
+            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>');
+        }
+        
+        /* Hero Background with gradient overlay */
+        .hero-bg {
+            background-image: linear-gradient(to right, #161312 0%, rgba(22, 19, 18, 0.7) 40%, transparent 100%);
+        }
+        
+        /* 2.5D Book styling */
+        .book-spine {
+            box-shadow: -2px 0 5px rgba(0,0,0,0.5) inset, 2px 0 5px rgba(255,255,255,0.1) inset;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        .animate-fade-in-up {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        /* Enter Library Cinematic Transition */
+        body {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center center;
+        }
+        body.enter-library-transition {
+            transform: scale(1.15);
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            .animate-fade-in-up {
+                animation: none;
+                opacity: 1;
+                transform: none;
+            }
+            .animate-float {
+                animation: none;
+                transform: none;
+            }
+            .leather-btn, .leather-btn:hover {
+                transform: none !important;
+                transition: none !important;
+            }
+            webgl-shader {
+                display: none !important;
+            }
+            body {
+                transition: opacity 0.4s ease-in-out !important;
+            }
+            body.enter-library-transition {
+                transform: none !important;
+                opacity: 0;
+            }
+        }
+    </style>
+<style>
+.dl-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(17,13,13,0.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(234,188,184,0.1);height:56px;display:flex;align-items:center;padding:0 24px;gap:4px;}
+.dl-nav a{display:flex;align-items:center;gap:5px;padding:7px 11px;border-radius:5px;font-family:Inter,sans-serif;font-size:11.5px;font-weight:600;color:#9d8d8c;text-decoration:none;transition:all 0.2s;letter-spacing:.04em;white-space:nowrap;border:1px solid transparent;}
+.dl-nav a:hover{color:#eabcb8;background:rgba(234,188,184,0.07);}
+.dl-nav a.active{color:#eabcb8;background:rgba(234,188,184,0.1);border-color:rgba(234,188,184,0.15);}
+.dl-nav .logo{font-family:"Playfair Display",serif;font-size:15px;font-weight:700;color:#e9e1df;letter-spacing:-0.01em;margin-right:6px;padding:6px 10px;}
+.dl-nav .logo:hover{background:rgba(234,188,184,0.05);color:#eabcb8;}
+.dl-nav .sep{width:1px;height:20px;background:rgba(234,188,184,0.12);margin:0 6px;flex-shrink:0;}
+.dl-nav .spacer{flex:1;}
+.dl-nav .nav-v3{font-size:11px;border:1px solid rgba(176,205,190,0.25)!important;border-radius:20px;color:#b0cdbe!important;padding:5px 13px!important;}
+.dl-nav .nav-v3:hover{background:rgba(176,205,190,0.1)!important;border-color:rgba(176,205,190,0.4)!important;}
+.dl-nav .material-symbols-outlined{font-size:15px!important;}
+body.with-dl-nav{padding-top:56px;}
+</style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md overflow-x-hidden selection:bg-primary selection:text-on-primary">
+<nav class="dl-nav">
+  <a href="entrance.html" class="logo">✦ StudySaathi</a>
+  <div class="sep"></div>
+  <a href="entrance.html" data-p="entrance"><span class="material-symbols-outlined">castle</span>Library</a>
+  <a href="shelves.html" data-p="shelves"><span class="material-symbols-outlined">library_books</span>Shelves</a>
+  <a href="question-paper.html" data-p="question-paper"><span class="material-symbols-outlined">inventory_2</span>PYQ Archive</a>
+  <a href="study-desk.html" data-p="study-desk"><span class="material-symbols-outlined">desk</span>Study Desk</a>
+  <a href="active-session.html" data-p="active-session"><span class="material-symbols-outlined">timer</span>Study Session</a>
+  <a href="mock-session.html" data-p="mock-session"><span class="material-symbols-outlined">quiz</span>Mock Test</a>
+  <a href="break-mode.html" data-p="break-mode"><span class="material-symbols-outlined">spa</span>Break</a>
+  <a href="session-summary.html" data-p="session-summary"><span class="material-symbols-outlined">bar_chart</span>Summary</a>
+  <div class="spacer"></div>
+  <a href="../dashboard.html" class="nav-v3"><span class="material-symbols-outlined">dashboard</span>v3 Dashboard</a>
+</nav>
+<script>
+(function(){
+  document.body.classList.add("with-dl-nav");
+  const p=location.pathname.split("/").pop().replace(".html","");
+  document.querySelectorAll(".dl-nav a[data-p]").forEach(a=>{if(a.dataset.p===p)a.classList.add("active");});
+})();
+</script>
+<!-- TopAppBar -->
+<nav class="hidden md:flex justify-between items-center w-full px-margin-desktop py-4 max-w-container-max mx-auto bg-transparent docked full-width top-0 bg-gradient-to-b from-surface-container-lowest/80 to-transparent sticky z-50">
+<div class="flex items-center gap-3">
+<img alt="Digital Atheneum Logo" class="h-10 w-auto" src="https://lh3.googleusercontent.com/aida/AEtjO1WsN0CMJ6A9qZBEGThctxHi-5T3Ihvj7tT4oJNki-5YbqRJ6a2oKMAyKglt3VCaV4SCSYNaPfbI-2977qu8ip_FzPq8bxgKgrRWCCYPF3Qv-hAHheGF5LhKq9evbL8SU4SDNVFI_E3LiGnki2_VYGyrJrctuoGvWtIUFfu1TRAEoTte67UXGJxprbFSfqo_Jftg2kEsI5GjYn0z5n75jNQj_xMeEoU7R3-dNEtUp15fsCiq7kbs51nE958"/>
+<div class="flex flex-col">
+<span class="font-display-lg text-headline-md font-bold text-on-surface leading-none">StudySaathi</span>
+<span class="font-label-sm text-[10px] text-primary uppercase tracking-widest mt-1">Digital Atheneum</span>
+</div>
+</div>
+<ul class="flex gap-6 items-center">
+<li>
+<a class="flex items-center gap-2 text-primary border-b-2 border-primary pb-1 font-bold" href="#">
+<span class="material-symbols-outlined text-sm">castle</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Entrance</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-2 text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">library_books</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Shelves</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-2 text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">inventory_2</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Archive</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-2 text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">event_note</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Planner</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-2 text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">desk</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Desk</span>
+</a>
+</li>
+</ul>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 rounded-full transition-all p-2 flex items-center justify-center">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 rounded-full transition-all p-2 flex items-center justify-center relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant">
+<img alt="Manas's profile picture" class="w-full h-full object-cover" data-alt="A small circular profile portrait of a young male student named Manas, smiling, set against a dark scholarly library background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsnuEeQZM-p-z690mRd28BNULR6lhltV8REHRycIF0831pAHubYbXUvtd7-y5p_NMS6ZGctZ81OqkTKTG3vLRk0inNvIRJyNsgmyJCjd_K2inwI_SRLQcgoD7hhSkXwmOfsI3guEkG6c6JprxRBuil7EqY_Sga9fUUw-kzayAfrLAl-gGQWzGDD8TNuKqQj9vE343JNqNmwalzzQOcih9AyUFseO2PnN5KqPWvQg7KenUQH74j2fGJ"/>
+</div>
+</div>
+</nav>
+<!-- Mobile Top Bar (Simplified) -->
+<nav class="md:hidden flex justify-between items-center w-full px-margin-mobile py-4 bg-surface-container-lowest sticky top-0 z-50 border-b border-surface-container">
+<div class="flex items-center gap-3">
+<img alt="Digital Atheneum Logo" class="h-8 w-auto" src="https://lh3.googleusercontent.com/aida/AEtjO1WsN0CMJ6A9qZBEGThctxHi-5T3Ihvj7tT4oJNki-5YbqRJ6a2oKMAyKglt3VCaV4SCSYNaPfbI-2977qu8ip_FzPq8bxgKgrRWCCYPF3Qv-hAHheGF5LhKq9evbL8SU4SDNVFI_E3LiGnki2_VYGyrJrctuoGvWtIUFfu1TRAEoTte67UXGJxprbFSfqo_Jftg2kEsI5GjYn0z5n75jNQj_xMeEoU7R3-dNEtUp15fsCiq7kbs51nE958"/>
+<div class="flex flex-col">
+<span class="font-display-lg text-body-lg font-bold text-on-surface leading-none">StudySaathi</span>
+</div>
+</div>
+<button class="text-on-surface">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-grow relative">
+<!-- Background Image with Gradient Overlay & WebGL Shader -->
+<div class="absolute inset-0 z-0 h-[80vh] md:h-[90vh]">
+<img alt="Majestic cinematic library background with warm dramatic lighting" class="w-full h-full object-cover object-center opacity-40 mix-blend-overlay" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_c5vGrP9AU_whkapyQ8ss5fZgyNSyIYLwpsxbvVBfkobvoXtbJIP28LNQkSbhzpAFVaT0tIsAp1sozFy5zvBXN4C0G4p8L9IDpLDXq0UNILI3khEVG0HOumRZI301n2JvXdApslJXOn5VXjQzy_DZEwfxdrkpEUoy9w5XvMhMw9mInUSlEC-wbaPCQSe9eUhYRYocKbxpsKcA6oDskw_7KS0M9ZcN1L5YJ1ZRc0a_U3siDKBqm0I77loUOo64Cxyqqw"/>
+<div class="absolute inset-0 hero-bg"></div>
+<!-- Bottom fade to blend with page body -->
+<div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent"></div>
+</div>
+<div class="relative z-10 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-12 md:pt-24 pb-32">
+<!-- Hero Section -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+<!-- Left Column: Copy & CTAs -->
+<div class="lg:col-span-6 flex flex-col gap-8 animate-fade-in-up">
+<!-- Welcome Badge -->
+<div class="flex items-center gap-2 text-primary font-label-sm text-label-sm uppercase tracking-widest">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">waving_hand</span>
+                        WELCOME TO YOUR LIBRARY
+                    </div>
+<!-- Headline & Subhead -->
+<div class="flex flex-col gap-6">
+<h1 class="font-display-lg text-display-lg md:text-[64px] text-on-surface leading-tight">
+                            Learn. Practice.<br/>
+<span class="text-primary">Master.</span> Achieve.
+                        </h1>
+<p class="font-body-md text-body-lg text-on-surface-variant max-w-lg">
+                            StudySaathi is your <span class="text-primary font-medium">all-in-one study library</span> with books, PYQs, mock tests, planner &amp; AI powered help.
+                        </p>
+</div>
+<!-- CTAs -->
+<div class="flex flex-wrap gap-4 mt-2">
+<button class="leather-btn text-primary-fixed font-label-sm text-body-md px-8 py-4 rounded-lg flex items-center gap-2 transition-transform cursor-pointer" id="btn-enter-library">
+<span class="material-symbols-outlined">login</span>
+                            Enter Library
+                        </button>
+<button class="bg-surface-container/50 border border-outline text-on-surface hover:bg-surface-container hover:border-outline-variant hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:scale-[1.02] font-label-sm text-body-md px-8 py-4 rounded-lg flex items-center gap-2 transition-all">
+<span class="material-symbols-outlined">desk</span>
+                            Go to Study Desk
+                        </button>
+</div>
+<!-- Trust Stats -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8 pt-8 border-t border-surface-container-high">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2 text-on-surface font-headline-md text-headline-md">
+<span class="material-symbols-outlined text-primary text-xl">group</span>
+                                50K+
+                            </div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Students</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2 text-on-surface font-headline-md text-headline-md">
+<span class="material-symbols-outlined text-primary text-xl">inventory_2</span>
+                                10K+
+                            </div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">PYQs</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2 text-on-surface font-headline-md text-headline-md">
+<span class="material-symbols-outlined text-primary text-xl">verified</span>
+                                95%
+                            </div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Success Rate</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2 text-on-surface font-headline-md text-headline-md">
+<span class="material-symbols-outlined text-primary text-xl">support_agent</span>
+                                24/7
+                            </div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">AI Support</span>
+</div>
+</div>
+</div>
+<!-- Right Column: Interactive Widgets & 2.5D Elements -->
+<div class="lg:col-span-6 relative flex justify-end h-full min-h-[500px]">
+<!-- Today's Focus Sidebar (Glassmorphic) -->
+<div class="glass-panel rounded-xl p-6 w-full max-w-sm absolute top-0 right-0 z-20 animate-float">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-6 border-b border-surface-container-high pb-4">Today's Focus</h3>
+<ul class="flex flex-col gap-4 mb-8">
+<li class="flex items-center justify-between group">
+<div class="flex items-center gap-3">
+<div class="w-5 h-5 rounded border border-outline flex items-center justify-center text-background group-hover:border-primary transition-colors cursor-pointer">
+<!-- unchecked -->
+</div>
+<span class="font-body-md text-body-md text-on-surface">DBMS – Normalization</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">45 min</span>
+</li>
+<li class="flex items-center justify-between group">
+<div class="flex items-center gap-3">
+<div class="w-5 h-5 rounded border border-outline flex items-center justify-center text-background group-hover:border-primary transition-colors cursor-pointer">
+<!-- unchecked -->
+</div>
+<span class="font-body-md text-body-md text-on-surface">PYQ Practice (2024)</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">30 min</span>
+</li>
+<li class="flex items-center justify-between group">
+<div class="flex items-center gap-3">
+<div class="w-5 h-5 rounded border border-outline flex items-center justify-center text-background group-hover:border-primary transition-colors cursor-pointer">
+<!-- unchecked -->
+</div>
+<span class="font-body-md text-body-md text-on-surface">15 MCQs</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">15 min</span>
+</li>
+<li class="flex items-center justify-between group">
+<div class="flex items-center gap-3 opacity-60">
+<div class="w-5 h-5 rounded border border-outline flex items-center justify-center text-background">
+<span class="material-symbols-outlined text-[14px]">close</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface line-through">Short Break</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">10 min</span>
+</li>
+</ul>
+<div class="flex items-center justify-between mb-6 pt-4 border-t border-surface-container-high">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Total Study Time</span>
+<span class="font-headline-md text-body-lg text-primary">1h 40m</span>
+</div>
+<button class="w-full leather-btn text-primary-fixed font-label-sm text-body-md px-4 py-3 rounded-lg flex items-center justify-center gap-2 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                            Start Now
+                        </button>
+</div>
+</div>
+</div>
+<!-- Saathi AI Banner -->
+<div class="mt-24 glass-panel rounded-2xl p-6 md:p-8 flex flex-col lg:flex-row items-center gap-8 justify-between">
+<div class="flex items-center gap-6">
+<div class="w-20 h-20 rounded-full border-2 border-primary/30 overflow-hidden relative shadow-[0_0_15px_rgba(234,188,184,0.2)]">
+<img alt="Saathi AI Avatar" class="w-full h-full object-cover" data-alt="A stylized 3D avatar of a friendly AI librarian with glowing glasses, set against a dark library background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMsLPXYU_C0CtvMPe97tCU_tQ_Y1eS3l1amEZnguhiPJ84koTkJsRNiBVtSJnv67WEED04hCf1EdXFScNkdfKhcPi-33kqWSJyFky5knk_NzAdHgyfxRWc4TntvOUQHs2gYP14J6lfi3eH20WfXxYgjLZgYkYOidBLk769UuolD6mgN61Yij8yEpCy2jHToc_fgRVRX-PePbtGH-E0LlJMso1Cg34usW0yV6U4oUi20utwpkH6eD3P"/>
+</div>
+<div>
+<h4 class="font-display-lg text-headline-md text-on-surface flex items-center gap-2">
+                            Hi Manas! <span class="text-2xl">👋</span>
+</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+                            I'm Saathi, your personal AI librarian.<br/>How can I help you today?
+                        </p>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-3 lg:gap-4">
+<button class="bg-surface-container hover:bg-surface-container-high border border-outline-variant rounded-xl px-4 py-3 flex items-center gap-3 transition-colors group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">lightbulb</span>
+<div class="text-left">
+<div class="font-label-sm text-label-sm text-on-surface">Explain</div>
+<div class="text-[10px] text-on-surface-variant">Any Concept</div>
+</div>
+</button>
+<button class="bg-surface-container hover:bg-surface-container-high border border-outline-variant rounded-xl px-4 py-3 flex items-center gap-3 transition-colors group">
+<span class="material-symbols-outlined text-secondary group-hover:scale-110 transition-transform">search</span>
+<div class="text-left">
+<div class="font-label-sm text-label-sm text-on-surface">Find</div>
+<div class="text-[10px] text-on-surface-variant">Study Material</div>
+</div>
+</button>
+<button class="bg-surface-container hover:bg-surface-container-high border border-outline-variant rounded-xl px-4 py-3 flex items-center gap-3 transition-colors group">
+<span class="material-symbols-outlined text-tertiary group-hover:scale-110 transition-transform">event_note</span>
+<div class="text-left">
+<div class="font-label-sm text-label-sm text-on-surface">Generate</div>
+<div class="text-[10px] text-on-surface-variant">Study Plan</div>
+</div>
+</button>
+<button class="bg-surface-container hover:bg-surface-container-high border border-outline-variant rounded-xl px-4 py-3 flex items-center gap-3 transition-colors group">
+<span class="material-symbols-outlined text-error group-hover:scale-110 transition-transform">help_center</span>
+<div class="text-left">
+<div class="font-label-sm text-label-sm text-on-surface">Solve</div>
+<div class="text-[10px] text-on-surface-variant">Doubts</div>
+</div>
+</button>
+<button class="leather-btn text-primary-fixed font-label-sm text-body-md px-6 py-3 rounded-xl flex items-center gap-2 ml-auto lg:ml-4" onclick="window.location.href='../chatbot.html'">
+<span class="material-symbols-outlined text-sm">smart_toy</span>
+                        Chat with Saathi
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Bento Grid Features (Replacing standard list) -->
+<div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Bookshelf Card -->
+<div class="glass-panel rounded-2xl p-6 flex flex-col justify-between group hover:border-primary/30 transition-colors h-64 relative overflow-hidden">
+<div class="absolute inset-0 opacity-20 bg-[url('placeholder')] bg-cover bg-center mix-blend-overlay" data-alt="Close up of a dark wooden bookshelf filled with ancient leather-bound books in a majestic library setting." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAPEW1W7_spAF7S-uqaCnM6pIrsTeN3zUA9Ex_7KtjlJn-oIMDVdEiyGeMfdVzXGJjl3ZM2jX6G74_ghAEXXN9aRNV_MjkDcZKkKJhoaJ_BsvPGRHHkIRLmVMajTpfDWyYVskPt5O1hU6cDsk0qWQuJOW8YP_B4NdVa2CGVg50-mkNzLQrCCblCZHyXcC23XRzfV8jo5zR6cPOBg3r50Zo5Qs3FW9Nu-T-S93XBxH6EbsqsLxvA6tCe')"></div>
+<div class="relative z-10">
+<h3 class="font-display-lg text-headline-md text-on-surface mb-2">Subject Shelves</h3>
+<p class="font-body-md text-sm text-on-surface-variant">Explore subjects, notes, important topics &amp; study materials.</p>
+</div>
+<button class="relative z-10 self-start mt-4 flex items-center gap-2 text-sm font-label-sm text-primary hover:text-primary-fixed transition-colors">
+                        Explore Shelves <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+<!-- PYQ Archive Card -->
+<div class="glass-panel rounded-2xl p-6 flex flex-col justify-between group hover:border-primary/30 transition-colors h-64 relative overflow-hidden">
+<div class="absolute inset-0 opacity-20 bg-[url('placeholder')] bg-cover bg-center mix-blend-overlay" data-alt="A vintage wooden filing cabinet with brass handles, slightly open revealing old parchment documents in a dark library." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCCwqBjZadZpP1NMYRjwuhcmPmQD5xKgE_nmBG-gIdL-lTkhlIz-gLiUB7L8tfCBJOWZaUgnCxYQth3Ip6VckLN51J2JR4e3qdf5WBNVLxWT2bO0KKHz3tMKgdMlkJhDG4WEujP3_zfTlcBA0XceykGxJJKKN3wIn9Fs1GGLzxWmhnCcbtWpg6wA_64YlI-gc9MPDCLr_3O6U24wMHA7r7Q-U_f2LyYA68ZoUFpg0yd97jxKa8VLBBu')"></div>
+<div class="relative z-10">
+<h3 class="font-display-lg text-headline-md text-on-surface mb-2">PYQ Archive</h3>
+<p class="font-body-md text-sm text-on-surface-variant">Access year-wise previous year questions with solutions.</p>
+</div>
+<button class="relative z-10 self-start mt-4 flex items-center gap-2 text-sm font-label-sm text-primary hover:text-primary-fixed transition-colors">
+                        Explore PYQs <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+<!-- Study Planner Card -->
+<div class="glass-panel rounded-2xl p-6 flex flex-col justify-between group hover:border-primary/30 transition-colors h-64 relative overflow-hidden">
+<div class="absolute inset-0 opacity-20 bg-[url('placeholder')] bg-cover bg-center mix-blend-overlay" data-alt="A beautifully crafted leather-bound planner open on a dark oak desk, illuminated by a warm brass desk lamp." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAX-tNOM6ejXpNvRPeN20Sq5sAr7Om7VZMP3dKfbBQ_Yp0NYr0DkkiJ7jDZ_3sE3G6fP6usnPsR2RnB3YpVXAlbOjx5r_U8ivnUe1x-cLzUX_iVzFHNafupktuPxFpQuO9dxvFvXQAWadRtl3CIPU0De0nDUA4SpRd7h919y95ZZYnLSZnql9KT_74WPgPDqYxLNziCEkMQuvBWhwAITbvAjPdoJmjAaN6WIGwhJZVX6mHfcMch2yz0')"></div>
+<div class="relative z-10">
+<h3 class="font-display-lg text-headline-md text-on-surface mb-2">Study Planner</h3>
+<p class="font-body-md text-sm text-on-surface-variant">Plan your timetable, track tasks and stay consistent.</p>
+</div>
+<button class="relative z-10 self-start mt-4 flex items-center gap-2 text-sm font-label-sm text-primary hover:text-primary-fixed transition-colors">
+                        Plan Now <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+<!-- Progress Card -->
+<div class="glass-panel rounded-2xl p-6 flex flex-col justify-between group hover:border-primary/30 transition-colors h-64 relative overflow-hidden">
+<div class="absolute inset-0 opacity-20 bg-[url('placeholder')] bg-cover bg-center mix-blend-overlay" data-alt="Abstract visualization of progress charts glowing in gold and warm tones on a dark textured background." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCnIqKzjTKqj-2MGWTH15sXvXEC6SkPj8qRyPnLyGslmRfWDOuFbkyvgJwCq-OrhJLE-w5Xv536gvPUacYcBzOfZD4JDfzUAzTlna6lN2iKZF9A39LwTjBcIrLMuAFV7d_lgWt9h7-NiOqAGNGVX88e3VRsfVDmYR5o9czW73Lkux82eqbv7lSyzM1gUetBEfEDURj2GPIujIarpr2uC62kTHxPr-zvmaLkmjlds45o2Pyc9Dk5WRXl')"></div>
+<div class="relative z-10">
+<h3 class="font-display-lg text-headline-md text-on-surface mb-2">Progress</h3>
+<p class="font-body-md text-sm text-on-surface-variant">Analyze your progress, test performance &amp; improve every day.</p>
+</div>
+<button class="relative z-10 self-start mt-4 flex items-center gap-2 text-sm font-label-sm text-primary hover:text-primary-fixed transition-colors">
+                        View Progress <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full bg-surface-container-lowest border-t border-surface-container z-50 pb-safe">
+<ul class="flex justify-around items-center h-16">
+<li class="flex-1">
+<a class="flex flex-col items-center justify-center h-full text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">castle</span>
+<span class="text-[10px] font-label-sm mt-1">Entrance</span>
+</a>
+</li>
+<li class="flex-1">
+<a class="flex flex-col items-center justify-center h-full text-on-surface-variant hover:text-on-surface" href="#">
+<span class="material-symbols-outlined">library_books</span>
+<span class="text-[10px] font-label-sm mt-1">Shelves</span>
+</a>
+</li>
+<li class="flex-1">
+<a class="flex flex-col items-center justify-center h-full text-on-surface-variant hover:text-on-surface" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="text-[10px] font-label-sm mt-1">Archive</span>
+</a>
+</li>
+<li class="flex-1">
+<a class="flex flex-col items-center justify-center h-full text-on-surface-variant hover:text-on-surface" href="#">
+<span class="material-symbols-outlined">event_note</span>
+<span class="text-[10px] font-label-sm mt-1">Planner</span>
+</a>
+</li>
+<li class="flex-1">
+<a class="flex flex-col items-center justify-center h-full text-on-surface-variant hover:text-on-surface" href="#">
+<span class="material-symbols-outlined">desk</span>
+<span class="text-[10px] font-label-sm mt-1">Desk</span>
+</a>
+</li>
+</ul>
+</nav>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const enterLibraryBtn = document.getElementById('btn-enter-library');
+        if (enterLibraryBtn) {
+            enterLibraryBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.body.classList.add('enter-library-transition');
+                setTimeout(() => {
+                    // Navigation logic would go here
+                    window.location.href = 'shelves.html';
+                }, 500);
+            });
+        }
+    });
+</script>
+</body></html>

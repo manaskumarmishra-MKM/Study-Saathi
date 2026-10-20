@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>StudySaathi 2.0 - Subject Shelves</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#b0cdbe",
+                        "on-secondary-fixed": "#0b1d2d",
+                        "on-secondary-container": "#a9bad0",
+                        "primary-fixed-dim": "#eabcb8",
+                        "secondary": "#b7c8de",
+                        "on-secondary": "#213243",
+                        "tertiary": "#b0cdbe",
+                        "primary-container": "#4a2c2a",
+                        "on-surface-variant": "#d4c3c1",
+                        "surface-container": "#221f1e",
+                        "secondary-container": "#3a4b5d",
+                        "on-primary-fixed": "#2e1413",
+                        "tertiary-container": "#1f392e",
+                        "surface-variant": "#383433",
+                        "inverse-surface": "#e9e1df",
+                        "on-primary": "#462827",
+                        "error": "#ffb4ab",
+                        "on-secondary-fixed-variant": "#38485a",
+                        "inverse-primary": "#795553",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed": "#052016",
+                        "on-error-container": "#ffdad6",
+                        "surface-dim": "#161312",
+                        "on-tertiary-container": "#86a394",
+                        "secondary-fixed-dim": "#b7c8de",
+                        "surface": "#161312",
+                        "surface-container-high": "#2d2929",
+                        "on-primary-fixed-variant": "#5f3e3c",
+                        "surface-container-low": "#1e1b1a",
+                        "on-background": "#e9e1df",
+                        "surface-container-highest": "#383433",
+                        "secondary-fixed": "#d2e4fb",
+                        "surface-tint": "#eabcb8",
+                        "tertiary-fixed": "#cbe9d9",
+                        "outline": "#9d8d8c",
+                        "background": "#161312",
+                        "outline-variant": "#504443",
+                        "surface-bright": "#3d3838",
+                        "error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#324c40",
+                        "on-tertiary": "#1b352b",
+                        "inverse-on-surface": "#342f2f",
+                        "on-primary-container": "#bd928f",
+                        "surface-container-lowest": "#110d0d",
+                        "primary-fixed": "#ffdad7",
+                        "primary": "#eabcb8",
+                        "on-surface": "#e9e1df"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "unit": "8px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "40px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Playfair Display"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "headline-lg": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "1.4", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.3", "fontWeight": "600" }]
+                    },
+                    "boxShadow": {
+                        "ambient-soft": "0 4px 12px 0 rgba(0, 0, 0, 0.1)",
+                        "shelf-depth": "inset 0px -4px 8px -2px rgba(0, 0, 0, 0.5), 0px 8px 16px rgba(0, 0, 0, 0.4)",
+                        "book-lift": "0 12px 24px -8px rgba(0, 0, 0, 0.5)",
+                        "book-open": "0 24px 48px -12px rgba(0, 0, 0, 0.75)"
+                    },
+                    "backgroundImage": {
+                        "texture-wood": "linear-gradient(to bottom, rgba(56, 44, 40, 0.9), rgba(42, 32, 29, 1)), url('data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"400\" height=\"400\" opacity=\"0.05\"%3E%3Cfilter id=\"n\"%3E%3CfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.05\" numOctaves=\"3\" stitchTiles=\"stitch\"/%3E%3C/filter%3E%3Crect width=\"400\" height=\"400\" fill=\"%23382c28\"/%3E%3Crect width=\"400\" height=\"400\" filter=\"url(%23n)\" opacity=\"0.5\"/%3E%3C/svg%3E')",
+                        "texture-paper": "linear-gradient(to bottom right, rgba(233, 225, 223, 0.95), rgba(212, 195, 193, 0.9)), url('data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"200\" height=\"200\" opacity=\"0.03\"%3E%3Cfilter id=\"n\"%3E%3CfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.8\" numOctaves=\"4\" stitchTiles=\"stitch\"/%3E%3C/filter%3E%3Crect width=\"200\" height=\"200\" fill=\"%23e9e1df\"/%3E%3Crect width=\"200\" height=\"200\" filter=\"url(%23n)\" opacity=\"0.5\"/%3E%3C/svg%3E')"
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .book-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.6);
+        }
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        /* Entrance Animation */
+        @keyframes zoomEntrance {
+            0% {
+                opacity: 0;
+                transform: scale(1.05);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .animate-zoom-entrance {
+            animation: zoomEntrance 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            opacity: 0;
+        }
+
+        /* Book Animation Styles */
+        .book-modal-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease-in-out;
+            backdrop-filter: blur(4px);
+        }
+        .book-modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .book-modal-content {
+            transform: scale(0.8) perspective(1000px) rotateY(-10deg);
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: left center;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .book-modal-content {
+                transition: opacity 0.3s ease, transform 0.3s ease;
+                transform: scale(0.95);
+            }
+            .animate-zoom-entrance {
+                animation: none;
+                opacity: 1;
+            }
+        }
+
+        .book-modal-content.active {
+            transform: scale(1) perspective(1000px) rotateY(0deg);
+            opacity: 1;
+        }
+
+        .book-spine-effect {
+            background: linear-gradient(to right, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.05) 5%, transparent 10%, transparent 90%, rgba(0,0,0,0.05) 95%, rgba(0,0,0,0.1) 100%);
+        }
+        
+        .page-curl {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 50px;
+            background: linear-gradient(to left, rgba(255,255,255,0.4), transparent);
+            pointer-events: none;
+        }
+
+        /* Pulse slow for Recent Jump */
+        @keyframes pulseSlow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+        .animate-pulse-slow {
+            animation: pulseSlow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+<style>
+.dl-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(17,13,13,0.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(234,188,184,0.1);height:56px;display:flex;align-items:center;padding:0 24px;gap:4px;}
+.dl-nav a{display:flex;align-items:center;gap:5px;padding:7px 11px;border-radius:5px;font-family:Inter,sans-serif;font-size:11.5px;font-weight:600;color:#9d8d8c;text-decoration:none;transition:all 0.2s;letter-spacing:.04em;white-space:nowrap;border:1px solid transparent;}
+.dl-nav a:hover{color:#eabcb8;background:rgba(234,188,184,0.07);}
+.dl-nav a.active{color:#eabcb8;background:rgba(234,188,184,0.1);border-color:rgba(234,188,184,0.15);}
+.dl-nav .logo{font-family:"Playfair Display",serif;font-size:15px;font-weight:700;color:#e9e1df;letter-spacing:-0.01em;margin-right:6px;padding:6px 10px;}
+.dl-nav .logo:hover{background:rgba(234,188,184,0.05);color:#eabcb8;}
+.dl-nav .sep{width:1px;height:20px;background:rgba(234,188,184,0.12);margin:0 6px;flex-shrink:0;}
+.dl-nav .spacer{flex:1;}
+.dl-nav .nav-v3{font-size:11px;border:1px solid rgba(176,205,190,0.25)!important;border-radius:20px;color:#b0cdbe!important;padding:5px 13px!important;}
+.dl-nav .nav-v3:hover{background:rgba(176,205,190,0.1)!important;border-color:rgba(176,205,190,0.4)!important;}
+.dl-nav .material-symbols-outlined{font-size:15px!important;}
+body.with-dl-nav{padding-top:56px;}
+</style>
+</head>
+<body class="bg-background text-on-background h-screen flex font-body-md overflow-hidden">
+<nav class="dl-nav">
+  <a href="entrance.html" class="logo">✦ StudySaathi</a>
+  <div class="sep"></div>
+  <a href="entrance.html" data-p="entrance"><span class="material-symbols-outlined">castle</span>Library</a>
+  <a href="shelves.html" data-p="shelves"><span class="material-symbols-outlined">library_books</span>Shelves</a>
+  <a href="question-paper.html" data-p="question-paper"><span class="material-symbols-outlined">inventory_2</span>PYQ Archive</a>
+  <a href="study-desk.html" data-p="study-desk"><span class="material-symbols-outlined">desk</span>Study Desk</a>
+  <a href="active-session.html" data-p="active-session"><span class="material-symbols-outlined">timer</span>Study Session</a>
+  <a href="mock-session.html" data-p="mock-session"><span class="material-symbols-outlined">quiz</span>Mock Test</a>
+  <a href="break-mode.html" data-p="break-mode"><span class="material-symbols-outlined">spa</span>Break</a>
+  <a href="session-summary.html" data-p="session-summary"><span class="material-symbols-outlined">bar_chart</span>Summary</a>
+  <div class="spacer"></div>
+  <a href="../dashboard.html" class="nav-v3"><span class="material-symbols-outlined">dashboard</span>v3 Dashboard</a>
+</nav>
+<script>
+(function(){
+  document.body.classList.add("with-dl-nav");
+  const p=location.pathname.split("/").pop().replace(".html","");
+  document.querySelectorAll(".dl-nav a[data-p]").forEach(a=>{if(a.dataset.p===p)a.classList.add("active");});
+})();
+</script>
+<!-- Unified SideNavBar -->
+<aside class="w-72 bg-surface-container border-r border-outline-variant/30 flex-shrink-0 flex flex-col h-full hidden lg:flex z-50 shadow-md">
+<!-- Brand -->
+<div class="p-6 border-b border-outline-variant/20 h-16 flex items-center">
+<a class="font-headline-md text-headline-md font-bold text-primary" href="#">StudySaathi 2.0</a>
+</div>
+<!-- Saathi AI Librarian -->
+<div class="p-6 border-b border-outline-variant/20 bg-surface-container-low/50 relative overflow-hidden">
+<div class="absolute inset-0 bg-primary/5"></div>
+<div class="relative z-10 flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary border border-primary/30 shadow-sm">
+<span class="material-symbols-outlined text-3xl">psychology</span>
+</div>
+<div>
+<h2 class="font-headline-md text-base text-primary m-0 font-semibold">Saathi</h2>
+<p class="font-label-sm text-on-surface-variant text-xs tracking-wider">AI LIBRARIAN</p>
+</div>
+</div>
+<button class="relative z-10 w-full mt-4 bg-primary/10 border border-primary/30 text-primary py-2 rounded-lg font-label-sm flex items-center justify-center gap-2 hover:bg-primary hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-sm">chat</span>
+                Ask Saathi
+            </button>
+</div>
+<!-- Sidebar Content -->
+<div class="p-6 flex-1 flex flex-col gap-8 overflow-y-auto">
+<!-- Recent Jump -->
+<div class="animate-pulse-slow">
+<h3 class="font-label-sm text-on-surface-variant uppercase tracking-wider mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">history</span>
+                    Recent Jump
+                </h3>
+<div class="bg-surface-container-high p-4 rounded-xl border border-outline-variant/30 hover:border-primary/50 cursor-pointer transition-all hover:-translate-y-1 group relative overflow-hidden shadow-sm" onclick="openBook('DSA', 'Data Structures', '85%', ['Arrays &amp; Strings', 'Linked Lists', 'Trees &amp; Graphs', 'Sorting Algorithms', 'Dynamic Programming'])">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<p class="font-label-sm text-primary mb-1">DSA</p>
+<p class="font-body-md text-sm text-on-surface font-medium mb-2">Sorting Algorithms</p>
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="text-xs">85% Complete</span>
+<span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Journal -->
+<div>
+<h3 class="font-label-sm text-on-surface-variant uppercase tracking-wider mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">book</span>
+                    Study Journal
+                </h3>
+<div class="bg-texture-paper p-4 rounded-xl shadow-ambient-soft border border-outline/20 flex flex-col gap-3 relative cursor-pointer hover:shadow-md transition-shadow">
+<div class="absolute top-2 right-2 opacity-20 text-surface-container">
+<span class="material-symbols-outlined">edit_document</span>
+</div>
+<div class="flex items-center gap-2 text-surface-container font-semibold">
+<span class="font-body-md text-sm">Today's Reflection</span>
+</div>
+<p class="font-body-md text-xs text-surface-variant/80 italic leading-relaxed">
+                        "Struggled with QuickSort partitioning today, need to review the pointer logic. The visualizer helped."
+                    </p>
+<span class="text-primary font-label-sm text-xs mt-1 text-left hover:underline flex items-center gap-1">
+                        Open Journal <span class="material-symbols-outlined text-[10px]">open_in_new</span>
+</span>
+</div>
+</div>
+</div>
+<!-- Sidebar Footer User -->
+<div class="p-6 border-t border-outline-variant/20 flex items-center gap-4">
+<img alt="Scholar avatar" class="w-10 h-10 rounded-full border-2 border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtkFGGq9RnfKVtzm9Py1NoFbkxggn0t46lhLgOLkf4n1Vr6_JTlth3qjcLoximrERXw6clScNrIcg3G9LrgUj5sO-upBLPDD21kmPcECv_-VrQ0l6Pk2Zk6hxBO88Qa8Wt-q9k6S5dW1tAOkhC4frZzI3dZU1cEbN3qffkyd9DSESOhjVl2FxB528-a7sF4-T0s-F7MIZ49iyYVKVoVZnBtOH7zpQJ1gUOmeNFfP0tYUTocTS7Rwro"/>
+<div>
+<p class="font-body-md text-sm font-semibold text-on-surface">Scholar</p>
+<p class="font-label-sm text-xs text-on-surface-variant">Free Plan</p>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col h-full overflow-y-auto relative bg-background w-full">
+<!-- Top Navigation Bar -->
+<nav class="sticky top-0 z-40 bg-surface-container border-b border-outline-variant/30 shadow-sm w-full">
+<div class="flex justify-between items-center w-full px-gutter max-w-container-max mx-auto h-16">
+<div class="flex items-center gap-6">
+<!-- Show brand only on mobile/tablet since it's in sidebar on desktop -->
+<a class="font-headline-md text-headline-md font-bold text-primary lg:hidden" href="#">StudySaathi 2.0</a>
+<div class="hidden md:flex gap-4">
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary-fixed-dim transition-colors duration-200" href="#">Entrance</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-label-sm text-label-sm active:scale-95 transition-transform hover:text-primary-fixed-dim duration-200" href="#">Shelves</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary-fixed-dim transition-colors duration-200" href="#">Archive</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary-fixed-dim transition-colors duration-200" href="#">Planner</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary-fixed-dim transition-colors duration-200" href="#">Desk</a>
+</div>
+</div>
+<div class="flex items-center gap-4 lg:hidden">
+<!-- Show avatar only on mobile/tablet -->
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</button>
+<img alt="Scholar avatar" class="w-8 h-8 rounded-full border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtkFGGq9RnfKVtzm9Py1NoFbkxggn0t46lhLgOLkf4n1Vr6_JTlth3qjcLoximrERXw6clScNrIcg3G9LrgUj5sO-upBLPDD21kmPcECv_-VrQ0l6Pk2Zk6hxBO88Qa8Wt-q9k6S5dW1tAOkhC4frZzI3dZU1cEbN3qffkyd9DSESOhjVl2FxB528-a7sF4-T0s-F7MIZ49iyYVKVoVZnBtOH7zpQJ1gUOmeNFfP0tYUTocTS7Rwro"/>
+</div>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-grow flex flex-col relative w-full pt-margin-desktop pb-margin-desktop px-margin-mobile md:px-margin-desktop">
+<!-- Background Atmospheric Shader (Placeholder for context) -->
+<div class="absolute inset-0 z-[-1] pointer-events-none opacity-20 bg-surface-dim"></div>
+<div class="max-w-container-max mx-auto w-full flex flex-col gap-8 animate-zoom-entrance">
+<!-- Header Section with Search and Sort -->
+<header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+<div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-primary">The Main Shelves</h1>
+<p class="font-body-md text-on-surface-variant mt-2">Your collected volumes and ongoing studies.</p>
+</div>
+<div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+<!-- Search Bar -->
+<div class="relative w-full sm:w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-xl pl-10 pr-4 py-2 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors font-body-md" placeholder="Search volumes..." type="text"/>
+</div>
+<!-- Sort Dropdown -->
+<div class="relative">
+<select class="appearance-none bg-surface-container-low border border-outline-variant rounded-xl pl-4 pr-10 py-2 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors font-body-md cursor-pointer">
+<option value="recent">Sort: Recently Opened</option>
+<option value="progress">Sort: Highest Progress</option>
+<option value="name">Sort: A-Z</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-sm">expand_more</span>
+</div>
+</div>
+</header>
+<!-- Library Shelves Container -->
+<div class="flex flex-col gap-12">
+<!-- Computer Science Core Shelf -->
+<section class="relative">
+<h2 class="font-headline-md text-secondary mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary">memory</span>
+                            Core Architecture
+                        </h2>
+<!-- Shelf Backing/Structure -->
+<div class="bg-texture-wood rounded-lg pt-8 pb-4 px-4 sm:px-8 shadow-ambient-soft border-t border-[#4a3b36]">
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+<!-- Book 1: DBMS -->
+<article class="bg-texture-paper rounded-md p-4 flex flex-col justify-between shadow-ambient-soft book-hover transition-all duration-300 border border-outline/20 h-56 relative overflow-hidden group cursor-pointer" onclick="openBook('DBMS', 'Database Systems', '68%', ['Introduction', 'Relational Model', 'Normalization', 'SQL Basics', 'Transactions'])">
+<div class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="relative z-10">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center mb-3 text-primary border border-primary/20">
+<span class="material-symbols-outlined text-sm">database</span>
+</div>
+<h3 class="font-headline-md text-surface-container font-bold text-lg leading-tight">DBMS</h3>
+<p class="font-label-sm text-surface-variant/80 mt-1 uppercase tracking-wider">Database Systems</p>
+</div>
+<div class="relative z-10 flex items-center gap-3">
+<svg class="w-10 h-10" viewbox="0 0 36 36">
+<path class="text-outline-variant/30" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3"></path>
+<path class="text-primary progress-ring__circle" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="100, 100" stroke-dashoffset="32" stroke-width="3"></path>
+</svg>
+<span class="font-label-sm text-surface-container font-bold text-lg">68%</span>
+</div>
+</article>
+<!-- Book 2: OS -->
+<article class="bg-texture-paper rounded-md p-4 flex flex-col justify-between shadow-ambient-soft book-hover transition-all duration-300 border border-outline/20 h-56 relative overflow-hidden group cursor-pointer" onclick="openBook('OS', 'Operating Systems', '45%', ['OS Overview', 'Process Management', 'Concurrency', 'Memory Management', 'File Systems'])">
+<div class="absolute inset-0 bg-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="relative z-10">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center mb-3 text-secondary border border-secondary/20">
+<span class="material-symbols-outlined text-sm">terminal</span>
+</div>
+<h3 class="font-headline-md text-surface-container font-bold text-lg leading-tight">OS</h3>
+<p class="font-label-sm text-surface-variant/80 mt-1 uppercase tracking-wider">Operating Systems</p>
+</div>
+<div class="relative z-10 flex items-center gap-3">
+<svg class="w-10 h-10" viewbox="0 0 36 36">
+<path class="text-outline-variant/30" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3"></path>
+<path class="text-secondary progress-ring__circle" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="100, 100" stroke-dashoffset="55" stroke-width="3"></path>
+</svg>
+<span class="font-label-sm text-surface-container font-bold text-lg">45%</span>
+</div>
+</article>
+<!-- Book 3: COA -->
+<article class="bg-texture-paper rounded-md p-4 flex flex-col justify-between shadow-ambient-soft book-hover transition-all duration-300 border border-outline/20 h-56 relative overflow-hidden group cursor-pointer" onclick="openBook('COA', 'Computer Org &amp; Arch', '22%', ['Digital Logic', 'Data Representation', 'CPU Design', 'Pipelining', 'Memory Hierarchy'])">
+<div class="absolute inset-0 bg-tertiary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="relative z-10">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center mb-3 text-tertiary border border-tertiary/20">
+<span class="material-symbols-outlined text-sm">memory_alt</span>
+</div>
+<h3 class="font-headline-md text-surface-container font-bold text-lg leading-tight">COA</h3>
+<p class="font-label-sm text-surface-variant/80 mt-1 uppercase tracking-wider">Computer Org &amp; Arch</p>
+</div>
+<div class="relative z-10 flex items-center gap-3">
+<svg class="w-10 h-10" viewbox="0 0 36 36">
+<path class="text-outline-variant/30" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3"></path>
+<path class="text-tertiary progress-ring__circle" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="100, 100" stroke-dashoffset="78" stroke-width="3"></path>
+</svg>
+<span class="font-label-sm text-surface-container font-bold text-lg">22%</span>
+</div>
+</article>
+</div>
+</div>
+<!-- Shelf Bottom Edge -->
+<div class="h-6 w-full bg-[#2a201d] rounded-b-md shadow-shelf-depth border-t border-[#1a1311]"></div>
+</section>
+<!-- Programming & Algorithms Shelf -->
+<section class="relative mt-8">
+<h2 class="font-headline-md text-primary-fixed-dim mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">code</span>
+                            Algorithms &amp; Logic
+                        </h2>
+<!-- Shelf Backing/Structure -->
+<div class="bg-texture-wood rounded-lg pt-8 pb-4 px-4 sm:px-8 shadow-ambient-soft border-t border-[#4a3b36]">
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+<!-- Book 4: DSA -->
+<article class="bg-texture-paper rounded-md p-4 flex flex-col justify-between shadow-ambient-soft book-hover transition-all duration-300 border border-outline/20 h-56 relative overflow-hidden group cursor-pointer" onclick="openBook('DSA', 'Data Structures', '85%', ['Arrays &amp; Strings', 'Linked Lists', 'Trees &amp; Graphs', 'Sorting Algorithms', 'Dynamic Programming'])">
+<div class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="relative z-10">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center mb-3 text-primary border border-primary/20">
+<span class="material-symbols-outlined text-sm">account_tree</span>
+</div>
+<h3 class="font-headline-md text-surface-container font-bold text-lg leading-tight">DSA</h3>
+<p class="font-label-sm text-surface-variant/80 mt-1 uppercase tracking-wider">Data Structures</p>
+</div>
+<div class="relative z-10 flex items-center gap-3">
+<svg class="w-10 h-10" viewbox="0 0 36 36">
+<path class="text-outline-variant/30" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3"></path>
+<path class="text-primary progress-ring__circle" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="100, 100" stroke-dashoffset="15" stroke-width="3"></path>
+</svg>
+<span class="font-label-sm text-surface-container font-bold text-lg">85%</span>
+</div>
+</article>
+<!-- Book 5: JAVA -->
+<article class="bg-texture-paper rounded-md p-4 flex flex-col justify-between shadow-ambient-soft book-hover transition-all duration-300 border border-outline/20 h-56 relative overflow-hidden group cursor-pointer" onclick="openBook('JAVA', 'Object Oriented Prog', '60%', ['OOP Basics', 'Classes &amp; Objects', 'Inheritance', 'Polymorphism', 'Interfaces'])">
+<div class="absolute inset-0 bg-tertiary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="relative z-10">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center mb-3 text-tertiary border border-tertiary/20">
+<span class="material-symbols-outlined text-sm">local_cafe</span>
+</div>
+<h3 class="font-headline-md text-surface-container font-bold text-lg leading-tight">JAVA</h3>
+<p class="font-label-sm text-surface-variant/80 mt-1 uppercase tracking-wider">Object Oriented Prog</p>
+</div>
+<div class="relative z-10 flex items-center gap-3">
+<svg class="w-10 h-10" viewbox="0 0 36 36">
+<path class="text-outline-variant/30" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3"></path>
+<path class="text-tertiary progress-ring__circle" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="100, 100" stroke-dashoffset="40" stroke-width="3"></path>
+</svg>
+<span class="font-label-sm text-surface-container font-bold text-lg">60%</span>
+</div>
+</article>
+<!-- Book 6: CN -->
+<article class="bg-texture-paper rounded-md p-4 flex flex-col justify-between shadow-ambient-soft book-hover transition-all duration-300 border border-outline/20 h-56 relative overflow-hidden group cursor-pointer" onclick="openBook('CN', 'Computer Networks', '12%', ['Network Models', 'Physical Layer', 'Data Link Layer', 'Network Layer', 'Transport Layer'])">
+<div class="absolute inset-0 bg-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="relative z-10">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center mb-3 text-secondary border border-secondary/20">
+<span class="material-symbols-outlined text-sm">hub</span>
+</div>
+<h3 class="font-headline-md text-surface-container font-bold text-lg leading-tight">CN</h3>
+<p class="font-label-sm text-surface-variant/80 mt-1 uppercase tracking-wider">Computer Networks</p>
+</div>
+<div class="relative z-10 flex items-center gap-3">
+<svg class="w-10 h-10" viewbox="0 0 36 36">
+<path class="text-outline-variant/30" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3"></path>
+<path class="text-secondary progress-ring__circle" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="100, 100" stroke-dashoffset="88" stroke-width="3"></path>
+</svg>
+<span class="font-label-sm text-surface-container font-bold text-lg">12%</span>
+</div>
+</article>
+</div>
+</div>
+<!-- Shelf Bottom Edge -->
+<div class="h-6 w-full bg-[#2a201d] rounded-b-md shadow-shelf-depth border-t border-[#1a1311]"></div>
+</section>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant/20 shadow-sm mt-auto">
+<div class="w-full py-gutter px-margin-desktop flex flex-col md:flex-row justify-between items-center max-w-container-max mx-auto gap-4">
+<div class="font-headline-lg text-headline-lg text-on-surface">StudySaathi 2.0</div>
+<div class="text-on-surface-variant font-body-md text-body-md text-center">© 2024 StudySaathi 2.0. Digital Atheneum.</div>
+<div class="flex gap-6">
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Legal</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Reduce Motion</a>
+</div>
+</div>
+</footer>
+</div>
+<!-- Book Modal Overlay -->
+<div class="fixed inset-0 z-50 book-modal-overlay bg-background/80 flex items-center justify-center p-4 sm:p-8" id="bookModal">
+<!-- Book Content -->
+<div class="book-modal-content w-full max-w-5xl h-[80vh] bg-texture-paper rounded-lg shadow-book-open border border-outline/20 relative overflow-hidden flex flex-col md:flex-row" id="bookContent">
+<!-- Center Spine Effect -->
+<div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-8 -translate-x-1/2 book-spine-effect z-10"></div>
+<!-- Left Page (Title & Info) -->
+<div class="flex-1 p-8 md:p-12 border-b md:border-b-0 md:border-r border-outline-variant/20 relative">
+<button class="absolute top-4 left-4 text-surface-container hover:text-primary transition-colors" onclick="closeBook()">
+<span class="material-symbols-outlined text-3xl">close</span>
+</button>
+<div class="flex flex-col h-full justify-center">
+<h2 class="font-display-lg text-surface-container mb-2" id="modalTitle">Book Title</h2>
+<p class="font-headline-md text-surface-variant/80 uppercase tracking-widest mb-8" id="modalSubtitle">Subtitle</p>
+<div class="flex items-center gap-4 mt-auto">
+<span class="font-label-sm text-surface-variant uppercase tracking-wider">Current Progress</span>
+<span class="font-headline-md text-primary font-bold" id="modalProgress">0%</span>
+</div>
+</div>
+</div>
+<!-- Right Page (Chapters) -->
+<div class="flex-1 p-8 md:p-12 overflow-y-auto relative bg-texture-paper">
+<div class="page-curl"></div>
+<h3 class="font-headline-md text-surface-container mb-6 border-b border-outline-variant/30 pb-2">Table of Contents</h3>
+<ul class="space-y-4" id="modalChapters">
+<!-- Chapters will be injected here via JS -->
+</ul>
+</div>
+</div>
+</div>
+<script>
+        function openBook(title, subtitle, progress, chapters) {
+            // Populate modal data
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalSubtitle').innerText = subtitle;
+            document.getElementById('modalProgress').innerText = progress;
+            
+            const chapterList = document.getElementById('modalChapters');
+            chapterList.innerHTML = ''; // Clear existing
+            
+            chapters.forEach((chapter, index) => {
+                const li = document.createElement('li');
+                li.className = 'group flex items-center justify-between cursor-pointer p-3 rounded hover:bg-surface-variant/5 transition-colors border border-transparent hover:border-outline-variant/20';
+                li.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <span class="font-label-sm text-surface-variant/60 w-6">0${index + 1}</span>
+                        <span class="font-body-lg text-surface-container group-hover:text-primary transition-colors">${chapter}</span>
+                    </div>
+                    <span class="material-symbols-outlined text-surface-variant/40 group-hover:text-primary transition-colors">chevron_right</span>
+                `;
+                chapterList.appendChild(li);
+            });
+
+            // Show modal
+            const modal = document.getElementById('bookModal');
+            const content = document.getElementById('bookContent');
+            
+            modal.classList.add('active');
+            
+            // Small delay for content animation to trigger after display:block logic if needed, 
+            // though opacity/transform handles it here.
+            setTimeout(() => {
+                content.classList.add('active');
+            }, 50);
+        }
+
+        function closeBook() {
+            const modal = document.getElementById('bookModal');
+            const content = document.getElementById('bookContent');
+            
+            content.classList.remove('active');
+            
+            // Wait for content animation to finish before hiding overlay
+            setTimeout(() => {
+                modal.classList.remove('active');
+            }, 400); // Matches CSS transition time
+        }
+
+        // Close on overlay click
+        document.getElementById('bookModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeBook();
+            }
+        });
+    </script>
+</body></html>

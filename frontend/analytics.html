@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Analytics — StudySaathi v3</title>
+<link rel="stylesheet" href="assets/css/main.css">
+<link rel="stylesheet" href="assets/css/graphics.css">
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar"></header><nav class="sidebar"></nav>
+  <main class="main">
+    <div class="page-header">
+      <div><div class="page-title">📈 Analytics</div><div class="page-sub">Study hours, performance, streaks, and improvement graphs</div></div>
+      <button class="btn btn-teal" onclick="openModal('modal-log')">⏱ Log Hours</button>
+    </div>
+
+    <div class="stats-grid" style="grid-template-columns:repeat(5,1fr);margin-bottom:24px">
+      <div class="stat-card sc-teal"><div class="sc-label">Total Hours</div><div class="sc-val accent" id="an-total">0h</div></div>
+      <div class="stat-card sc-indigo"><div class="sc-label">This Week</div><div class="sc-val" id="an-week">0h</div></div>
+      <div class="stat-card sc-gold"><div class="sc-label">Streak 🔥</div><div class="sc-val" style="color:var(--gold)" id="an-streak">0</div></div>
+      <div class="stat-card sc-purple"><div class="sc-label">Syllabus</div><div class="sc-val" style="color:var(--purple)" id="an-syl">0%</div></div>
+      <div class="stat-card sc-green"><div class="sc-label">Avg Mock</div><div class="sc-val" style="color:var(--teal)" id="an-mock">—</div></div>
+    </div>
+
+    <div class="g2" style="margin-bottom:22px">
+      <div class="card glow-card">
+        <div class="card-title">📊 Weekly Study Hours</div>
+        <div class="bar-chart" id="weekly-chart" style="height:140px;align-items:flex-end"></div>
+      </div>
+      <div class="card glow-card">
+        <div class="card-title">🔥 Study Streak — <span id="streak-days" style="color:var(--gold);font-weight:700">0</span> days</div>
+        <div style="font-size:.82rem;color:var(--text2);margin-bottom:12px">Last 7 days</div>
+        <div class="streak-row" id="streak-row"></div>
+        <div style="margin-top:18px">
+          <div style="font-size:.82rem;font-weight:600;color:var(--text2);margin-bottom:8px">Quick Log</div>
+          <div style="display:flex;gap:8px">
+            <input type="text" id="ql-subj" placeholder="Subject" style="flex:2">
+            <input type="number" id="ql-hrs" placeholder="Hrs" min=".5" step=".5" style="flex:1">
+            <button class="btn btn-teal btn-sm" onclick="quickLog()">Log</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="g2" style="margin-bottom:22px">
+      <div class="card glow-card">
+        <div class="card-title">⏱ Hours by Subject</div>
+        <div id="by-subject"></div>
+      </div>
+      <div class="card glow-card">
+        <div class="card-title">✅ Topic Completion</div>
+        <div id="topic-completion"></div>
+      </div>
+    </div>
+
+    <div class="g2" style="margin-bottom:22px">
+      <div class="card glow-card">
+        <div class="card-title">🧪 Mock Test Performance <a href="mocktest.html">Take test →</a></div>
+        <div id="mock-perf"></div>
+      </div>
+      <div class="card glow-card">
+        <div class="card-title">🏆 Achievements</div>
+        <div id="ach-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px"></div>
+      </div>
+    </div>
+
+    <!-- 30-day calendar heatmap -->
+    <div class="card glow-card" style="margin-bottom:22px">
+      <div class="card-title">📅 30-Day Study Calendar</div>
+      <div style="margin-bottom:10px;font-size:.8rem;color:var(--text2)">Each cell = one day (darker = more hours)</div>
+      <div id="cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;max-width:420px"></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:.76rem;color:var(--text2)">
+        <span>Less</span>
+        <div style="width:14px;height:14px;border-radius:3px;background:var(--bg3);border:1px solid var(--border)"></div>
+        <div style="width:14px;height:14px;border-radius:3px;background:rgba(0,201,167,.2)"></div>
+        <div style="width:14px;height:14px;border-radius:3px;background:rgba(0,201,167,.5)"></div>
+        <div style="width:14px;height:14px;border-radius:3px;background:var(--teal)"></div>
+        <span>More</span>
+      </div>
+    </div>
+
+    <footer class="page-footer">Copyright © Manas Kumar Mishra. All rights reserved.</footer>
+  </main>
+</div>
+
+<div class="modal-ov" id="modal-log">
+  <div class="modal">
+    <div class="modal-hdr"><div class="modal-ttl">⏱ Log Study Hours</div><button class="modal-close" onclick="closeModal('modal-log')">✕</button></div>
+    <div class="form-group"><label>Subject</label><input type="text" id="lh-subj" placeholder="e.g. Algorithms"></div>
+    <div class="form-row"><div class="form-group"><label>Hours</label><input type="number" id="lh-hrs" min=".5" max="24" step=".5" placeholder="2"></div><div class="form-group"><label>Date</label><input type="date" id="lh-date"></div></div>
+    <button class="btn btn-teal btn-full" id="btn-log" onclick="logHours()">Log Hours</button>
+  </div>
+</div>
+
+<script src="assets/js/core.js"></script><script src="assets/js/sidebar.js"></script>
+<script>
+if(!requireAuth())throw"";
+injectShell("analytics.html");
+document.getElementById("lh-date").value=todayStr();
+
+async function loadAnalytics(){
+  try{
+    const[prog,anl,ach]=await Promise.all([API.get("/progress"),API.get("/analytics"),API.get("/achievements")]);
+    const weekTotal=(prog.weekly||[]).reduce((s,x)=>s+x.hours,0);
+    document.getElementById("an-total").textContent=(anl.total_hours||0)+"h";
+    document.getElementById("an-week").textContent=weekTotal.toFixed(1)+"h";
+    document.getElementById("an-streak").textContent=(prog.streak||0)+" 🔥";
+    document.getElementById("an-syl").textContent=(anl.syllabus_pct||0)+"%";
+    document.getElementById("an-mock").textContent=anl.avg_score?anl.avg_score+"%":"—";
+
+    // Weekly chart with animation
+    buildBarChart("weekly-chart",(prog.weekly||[]).map((x,i)=>({l:x.label,v:x.hours,c:i===6?"var(--teal)":"var(--indigo)"})));
+
+    // Streak row
+    document.getElementById("streak-days").textContent=prog.streak||0;
+    const today=todayStr(),DN=["M","T","W","T","F","S","S"];
+    let shtml="";
+    for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const ds=d.toISOString().split("T")[0];const l=DN[d.getDay()===0?6:d.getDay()-1];const c=ds===today?"today":((prog.study_dates||[]).includes(ds)?"done":"");shtml+=`<div class="s-day ${c}" title="${ds}">${l}</div>`;}
+    document.getElementById("streak-row").innerHTML=shtml;
+
+    // Subject hours
+    const bs=document.getElementById("by-subject");
+    bs.innerHTML=(prog.by_subject||[]).length
+      ?(prog.by_subject||[]).slice(0,8).map((s,i)=>`<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)"><div style="width:10px;height:10px;border-radius:50%;background:${PALETTE[i%PALETTE.length]};flex-shrink:0"></div><span style="flex:1;font-size:.87rem;font-weight:500">${s.subject}</span><span style="font-size:.8rem;color:var(--text2);font-weight:600">${s.total}h · ${s.days}d</span></div>`).join("")
+      :emptyHTML("⏱","Log study sessions to see breakdown.");
+
+    // Topic completion
+    document.getElementById("topic-completion").innerHTML=(prog.topic_completion||[]).length
+      ?(prog.topic_completion||[]).map(s=>progBarHTML(s.subject,s.pct,s.color)).join("")
+      :emptyHTML("📚","<a href='subjects.html' style='color:var(--teal)'>Add subjects</a>");
+
+    // Mock perf
+    const scores=anl.scores||[];
+    const mp=document.getElementById("mock-perf");
+    if(!scores.length){mp.innerHTML=emptyHTML("🧪","<a href='mocktest.html' style='color:var(--teal)'>Take a mock test →</a>");}
+    else{
+      const last5=scores.slice(0,5).reverse();
+      mp.innerHTML=`<div style="display:flex;align-items:flex-end;gap:6px;height:80px;margin-bottom:14px">
+        ${last5.map((s,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+          <div style="font-size:.7rem;color:var(--text2)">${s.pct}%</div>
+          <div style="width:100%;max-width:40px;border-radius:5px 5px 0 0;height:${Math.max(4,Math.round(s.pct/100*70))}px;background:${s.pct>=80?"var(--green)":s.pct>=60?"var(--teal)":s.pct>=40?"var(--gold)":"var(--red)"};transition:.5s ease;animation:growUp .6s ease ${i*0.1}s both"></div>
+          <div style="font-size:.68rem;color:var(--text2)">T${i+1}</div>
+        </div>`).join("")}
+      </div>
+      ${scores.slice(0,5).map(s=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:.84rem">
+        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px">${s.test_title}</span>
+        <span><span class="grade-${s.grade}" style="padding:2px 8px;font-size:.76rem">${s.grade}</span> ${s.pct}%</span>
+      </div>`).join("")}
+      <a href="mocktest.html" class="btn btn-ghost btn-sm" style="margin-top:10px">Take Another →</a>`;
+    }
+
+    // Achievements grid
+    document.getElementById("ach-grid").innerHTML=(ach.achievements||[]).map(a=>`
+      <div class="ach-card ${a.unlocked?'':'locked'}" title="${a.desc}">
+        <div class="ach-icon">${a.icon}</div>
+        <div class="ach-name" style="font-size:.76rem">${a.name}</div>
+        ${a.unlocked?'<div style="font-size:.65rem;color:var(--teal);margin-top:2px">Unlocked ✓</div>':''}
+      </div>`).join("");
+
+    // 30-day calendar heatmap
+    const cal=document.getElementById("cal-grid");
+    const monthly=anl.monthly||[];
+    const maxH=Math.max(...monthly.map(x=>x.hours),1);
+    let chtml="";
+    for(let i=29;i>=0;i--){
+      const d=new Date();d.setDate(d.getDate()-i);const ds=d.toISOString().split("T")[0];
+      const hrs=monthly.find(x=>x.date===ds)?.hours||0;
+      const intensity=hrs>=6?"var(--teal)":hrs>=3?`rgba(0,201,167,${0.3+hrs/maxH*.5})`:hrs>0?"rgba(0,201,167,.2)":"var(--bg3)";
+      const border=ds===todayStr()?"1px solid var(--indigo2)":"1px solid transparent";
+      chtml+=`<div style="aspect-ratio:1;border-radius:4px;background:${intensity};border:${border};cursor:default;transition:.2s" title="${ds}: ${hrs}h" onmouseenter="this.style.opacity='.7'" onmouseleave="this.style.opacity='1'"></div>`;
+    }
+    cal.innerHTML=chtml;
+
+  }catch(err){showToast(err.message,"error");}
+}
+
+async function logHours(){
+  const subj=document.getElementById("lh-subj").value.trim(),hrs=parseFloat(document.getElementById("lh-hrs").value),date=document.getElementById("lh-date").value||todayStr();
+  if(!subj||!hrs){showToast("Enter subject and hours","error");return;}
+  const btn=document.getElementById("btn-log");setLoading(btn,true);
+  try{await API.post("/progress",{subject:subj,hours:hrs,date});closeModal("modal-log");document.getElementById("lh-subj").value="";document.getElementById("lh-hrs").value="";showToast(`✅ ${hrs}h logged!`);loadAnalytics();}
+  catch(err){showToast(err.message,"error");}finally{setLoading(btn,false);}
+}
+
+async function quickLog(){
+  const subj=document.getElementById("ql-subj").value.trim(),hrs=parseFloat(document.getElementById("ql-hrs").value);
+  if(!subj||!hrs){showToast("Enter subject and hours","error");return;}
+  try{await API.post("/progress",{subject:subj,hours:hrs,date:todayStr()});document.getElementById("ql-subj").value="";document.getElementById("ql-hrs").value="";showToast(`✅ ${hrs}h logged!`);loadAnalytics();}catch(err){showToast(err.message,"error");}
+}
+
+loadAnalytics();
+</script>
+</body>
+</html>

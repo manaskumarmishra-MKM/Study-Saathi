@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Planner — StudySaathi v3</title>
+<link rel="stylesheet" href="assets/css/main.css">
+<link rel="stylesheet" href="assets/css/graphics.css">
+<style>
+.plan-mode-card{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:18px;cursor:pointer;transition:var(--trans);text-align:center;}
+.plan-mode-card:hover{border-color:var(--teal);}
+.plan-mode-card.sel{border-color:var(--teal);background:rgba(0,201,167,.06);}
+.plan-mode-icon{font-size:1.8rem;margin-bottom:8px;}
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar"></header><nav class="sidebar"></nav>
+  <main class="main">
+    <div class="page-header"><div><div class="page-title">📅 Study Planner</div><div class="page-sub">5-mode AI study schedules, tasks, and exam dates</div></div></div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('generate',this)">✨ Generate Plan</button>
+      <button class="tab-btn" onclick="switchTab('saved',this);loadSaved()">Saved Plans</button>
+      <button class="tab-btn" onclick="switchTab('tasks',this);loadTasks()">Daily Tasks</button>
+      <button class="tab-btn" onclick="switchTab('exams',this);loadExams()">Exam Dates</button>
+    </div>
+
+    <div class="tab-pane active" id="tab-generate">
+      <div class="g2">
+        <div>
+          <div class="card glow-card" style="margin-bottom:18px">
+            <div class="card-title">Select Plan Mode</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div class="plan-mode-card sel" id="mode-balanced" onclick="selectMode('balanced',this)"><div class="plan-mode-icon">⚖️</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem">Balanced</div><div style="font-size:.76rem;color:var(--text2)">Even distribution</div></div>
+              <div class="plan-mode-card" id="mode-topper" onclick="selectMode('topper',this)"><div class="plan-mode-icon">🏆</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem">Topper</div><div style="font-size:.76rem;color:var(--text2)">Deep coverage</div></div>
+              <div class="plan-mode-card" id="mode-crash" onclick="selectMode('crash',this)"><div class="plan-mode-icon">⚡</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem">Crash Course</div><div style="font-size:.76rem;color:var(--text2)">Maximum intensity</div></div>
+              <div class="plan-mode-card" id="mode-weekend" onclick="selectMode('weekend',this)"><div class="plan-mode-icon">📆</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem">Weekend</div><div style="font-size:.76rem;color:var(--text2)">Weekends only</div></div>
+              <div class="plan-mode-card" id="mode-working" onclick="selectMode('working',this)" style="grid-column:span 2"><div class="plan-mode-icon">💼</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem">Working Student</div><div style="font-size:.76rem;color:var(--text2)">Short daily sessions</div></div>
+            </div>
+          </div>
+          <div class="card glow-card">
+            <div class="card-title">Plan Settings</div>
+            <div class="form-group"><label>Exam Date</label><input type="date" id="g-date"></div>
+            <div class="form-group"><label>Daily Study Hours — <span id="g-hrs-val" style="color:var(--teal);font-weight:700">6h</span></label><input type="range" id="g-hrs" min="2" max="12" value="6" oninput="document.getElementById('g-hrs-val').textContent=this.value+'h'"></div>
+            <div class="form-group"><label>Subjects to include</label><div class="chip-row" id="subj-chips"></div></div>
+            <button class="btn btn-teal btn-full" id="btn-gen" onclick="generatePlan()">✨ Generate Plan</button>
+          </div>
+        </div>
+        <div>
+          <div class="card glow-card">
+            <div class="card-title">💡 Planning Tips</div>
+            <div class="rec-card rc-good"><div class="rc-icon">📅</div><div><div class="rc-title">Start early</div><div class="rc-msg">Begin 60+ days before exam for best results.</div></div></div>
+            <div class="rec-card rc-info"><div class="rc-icon">🔄</div><div><div class="rc-title">20% revision buffer</div><div class="rc-msg">Last 20% of days reserved for revision and mock tests.</div></div></div>
+            <div class="rec-card rc-hard"><div class="rc-icon">🔴</div><div><div class="rc-title">High-priority topics first</div><div class="rc-msg">Schedule high-priority subjects in morning slots.</div></div></div>
+            <div class="rec-card rc-good"><div class="rc-icon">💎</div><div><div class="rc-title">Consistency wins</div><div class="rc-msg">4 hours daily for 60 days beats 12-hour cramming.</div></div></div>
+          </div>
+          <div class="card glow-card" style="margin-top:18px">
+            <div class="card-title">Mode Comparison</div>
+            <div class="tbl-wrap"><table><thead><tr><th>Mode</th><th>Hours</th><th>Best For</th></tr></thead><tbody>
+              <tr><td>Balanced</td><td>Set hours</td><td>6-8 weeks prep</td></tr>
+              <tr><td>Topper</td><td>+2 hrs</td><td>Deep mastery</td></tr>
+              <tr><td>Crash</td><td>+4 hrs</td><td>Last 2 weeks</td></tr>
+              <tr><td>Weekend</td><td>Set hours</td><td>Weekdays busy</td></tr>
+              <tr><td>Working</td><td>-1 hr</td><td>Part-time students</td></tr>
+            </tbody></table></div>
+          </div>
+        </div>
+      </div>
+      <div id="plan-output" style="margin-top:24px"></div>
+    </div>
+
+    <div class="tab-pane" id="tab-saved"><div id="saved-plans"></div></div>
+
+    <div class="tab-pane" id="tab-tasks">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+        <div><div style="font-weight:700">Task Manager</div><div id="task-date-lbl" style="font-size:.82rem;color:var(--text2)"></div></div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><input type="date" id="task-date-picker" onchange="loadTasks()"><button class="btn btn-teal btn-sm" onclick="openModal('modal-add-task')">+ Add Task</button></div>
+      </div>
+      <div id="tasks-content"></div>
+    </div>
+
+    <div class="tab-pane" id="tab-exams">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><div style="font-weight:700">Exam Countdown</div><button class="btn btn-teal btn-sm" onclick="openModal('modal-add-exam')">+ Add Exam</button></div>
+      <div id="exams-content"></div>
+    </div>
+    <footer class="page-footer">Copyright © Manas Kumar Mishra. All rights reserved.</footer>
+  </main>
+</div>
+
+<div class="modal-ov" id="modal-add-task">
+  <div class="modal">
+    <div class="modal-hdr"><div class="modal-ttl">✅ Add Task</div><button class="modal-close" onclick="closeModal('modal-add-task')">✕</button></div>
+    <div class="form-group"><label>Task</label><input type="text" id="at-task" placeholder="e.g. Revise Chapter 5"></div>
+    <div class="form-row"><div class="form-group"><label>Priority</label><select id="at-pri"><option>High</option><option selected>Medium</option><option>Low</option></select></div><div class="form-group"><label>Date</label><input type="date" id="at-date"></div></div>
+    <button class="btn btn-teal btn-full" onclick="addTask()">Add Task</button>
+  </div>
+</div>
+
+<div class="modal-ov" id="modal-add-exam">
+  <div class="modal">
+    <div class="modal-hdr"><div class="modal-ttl">📅 Add Exam</div><button class="modal-close" onclick="closeModal('modal-add-exam')">✕</button></div>
+    <div class="form-group"><label>Exam Name</label><input type="text" id="ae-subj" placeholder="e.g. GATE 2026"></div>
+    <div class="form-group"><label>Exam Date</label><input type="date" id="ae-date"></div>
+    <button class="btn btn-teal btn-full" onclick="addExam()">Save Exam</button>
+  </div>
+</div>
+
+<script src="assets/js/core.js"></script><script src="assets/js/sidebar.js"></script>
+<script>
+if(!requireAuth())throw"";
+injectShell("planner.html");
+let selectedMode="balanced",selectedSubjects=[];
+const tmr30=new Date();tmr30.setDate(tmr30.getDate()+30);
+document.getElementById("g-date").value=tmr30.toISOString().split("T")[0];
+document.getElementById("task-date-picker").value=todayStr();
+document.getElementById("at-date").value=todayStr();
+
+function switchTab(id,btn){document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");document.querySelectorAll(".tab-pane").forEach(p=>p.classList.remove("active"));document.getElementById("tab-"+id).classList.add("active");}
+function selectMode(mode,el){selectedMode=mode;document.querySelectorAll(".plan-mode-card").forEach(c=>c.classList.remove("sel"));el.classList.add("sel");}
+
+async function loadSubjectChips(){try{const d=await API.get("/subjects");const subs=d.subjects||[];const wrap=document.getElementById("subj-chips");if(!subs.length){wrap.innerHTML=`<span style="font-size:.82rem;color:var(--text2)">No subjects yet. <a href="subjects.html" style="color:var(--teal)">Add some →</a></span>`;return;}wrap.innerHTML=subs.map(s=>`<span class="chip" onclick="toggleSubj(this,'${s.name}')">${s.name}</span>`).join("");}catch(_){}}
+function toggleSubj(el,name){el.classList.toggle("sel");if(el.classList.contains("sel")){selectedSubjects.push({name,priority:"Medium"});}else{selectedSubjects=selectedSubjects.filter(s=>s.name!==name);}}
+
+async function generatePlan(){
+  const exam_date=document.getElementById("g-date").value,daily_hours=parseInt(document.getElementById("g-hrs").value);
+  if(!exam_date){showToast("Select an exam date","error");return;}
+  if(!selectedSubjects.length){showToast("Select at least one subject","error");return;}
+  const btn=document.getElementById("btn-gen");setLoading(btn,true);
+  try{const d=await API.post("/planner/generate",{exam_date,daily_hours,mode:selectedMode,subjects:selectedSubjects});renderPlan(d.plan);showToast("✨ Study plan generated!");}
+  catch(err){showToast(err.message,"error");}finally{setLoading(btn,false);}
+}
+
+function renderPlan(plan){
+  const modeNames={balanced:"⚖️ Balanced",topper:"🏆 Topper",crash:"⚡ Crash Course",weekend:"📆 Weekend",working:"💼 Working Student"};
+  document.getElementById("plan-output").innerHTML=`
+    <div class="card glow-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;flex-wrap:wrap;gap:12px">
+        <div><div class="card-title" style="margin-bottom:4px">${modeNames[plan.mode]||"Study Plan"}</div><div style="font-size:.85rem;color:var(--text2)">Exam: ${fmtDate(plan.exam_date)} · ${plan.days_left} days · ${plan.study_days} study + ${plan.revision_days} revision</div></div>
+        <button class="btn btn-ghost btn-sm" onclick="this.closest('.card').querySelector('#plan-days').classList.toggle('hidden')">Toggle Days</button>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px">${(plan.tips||[]).map(t=>`<div style="background:rgba(0,201,167,.07);border:1px solid rgba(0,201,167,.2);border-radius:9px;padding:8px 14px;font-size:.82rem;color:var(--text2)">${t}</div>`).join("")}</div>
+      <div id="plan-days">
+        ${(plan.days||[]).slice(0,30).map(day=>`
+          <div class="plan-day">
+            <div class="plan-day-hdr" onclick="this.nextElementSibling.classList.toggle('open')">
+              <div style="display:flex;align-items:center;gap:10px"><span class="badge ${day.is_revision?"b-teal":"b-indigo"}">Day ${day.day}</span><span style="font-size:.87rem">${day.label}</span></div>
+              <span style="font-size:.78rem;color:var(--text2)">${day.slots.length} slots ▾</span>
+            </div>
+            <div class="plan-day-body">${day.slots.map(slot=>`<div class="plan-slot ps-${slot.type}"><span class="ps-time">${slot.start}–${slot.end}</span><span class="ps-sub">${slot.subject}</span>${slot.priority?`<span class="${slot.priority==="High"?"p-high":slot.priority==="Low"?"p-low":"p-medium"}">${slot.priority}</span>`:""}<span class="ps-tip">${slot.tip?("💡 "+slot.tip):""}</span></div>`).join("")}</div>
+          </div>`).join("")}
+        ${plan.days.length>30?`<div style="text-align:center;color:var(--text2);font-size:.85rem;padding:12px">…${plan.days.length-30} more days</div>`:""}
+      </div>
+    </div>`;
+}
+
+async function loadSaved(){try{const d=await API.get("/planner/saved");const plans=d.plans||[];document.getElementById("saved-plans").innerHTML=plans.length?plans.map(p=>`<div class="card glow-card" style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px"><div><div style="font-family:'Syne',sans-serif;font-weight:700">Exam: ${fmtDate(p.exam_date)}</div><div style="font-size:.82rem;color:var(--text2)">${p.days.length} days · ${p.daily_hours}h/day · Mode: ${p.mode}</div></div><span class="badge ${daysLeft(p.exam_date)>0?"b-teal":"b-red"}">${daysLeft(p.exam_date)>0?daysLeft(p.exam_date)+" days left":"Passed"}</span></div><button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="viewSavedPlan(${p.id})">View Plan</button><div id="sp-${p.id}"></div></div>`).join(""):emptyHTML("📅","No saved plans yet. Generate one to get started!");}catch(_){}}
+
+async function viewSavedPlan(id){try{const wrap=document.getElementById("sp-"+id);if(wrap.innerHTML){wrap.innerHTML="";return;}const d=await API.get("/planner/"+id);wrap.innerHTML=`<div style="margin-top:14px">${(d.plan.days||[]).slice(0,7).map(day=>`<div class="plan-day"><div class="plan-day-hdr" onclick="this.nextElementSibling.classList.toggle('open')"><span class="badge ${day.is_revision?"b-teal":"b-indigo"}">Day ${day.day}</span><span style="font-size:.87rem;margin-left:8px">${day.label}</span><span style="margin-left:auto;color:var(--text2);font-size:.78rem">▾</span></div><div class="plan-day-body">${day.slots.map(s=>`<div class="plan-slot ps-${s.type}"><span class="ps-time">${s.start}–${s.end}</span><span class="ps-sub">${s.subject}</span></div>`).join("")}</div></div>`).join("")}<div style="text-align:center;color:var(--text2);font-size:.82rem;padding:8px">Showing first 7 days</div></div>`;}catch(err){showToast(err.message,"error");}}
+
+async function loadTasks(){const date=document.getElementById("task-date-picker").value||todayStr();document.getElementById("task-date-lbl").textContent=fmtDate(date);try{const d=await API.get("/tasks?date="+date);const tasks=d.tasks||[];document.getElementById("tasks-content").innerHTML=tasks.length?tasks.map(t=>`<div class="card card-sm glow-card" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:12px"><div onclick="toggleTask(${t.id},this)" style="width:20px;height:20px;border-radius:5px;border:2px solid ${t.status==='done'?'var(--green)':'var(--border2)'};background:${t.status==='done'?'var(--green)':'none'};cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:.7rem">${t.status==='done'?'✓':''}</div><span style="flex:1;font-size:.9rem;${t.status==='done'?'text-decoration:line-through;color:var(--text2)':''}">${t.task}</span>${badgeHTML(t.priority,PMAP)}<button class="btn btn-danger btn-sm" style="padding:4px 8px" onclick="deleteTask(${t.id})">✕</button></div></div>`).join(""):emptyHTML("✅","No tasks for this date.");}catch(_){}}
+
+async function addTask(){const task=document.getElementById("at-task").value.trim(),priority=document.getElementById("at-pri").value,date=document.getElementById("at-date").value||todayStr();if(!task){showToast("Enter a task","error");return;}try{await API.post("/tasks",{task,priority,date});closeModal("modal-add-task");document.getElementById("at-task").value="";showToast("Task added!");loadTasks();}catch(err){showToast(err.message,"error");}}
+async function toggleTask(id,el){const done=el.style.background!=="var(--green)"&&!el.style.background.includes("34, 197, 94");try{await API.patch("/tasks/"+id,{status:done?"done":"pending"});loadTasks();}catch(err){showToast(err.message,"error");}}
+async function deleteTask(id){try{await API.del("/tasks/"+id);showToast("Deleted");loadTasks();}catch(err){showToast(err.message,"error");}}
+
+async function loadExams(){try{const d=await API.get("/exams");const exams=d.exams||[];document.getElementById("exams-content").innerHTML=exams.length?exams.map(e=>{const dl=Math.round(e.days_left);return`<div class="card card-sm glow-card" style="margin-bottom:8px"><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px"><div><div style="font-weight:700">${e.subject}</div><div style="font-size:.82rem;color:var(--text2)">${fmtDate(e.exam_date)}</div></div><div style="display:flex;align-items:center;gap:10px"><span style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:${dl<=7?"var(--red)":dl<=30?"var(--gold)":"var(--green)"}">${dl>0?dl+"d":"Passed"}</span><button class="btn btn-danger btn-sm" onclick="deleteExam(${e.id})">✕</button></div></div></div>`;}).join(""):emptyHTML("📅","No exam dates added.");}catch(_){}}
+async function addExam(){const subject=document.getElementById("ae-subj").value.trim(),exam_date=document.getElementById("ae-date").value;if(!subject||!exam_date){showToast("Fill all fields","error");return;}try{await API.post("/exams",{subject,exam_date});closeModal("modal-add-exam");document.getElementById("ae-subj").value="";document.getElementById("ae-date").value="";showToast("Exam added! 📅");loadExams();}catch(err){showToast(err.message,"error");}}
+async function deleteExam(id){try{await API.del("/exams/"+id);showToast("Deleted");loadExams();}catch(err){showToast(err.message,"error");}}
+
+loadSubjectChips();
+</script>
+</body>
+</html>

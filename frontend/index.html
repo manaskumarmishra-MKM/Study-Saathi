@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StudySaathi v3 — Your Personalized Learning Companion</title>
+<link rel="stylesheet" href="assets/css/main.css">
+<link rel="stylesheet" href="assets/css/graphics.css">
+<style>
+body{display:flex;flex-direction:column;min-height:100vh;}
+.land-nav{display:flex;align-items:center;justify-content:space-between;padding:18px 48px;position:relative;z-index:10;}
+.land-logo{display:flex;align-items:center;gap:10px;font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem;}
+.nav-links{display:flex;align-items:center;gap:4px;}
+.nav-lnk{font-size:.88rem;color:var(--text2);cursor:pointer;padding:7px 14px;border-radius:8px;transition:.15s;font-weight:500;background:none;border:none;}
+.nav-lnk:hover{color:var(--text);background:var(--surface);}
+.auth-tabs{display:flex;margin-bottom:22px;background:var(--bg3);border-radius:var(--r-sm);padding:4px;}
+.auth-tab{flex:1;padding:8px;border-radius:var(--r-sm);border:none;background:none;color:var(--text2);font-weight:600;font-size:.88rem;cursor:pointer;transition:.15s;}
+.auth-tab.active{background:var(--bg2);color:var(--text);}
+.course-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.course-card{background:var(--bg3);border:1.5px solid var(--border);border-radius:var(--r);padding:14px 10px;text-align:center;cursor:pointer;transition:.15s;}
+.course-card:hover{border-color:var(--teal);}
+.course-card.sel{border-color:var(--teal);background:rgba(0,201,167,.08);}
+.cc-icon{font-size:1.5rem;margin-bottom:6px;}
+.cc-name{font-size:.78rem;font-weight:600;}
+@media(max-width:640px){.land-nav{padding:14px 20px;}.nav-links{display:none;}.course-grid{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+<canvas id="particle-canvas"></canvas>
+<div class="mesh-bg"></div>
+<div class="glow-ring glow-ring-1"></div>
+<div class="glow-ring glow-ring-2"></div>
+
+<nav class="land-nav">
+  <div class="land-logo"><div class="brand-mark">✦</div>StudySaathi <span class="brand-v3">v3</span></div>
+  <div class="nav-links">
+    <button class="nav-lnk" onclick="document.getElementById('feat-sec').scrollIntoView({behavior:'smooth'})">Features</button>
+    <button class="nav-lnk" onclick="document.getElementById('hiw-sec').scrollIntoView({behavior:'smooth'})">How it works</button>
+    <button class="nav-lnk" onclick="openModal('modal-auth');switchAuthTab('login')">Login</button>
+    <button class="btn btn-teal btn-sm" onclick="openModal('modal-auth');switchAuthTab('signup')">Get Started Free</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero-v3">
+  <div class="hero-left reveal">
+    <div class="hero-eyebrow"><span class="pulse-dot"></span> AI-Powered · 500+ PYQs · 5 Study Modes</div>
+    <h1 class="hero-h1">Crack your exam<br>with your <span class="word-gradient">personal AI</span><br>study partner</h1>
+    <p class="hero-sub">StudySaathi organises your syllabus, builds smart timetables, surfaces the right PYQs, and coaches you through mock tests — all tailored to <em>your</em> exam and weak spots.</p>
+    <div class="hero-cta-row">
+      <button class="btn btn-teal btn-lg" onclick="openModal('modal-auth');switchAuthTab('signup')">Start for free →</button>
+      <a href="dashboard.html" class="btn btn-ghost btn-lg">Preview dashboard</a>
+    </div>
+    <div class="trust-row">
+      <div class="trust-avatars">
+        <div class="trust-av" style="background:linear-gradient(135deg,#3d5af1,#00c9a7)">R</div>
+        <div class="trust-av" style="background:linear-gradient(135deg,#ec4899,#f97316)">S</div>
+        <div class="trust-av" style="background:linear-gradient(135deg,#a855f7,#3d5af1)">A</div>
+        <div class="trust-av" style="background:linear-gradient(135deg,#f5c842,#22c55e)">M</div>
+        <div class="trust-av" style="background:linear-gradient(135deg,#00c9a7,#5b77ff)">P</div>
+      </div>
+      <div class="trust-text"><strong>GATE · JEE · NEET · UPSC · CAT · B.Tech</strong><br>All exams. One platform.</div>
+    </div>
+  </div>
+
+  <!-- Dashboard Mockup -->
+  <div class="hero-right reveal reveal-d2">
+    <div class="float-card fc-streak"><div class="fc-title">🔥 Study Streak</div><div class="fc-value" style="color:var(--gold)">12 days</div></div>
+    <div class="float-card fc-score"><div class="fc-title">🧪 Last Mock Score</div><div class="fc-value" style="color:var(--teal)">78% — Grade B</div></div>
+    <div class="dashboard-mockup">
+      <div class="dm-topbar">
+        <div class="dm-dot" style="background:#ef4444"></div>
+        <div class="dm-dot" style="background:#f5c842"></div>
+        <div class="dm-dot" style="background:#22c55e"></div>
+        <span class="dm-title">StudySaathi Dashboard</span>
+      </div>
+      <div class="dm-stats">
+        <div class="dm-stat"><div class="dm-stat-val" style="color:#00c9a7">4.5h</div><div class="dm-stat-lbl">Today</div></div>
+        <div class="dm-stat"><div class="dm-stat-val" style="color:#5b77ff">73%</div><div class="dm-stat-lbl">Syllabus</div></div>
+        <div class="dm-stat"><div class="dm-stat-val" style="color:#f5c842">12🔥</div><div class="dm-stat-lbl">Streak</div></div>
+      </div>
+      <div class="dm-chart-row" id="mockup-chart"></div>
+      <div class="dm-row"><div class="dm-row-dot" style="background:#3d5af1"></div><div class="dm-row-label">Algorithms</div><div class="dm-row-bar"><div class="dm-row-fill" style="width:82%;background:#3d5af1"></div></div><div class="dm-row-pct">82%</div></div>
+      <div class="dm-row"><div class="dm-row-dot" style="background:#00c9a7"></div><div class="dm-row-label">DBMS</div><div class="dm-row-bar"><div class="dm-row-fill" style="width:61%;background:#00c9a7"></div></div><div class="dm-row-pct">61%</div></div>
+      <div class="dm-row"><div class="dm-row-dot" style="background:#ec4899"></div><div class="dm-row-label">OS</div><div class="dm-row-bar"><div class="dm-row-fill" style="width:45%;background:#ec4899"></div></div><div class="dm-row-pct">45%</div></div>
+      <div class="dm-row"><div class="dm-row-dot" style="background:#f5c842"></div><div class="dm-row-label">Networks</div><div class="dm-row-bar"><div class="dm-row-fill" style="width:38%;background:#f5c842"></div></div><div class="dm-row-pct">38%</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- EXAM STRIP -->
+<div class="exam-strip"><div class="exam-strip-inner" id="exam-strip"></div></div>
+<div class="section-sep"></div>
+
+<!-- COUNTERS -->
+<section style="position:relative;z-index:1;padding:60px 24px;max-width:1100px;margin:0 auto">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px">
+    <div class="counter-card reveal"><span class="counter-icon">📝</span><div class="counter-num" style="color:var(--teal)"><span class="count-up" data-target="500">0</span>+</div><div class="counter-label">PYQ Questions</div></div>
+    <div class="counter-card reveal reveal-d1"><span class="counter-icon">🧪</span><div class="counter-num" style="color:var(--indigo2)"><span class="count-up" data-target="20">0</span>+</div><div class="counter-label">Mock Tests</div></div>
+    <div class="counter-card reveal reveal-d2"><span class="counter-icon">📅</span><div class="counter-num" style="color:var(--gold)"><span class="count-up" data-target="5">0</span></div><div class="counter-label">Planner Modes</div></div>
+    <div class="counter-card reveal reveal-d3"><span class="counter-icon">🎓</span><div class="counter-num" style="color:var(--purple)"><span class="count-up" data-target="8">0</span></div><div class="counter-label">Exam Types</div></div>
+    <div class="counter-card reveal reveal-d4"><span class="counter-icon">🤖</span><div class="counter-num" style="color:var(--green)">AI</div><div class="counter-label">Study Assistant</div></div>
+  </div>
+</section>
+<div class="section-sep"></div>
+
+<!-- FEATURES -->
+<section id="feat-sec" style="position:relative;z-index:1;padding:80px 24px;max-width:1100px;margin:0 auto">
+  <div style="text-align:center;margin-bottom:52px" class="reveal">
+    <div class="section-eyebrow">Platform Features</div>
+    <div class="section-title">Everything you need to <span class="word-gradient">crack your exam</span></div>
+    <p class="section-sub" style="margin-bottom:0">From organising your syllabus to scoring high on mock tests — end to end.</p>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px">
+    <div class="feat-card-v2 reveal"><div class="feat-icon-wrap" style="background:rgba(61,90,241,.15)">📊</div><h3>Smart Dashboard</h3><p>Dynamic stats, tasks, streak, exam countdown and AI recommendations — all personalised to your course and exam target.</p><span class="feat-link">Open dashboard →</span></div>
+    <div class="feat-card-v2 reveal reveal-d1"><div class="feat-icon-wrap" style="background:rgba(0,201,167,.15)">📝</div><h3>PYQ Bank + Analytics</h3><p>Filter PYQs by exam, subject, year, unit. Every question shows frequency count and importance score based on history.</p><span class="feat-link">Browse PYQs →</span></div>
+    <div class="feat-card-v2 reveal reveal-d2"><div class="feat-icon-wrap" style="background:rgba(168,85,247,.15)">🧪</div><h3>Mock Test Platform</h3><p>Timed MCQs with auto-submit, question navigator, score ring, grade A–D, topic-wise weak analysis, and detailed review.</p><span class="feat-link">Take a test →</span></div>
+    <div class="feat-card-v2 reveal reveal-d3"><div class="feat-icon-wrap" style="background:rgba(245,200,66,.15)">📅</div><h3>5-Mode Study Planner</h3><p>AI day-by-day timetables in Balanced, Topper, Crash Course, Weekend, and Working Student modes to your exam date.</p><span class="feat-link">Generate a plan →</span></div>
+    <div class="feat-card-v2 reveal"><div class="feat-icon-wrap" style="background:rgba(0,201,167,.12)">📋</div><h3>Syllabus Importer</h3><p>Load via preloaded templates (GATE/JEE/NEET/UPSC/B.Tech), PDF upload, or manual entry — with AI priority tagging.</p><span class="feat-link">Import syllabus →</span></div>
+    <div class="feat-card-v2 reveal reveal-d1"><div class="feat-icon-wrap" style="background:rgba(239,68,68,.12)">🤖</div><h3>AI Study Assistant</h3><p>StudySaathi AI gives GATE/JEE/NEET/UPSC strategies, PYQ tips, weak subject advice, mock analysis, and daily motivation.</p><span class="feat-link">Chat with AI →</span></div>
+    <div class="feat-card-v2 reveal reveal-d2"><div class="feat-icon-wrap" style="background:rgba(34,197,94,.12)">📈</div><h3>Analytics + Achievements</h3><p>30-day study calendar, weekly chart, subject bars, mock score trends, and 8 unlockable achievement badges.</p><span class="feat-link">View analytics →</span></div>
+    <div class="feat-card-v2 reveal reveal-d3"><div class="feat-icon-wrap" style="background:rgba(249,115,22,.12)">📦</div><h3>Resource Hub</h3><p>Curated notes, formula sheets, reference books, video links, and practice sets organised by exam and subject.</p><span class="feat-link">Browse resources →</span></div>
+  </div>
+</section>
+<div class="section-sep"></div>
+
+<!-- HOW IT WORKS -->
+<section id="hiw-sec" style="position:relative;z-index:1;padding:80px 24px;max-width:1100px;margin:0 auto;text-align:center" class="reveal">
+  <div class="section-eyebrow">How it works</div>
+  <div class="section-title">Up and running in <span class="word-gradient">4 steps</span></div>
+  <p class="section-sub">No setup headaches. Sign up, tell us your exam, and StudySaathi does the rest.</p>
+  <div class="hiw-grid">
+    <div class="hiw-step reveal"><div class="hiw-num">🎓</div><div class="hiw-title">Sign up &amp; onboard</div><div class="hiw-desc">Tell us your course, semester, and exam. We auto-load subjects and syllabus.</div></div>
+    <div class="hiw-step reveal reveal-d1"><div class="hiw-num">📅</div><div class="hiw-title">Generate your plan</div><div class="hiw-desc">Pick a planner mode, set your exam date, and get a day-by-day AI schedule instantly.</div></div>
+    <div class="hiw-step reveal reveal-d2"><div class="hiw-num">📝</div><div class="hiw-title">Practice with PYQs</div><div class="hiw-desc">Filter by topic and year. See which questions are high-frequency and must-do.</div></div>
+    <div class="hiw-step reveal reveal-d3"><div class="hiw-num">📊</div><div class="hiw-title">Track &amp; improve</div><div class="hiw-desc">Take mock tests, see weak areas, and get AI recommendations to close the gaps.</div></div>
+  </div>
+</section>
+<div class="section-sep"></div>
+
+<!-- QUOTE -->
+<section style="position:relative;z-index:1;padding:60px 24px;max-width:800px;margin:0 auto;text-align:center" class="reveal">
+  <div style="font-size:2.5rem;margin-bottom:18px">💬</div>
+  <div style="font-family:'Syne',sans-serif;font-size:clamp(1.2rem,2.5vw,1.7rem);font-weight:700;line-height:1.45;margin-bottom:20px">"StudySaathi helped me see <span class="word-gradient">exactly where I was wasting time</span> — and what to focus on in the final three weeks before GATE."</div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:12px;font-size:.84rem;color:var(--text2)">
+    <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--indigo),var(--teal));display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:#fff">R</div>
+    <div><strong style="color:var(--text)">Rohan Sharma</strong> · GATE CS 2024<br>AIR 142 · B.Tech CSE, MNNIT</div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="position:relative;z-index:1;padding:80px 24px;max-width:700px;margin:0 auto">
+  <div class="cta-card reveal">
+    <div class="cta-h">Ready to start cracking it?</div>
+    <p class="cta-p">Join students preparing for GATE, JEE, NEET, UPSC, and more.<br>Free forever. No credit card needed.</p>
+    <div class="cta-btn-row">
+      <button class="btn btn-teal btn-lg" onclick="openModal('modal-auth');switchAuthTab('signup')">Create free account →</button>
+      <a href="dashboard.html" class="btn btn-ghost btn-lg">Preview dashboard</a>
+    </div>
+  </div>
+</section>
+
+<footer class="page-footer" style="position:relative;z-index:1">Copyright © Manas Kumar Mishra. All rights reserved.</footer>
+
+<!-- AUTH MODAL -->
+<div class="modal-ov" id="modal-auth">
+  <div class="modal">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px"><div class="brand-mark">✦</div><span style="font-family:'Syne',sans-serif;font-weight:800">StudySaathi <span class="brand-v3">v3</span></span><button class="modal-close" style="margin-left:auto" onclick="closeModal('modal-auth')">✕</button></div>
+    <div class="auth-tabs"><button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Login</button><button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Sign Up</button></div>
+    <div id="form-login">
+      <div class="form-group"><label>Email</label><input type="email" id="l-email" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="l-pw" placeholder="Your password"></div>
+      <button class="btn btn-teal btn-full" id="btn-login" onclick="doLogin()">Login to Dashboard →</button>
+      <p style="text-align:center;font-size:.82rem;color:var(--text2);margin-top:14px">No account? <a href="#" style="color:var(--teal)" onclick="switchAuthTab('signup')">Sign up free →</a></p>
+    </div>
+    <div id="form-signup" style="display:none">
+      <div class="form-group"><label>Full Name</label><input type="text" id="s-name" placeholder="Your full name"></div>
+      <div class="form-row"><div class="form-group"><label>Email</label><input type="email" id="s-email" placeholder="you@example.com"></div><div class="form-group"><label>Password</label><input type="password" id="s-pw" placeholder="Min 6 characters"></div></div>
+      <button class="btn btn-teal btn-full" id="btn-signup" onclick="goToOnboard()">Continue →</button>
+      <p style="text-align:center;font-size:.82rem;color:var(--text2);margin-top:14px">Have an account? <a href="#" style="color:var(--teal)" onclick="switchAuthTab('login')">Login</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ONBOARDING MODAL -->
+<div class="modal-ov" id="modal-onboard">
+  <div class="modal modal-lg">
+    <div class="step-dots" id="step-dots"><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div></div>
+    <div class="onboard-step active" id="ob-step1">
+      <div style="text-align:center;margin-bottom:22px"><div style="font-size:2.5rem;margin-bottom:8px">🎓</div><h2 style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800">What are you studying?</h2><p style="color:var(--text2);font-size:.88rem;margin-top:6px">We personalise everything for your exam</p></div>
+      <div class="course-grid">
+        <div class="course-card" onclick="selectCourse('btech-cse',this)"><div class="cc-icon">💻</div><div class="cc-name">B.Tech CSE</div></div>
+        <div class="course-card" onclick="selectCourse('btech-ece',this)"><div class="cc-icon">⚡</div><div class="cc-name">B.Tech ECE</div></div>
+        <div class="course-card" onclick="selectCourse('gate',this)"><div class="cc-icon">🖥️</div><div class="cc-name">GATE CS</div></div>
+        <div class="course-card" onclick="selectCourse('jee',this)"><div class="cc-icon">⚗️</div><div class="cc-name">JEE</div></div>
+        <div class="course-card" onclick="selectCourse('neet',this)"><div class="cc-icon">🔬</div><div class="cc-name">NEET</div></div>
+        <div class="course-card" onclick="selectCourse('upsc',this)"><div class="cc-icon">📖</div><div class="cc-name">UPSC</div></div>
+        <div class="course-card" onclick="selectCourse('cat',this)"><div class="cc-icon">💼</div><div class="cc-name">CAT</div></div>
+        <div class="course-card" onclick="selectCourse('other',this)"><div class="cc-icon">📚</div><div class="cc-name">Other</div></div>
+      </div>
+      <button class="btn btn-teal btn-full" style="margin-top:22px" onclick="obNext(2)">Next →</button>
+    </div>
+    <div class="onboard-step" id="ob-step2">
+      <div style="text-align:center;margin-bottom:22px"><div style="font-size:2.5rem;margin-bottom:8px">📋</div><h2 style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800">A little more about you</h2></div>
+      <div class="form-group"><label>Semester (for B.Tech)</label><select id="ob-semester"><option value="">Not applicable</option><option value="1">Semester 1</option><option value="2">Semester 2</option><option value="3">Semester 3</option><option value="4">Semester 4</option><option value="5">Semester 5</option><option value="6">Semester 6</option><option value="7">Semester 7</option><option value="8">Semester 8</option></select></div>
+      <div class="form-group"><label>Exam Target</label><select id="ob-exam"><option value="">Select target</option><option>GATE</option><option>JEE</option><option>NEET</option><option>UPSC</option><option>CAT</option><option>Semester Exams</option><option>Other</option></select></div>
+      <div class="form-group"><label>Daily study hours — <span id="ob-hrs-val" style="color:var(--teal);font-weight:700">5h</span></label><input type="range" id="ob-hrs" min="1" max="12" value="5" oninput="document.getElementById('ob-hrs-val').textContent=this.value+'h'"></div>
+      <div style="display:flex;gap:10px;margin-top:18px"><button class="btn btn-ghost" onclick="obNext(1)">← Back</button><button class="btn btn-teal btn-full" onclick="obNext(3)">Next →</button></div>
+    </div>
+    <div class="onboard-step" id="ob-step3">
+      <div style="text-align:center;padding:20px 0 30px"><div style="font-size:3rem;margin-bottom:14px">🚀</div><h2 style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:8px">You're all set!</h2><p style="color:var(--text2);font-size:.9rem;line-height:1.65;max-width:380px;margin:0 auto 24px">We've loaded your subjects, calibrated your PYQ bank, and prepared your AI recommendations.</p><button class="btn btn-teal btn-lg" id="btn-complete" onclick="completeOnboard()">Enter StudySaathi →</button></div>
+    </div>
+  </div>
+</div>
+
+<button class="chat-fab" onclick="this.nextElementSibling.classList.toggle('open')">🤖</button>
+<div class="chat-panel"><div class="chat-ph"><div class="bot-av">🤖</div><div><div class="bot-name">StudySaathi AI</div><div class="bot-status">● Online</div></div><button class="chat-close" onclick="this.closest('.chat-panel').classList.remove('open')">✕</button></div><div class="chat-msgs" id="chat-fab-msgs"><div class="msg bot"><div class="msg-av">🤖</div><div class="msg-bub">Hi! Ask me about GATE, JEE, NEET, UPSC prep 📚</div></div></div><div class="chat-foot"><input class="chat-inp" id="chat-fab-inp" placeholder="Ask anything…"><button class="chat-send">➤</button></div></div>
+<div id="toast-container"></div>
+
+<script src="assets/js/core.js"></script>
+<script>
+redirectIfAuth();
+
+/* Particle system */
+(function(){
+  const canvas=document.getElementById("particle-canvas");if(!canvas)return;
+  const ctx=canvas.getContext("2d");let W,H,particles=[];
+  function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;}
+  resize();window.addEventListener("resize",resize);
+  class P{constructor(){this.x=Math.random()*W;this.y=Math.random()*H;this.vx=(Math.random()-.5)*.35;this.vy=(Math.random()-.5)*.35;this.r=Math.random()*1.5+.3;const cols=["61,90,241","0,201,167","168,85,247","245,200,66","236,72,153"];this.color=cols[Math.floor(Math.random()*cols.length)];this.alpha=Math.random()*.45+.12;}update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0)this.x=W;if(this.x>W)this.x=0;if(this.y<0)this.y=H;if(this.y>H)this.y=0;}draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=`rgba(${this.color},${this.alpha})`;ctx.fill();}}
+  const COUNT=Math.min(110,Math.floor(W*H/13000));
+  for(let i=0;i<COUNT;i++)particles.push(new P());
+  function lines(){const maxD=130;for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<maxD){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(61,90,241,${(1-d/maxD)*.1})`;ctx.lineWidth=.5;ctx.stroke();}}}
+  function loop(){ctx.clearRect(0,0,W,H);lines();particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(loop);}
+  loop();
+})();
+
+/* Mockup chart */
+(function(){
+  const wrap=document.getElementById("mockup-chart");if(!wrap)return;
+  const data=[2.1,3.5,4.2,1.8,5.0,3.3,4.5],labels=["M","T","W","T","F","S","S"],colors=["#3d5af1","#3d5af1","#3d5af1","#3d5af1","#3d5af1","#00c9a7","#00c9a7"];
+  const max=Math.max(...data);
+  wrap.innerHTML=data.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="font-size:.58rem;color:rgba(255,255,255,.3)">${v}h</div><div style="height:${Math.round(v/max*50)+4}px;width:100%;max-width:28px;border-radius:4px 4px 0 0;background:${colors[i]};opacity:${i>=5?.85:.5};transition:.3s"></div><div style="font-size:.58rem;color:rgba(255,255,255,.28)">${labels[i]}</div></div>`).join("");
+})();
+
+/* Exam scrolling strip */
+(function(){
+  const strip=document.getElementById("exam-strip");if(!strip)return;
+  const pills=[{icon:"🖥️",label:"GATE CS"},{icon:"⚗️",label:"JEE Advanced"},{icon:"🔬",label:"NEET"},{icon:"📖",label:"UPSC CSE"},{icon:"💼",label:"CAT"},{icon:"🎓",label:"B.Tech CSE"},{icon:"🎓",label:"B.Tech ECE"},{icon:"📋",label:"SSC CGL"},{icon:"🏦",label:"IBPS PO"},{icon:"🚂",label:"RRB NTPC"},{icon:"⚖️",label:"CLAT"},{icon:"🏥",label:"AIIMS"}];
+  const all=[...pills,...pills];
+  strip.innerHTML=all.map(p=>`<div class="esp-pill"><span>${p.icon}</span>${p.label}</div>`).join("");
+})();
+
+/* Scroll reveal */
+(function(){
+  const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add("visible");}),{threshold:.12});
+  document.querySelectorAll(".reveal").forEach(el=>obs.observe(el));
+})();
+
+/* Count up */
+(function(){
+  const obs=new IntersectionObserver(e=>e.forEach(x=>{if(!x.isIntersecting)return;const el=x.target,target=parseInt(el.dataset.target),dur=1200,start=performance.now();function tick(now){const p=Math.min((now-start)/dur,1);el.textContent=Math.round(p*target);if(p<1)requestAnimationFrame(tick);}requestAnimationFrame(tick);obs.unobserve(el);}),{threshold:.5});
+  document.querySelectorAll(".count-up").forEach(el=>obs.observe(el));
+})();
+
+/* Auth */
+let obCourse="";
+function switchAuthTab(t){document.getElementById("form-login").style.display=t==="login"?"block":"none";document.getElementById("form-signup").style.display=t==="signup"?"block":"none";document.getElementById("tab-login").classList.toggle("active",t==="login");document.getElementById("tab-signup").classList.toggle("active",t==="signup");}
+async function doLogin(){const email=document.getElementById("l-email").value.trim(),pw=document.getElementById("l-pw").value;if(!email||!pw){showToast("Fill all fields","error");return;}const btn=document.getElementById("btn-login");setLoading(btn,true);try{const d=await API.post("/auth/login",{email,password:pw});Auth.save(d.token,d.user);showToast("Welcome back, "+d.user.name.split(" ")[0]+"! 👋");setTimeout(()=>location.href="dashboard.html",700);}catch(err){showToast(err.message,"error");setLoading(btn,false);}}
+function goToOnboard(){const name=document.getElementById("s-name").value.trim(),email=document.getElementById("s-email").value.trim(),pw=document.getElementById("s-pw").value;if(!name||!email||!pw){showToast("Fill all fields","error");return;}if(pw.length<6){showToast("Password min 6 characters","error");return;}closeModal("modal-auth");openModal("modal-onboard");}
+function selectCourse(val,el){obCourse=val;document.querySelectorAll(".course-card").forEach(c=>c.classList.remove("sel"));el.classList.add("sel");}
+function obNext(step){if(step===2&&!obCourse){showToast("Select a course","error");return;}if(step===3){obSemester=document.getElementById("ob-semester").value;obExam=document.getElementById("ob-exam").value;}document.querySelectorAll(".onboard-step").forEach(s=>s.classList.remove("active"));document.getElementById("ob-step"+step).classList.add("active");document.querySelectorAll(".step-dot").forEach((d,i)=>d.classList.toggle("active",i<step));}
+let obSemester="",obExam="";
+async function completeOnboard(){const name=document.getElementById("s-name").value.trim(),email=document.getElementById("s-email").value.trim(),pw=document.getElementById("s-pw").value;const btn=document.getElementById("btn-complete");setLoading(btn,true);try{const d=await API.post("/auth/register",{name,email,password:pw,course:obCourse,semester:parseInt(obSemester)||1,exam:obExam});Auth.save(d.token,d.user);if(obCourse&&COURSES[obCourse]){const sem=parseInt(obSemester)||1;const subjects=COURSES[obCourse].subjects[sem]||COURSES[obCourse].subjects[1]||[];for(const s of subjects){try{await API.post("/subjects",{name:s});}catch(_){}}}showToast("Welcome, "+name.split(" ")[0]+"! 🎉","success",2500);setTimeout(()=>location.href="dashboard.html",900);}catch(err){showToast(err.message,"error");setLoading(btn,false);}}
+document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;if(document.getElementById("form-login")?.style.display!=="none"&&document.getElementById("modal-auth")?.classList.contains("open"))doLogin();});
+document.getElementById("chat-fab-inp")?.addEventListener("keydown",e=>{if(e.key==="Enter")handleChatSend();});
+document.querySelector(".chat-send")?.addEventListener("click",handleChatSend);
+</script>
+</body>
+</html>

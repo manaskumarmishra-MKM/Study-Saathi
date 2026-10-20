@@ -1,215 +1,127 @@
-# 📚 StudySaathi – AI-Powered Study Planner
-
-> **Plan Better. Study Smarter.**
+# StudySaathi v3 — Your Personalized Learning Companion
 > © Manas Kumar Mishra. All rights reserved.
+
+AI-powered EdTech platform for GATE, JEE, NEET, UPSC, CAT, and B.Tech students — with rich graphics, animated UI, and fully offline Mock API.
 
 ---
 
-## 🗂 Project Structure
+## 🚀 Quick Start (No Backend Needed)
 
 ```
-studysaathi/
-├── backend/
-│   ├── app.py              ← Flask entry point (run this)
-│   ├── database.py         ← SQLite setup & table creation
-│   ├── models.py           ← Password hashing, token auth
-│   ├── requirements.txt    ← Python dependencies
-│   └── routes/
-│       ├── auth.py         ← Register, Login, Logout, Me
-│       ├── subjects.py     ← Subjects & Topics CRUD
-│       ├── planner.py      ← Plan generation algorithm
-│       ├── tasks.py        ← Daily tasks CRUD
-│       ├── exams.py        ← Exam countdown management
-│       └── progress.py     ← Study hours logging & stats
+1. Open  frontend/index.html  in any modern browser
+2. Click "Get Started Free" → Sign up
+3. Complete 3-step onboarding (course → semester → exam)
+4. All data stored in browser localStorage — works offline
+```
+
+---
+
+## ⚙️ Full Stack Setup (Flask)
+
+```bash
+pip install flask flask-cors
+cd backend
+python app.py           # http://localhost:5000
+```
+
+Then in `frontend/assets/js/core.js` line 3, change:
+```js
+const USE_MOCK = false;
+```
+
+---
+
+## 📁 Structure
+
+```
+SS_v3/
 ├── frontend/
-│   ├── index.html          ← Landing page
-│   ├── login.html          ← Login & Signup
-│   ├── dashboard.html      ← Main dashboard
-│   ├── planner.html        ← Subject setup + plan generator
-│   ├── progress.html       ← Progress tracker & charts
-│   ├── profile.html        ← Profile & settings
-│   ├── styles.css          ← Global dark-theme stylesheet
-│   └── script.js           ← API client + shared utilities
+│   ├── index.html          Landing page (particles, mockup, counters, scroll reveal)
+│   ├── dashboard.html      Smart dashboard with glow stat cards
+│   ├── subjects.html       Subject + topic manager with AI priority
+│   ├── syllabus.html       3-method importer (preloaded/upload/manual)
+│   ├── planner.html        5-mode AI study planner
+│   ├── pyq.html            PYQ bank with frequency + importance scoring
+│   ├── mocktest.html       MCQ tests with timer, score ring, grade
+│   ├── analytics.html      Charts, heatmap, streaks, achievements
+│   ├── resources.html      Notes, formula sheets, books, videos
+│   ├── chatbot.html        Full-page AI study assistant
+│   ├── profile.html        Account settings + achievements
+│   └── assets/
+│       ├── css/
+│       │   ├── main.css        Complete design system (dark/light)
+│       │   └── graphics.css    Particles, glassmorphism, animations
+│       └── js/
+│           ├── core.js         Auth, Mock API, PYQ, tests, chatbot, helpers
+│           └── sidebar.js      Shared sidebar/topbar injection
+│
+├── backend/
+│   ├── app.py              Flask — all 20+ API routes
+│   ├── database.py         SQLite schema + init
+│   └── models.py           PBKDF2 password hashing + HMAC JWT
+│
+├── database/
+│   └── studysaathi.db      Auto-created on first run
+│
 └── README.md
 ```
 
 ---
 
-## ⚙️ Tech Stack
+## ✨ Graphics Features
 
-| Layer      | Technology                          |
-|------------|-------------------------------------|
-| Frontend   | HTML5, CSS3, Vanilla JavaScript     |
-| Backend    | Python 3.10+ · Flask                |
-| Database   | SQLite (via Python's built-in sqlite3) |
-| Auth       | Token-based (SHA-256 salted hash)   |
-| AI Logic   | Rule-based suggestion engine        |
-
----
-
-## 🚀 Setup & Run
-
-### 1. Prerequisites
-```
-Python 3.10 or higher
-Flask (pip install flask)
-A web browser
-```
-
-### 2. Install dependencies
-```bash
-cd studysaathi/backend
-pip install flask
-```
-
-### 3. Start the backend
-```bash
-cd studysaathi/backend
-python app.py
-```
-Server runs at: **http://localhost:5000**
-
-The SQLite database (`studysaathi.db`) is created automatically on first run.
-
-### 4. Open the frontend
-Open `studysaathi/frontend/index.html` in your browser.
-- You can use any local server, e.g.:
-  ```bash
-  cd studysaathi/frontend
-  python -m http.server 3000
-  ```
-  Then visit: **http://localhost:3000**
-
-> ⚠️ Make sure the backend is running before opening the frontend.
+| Visual | Where |
+|---|---|
+| Animated particle network (WebGL-style canvas) | index.html |
+| Floating dashboard mockup with bar chart | index.html hero |
+| Auto-scrolling exam strip (CSS animation) | index.html |
+| Scroll-reveal animations (IntersectionObserver) | All sections |
+| Count-up number animations | Stats counters |
+| Glassmorphism feature cards | Features section |
+| Glow bottom-border stat cards (per colour) | All dashboards |
+| Animated bar chart (CSS @keyframes growUp) | Dashboard, Analytics |
+| 30-day study calendar heatmap | Analytics page |
+| SVG score ring with animated stroke | Mock test results |
+| Floating accent cards around mockup | Landing hero |
+| Dark / Light mode toggle | All pages |
 
 ---
 
-## 🔗 API Endpoints
+## 🌟 Platform Features
 
-### Auth
-| Method | Endpoint            | Description           |
-|--------|---------------------|-----------------------|
-| POST   | /api/auth/register  | Create account        |
-| POST   | /api/auth/login     | Login, get token      |
-| POST   | /api/auth/logout    | Invalidate token      |
-| GET    | /api/auth/me        | Get current user      |
-
-### Subjects & Topics
-| Method | Endpoint                         | Description           |
-|--------|----------------------------------|-----------------------|
-| GET    | /api/subjects/                   | List subjects+topics  |
-| POST   | /api/subjects/                   | Add subject           |
-| DELETE | /api/subjects/<id>               | Delete subject        |
-| POST   | /api/subjects/<id>/topics        | Add topic             |
-| PATCH  | /api/subjects/topics/<id>        | Toggle complete       |
-| DELETE | /api/subjects/topics/<id>        | Delete topic          |
-
-### Planner
-| Method | Endpoint               | Description              |
-|--------|------------------------|--------------------------|
-| POST   | /api/planner/generate  | Generate study plan      |
-| GET    | /api/planner/plans     | List saved plans         |
-| GET    | /api/planner/plans/<id>| Get specific plan        |
-
-### Tasks
-| Method | Endpoint          | Description        |
-|--------|-------------------|--------------------|
-| GET    | /api/tasks/       | List tasks by date |
-| POST   | /api/tasks/       | Create task        |
-| PATCH  | /api/tasks/<id>   | Update task        |
-| DELETE | /api/tasks/<id>   | Delete task        |
-
-### Exams
-| Method | Endpoint          | Description     |
-|--------|-------------------|-----------------|
-| GET    | /api/exams/       | List exams      |
-| POST   | /api/exams/       | Add exam        |
-| DELETE | /api/exams/<id>   | Delete exam     |
-
-### Progress
-| Method | Endpoint                    | Description           |
-|--------|-----------------------------|-----------------------|
-| POST   | /api/progress/              | Log study session     |
-| GET    | /api/progress/              | Get weekly summary    |
-| GET    | /api/progress/streak        | Get study streak      |
-| GET    | /api/progress/suggestions   | AI suggestions        |
-
-### Dashboard
-| Method | Endpoint       | Description              |
-|--------|----------------|--------------------------|
-| GET    | /api/dashboard | Full dashboard aggregate |
+| Feature | Detail |
+|---|---|
+| Smart Dashboard | Glow cards, tasks, exams, streak, weekly chart, AI recs |
+| PYQ Bank | Frequency + importance scoring, 4 tabs, subject analytics |
+| Mock Test Platform | Timer, navigator, mark-for-review, score ring, grade A–D |
+| 5-Mode Study Planner | Balanced / Topper / Crash / Weekend / Working Student |
+| Syllabus Importer | Preloaded GATE/JEE/NEET/UPSC/B.Tech + PDF + manual |
+| AI Study Assistant | 10 intent categories, quick-action chips, typing indicator |
+| Analytics | 30-day heatmap, weekly chart, subject bars, mock trends |
+| Resource Hub | 20 curated notes/formula/videos/books/practice sets |
+| Achievements | 8 unlockable badges |
+| Global Search | Subjects, topics, PYQs, tests — from topbar |
+| Dark / Light Mode | Persisted across sessions |
 
 ---
 
-## 🧠 AI Suggestion Logic
+## 🔌 API Endpoints (22 routes)
 
-The suggestion engine (`routes/progress.py`) works on these rules:
-
-1. **Weak Subject** — subject with fewest logged hours gets flagged
-2. **Hard Pending Topics** — incomplete Hard-difficulty topics surface as urgent
-3. **Exam Alerts** — exams within 14 days trigger revision-mode alerts
-4. **Positive Feedback** — if nothing urgent, shows encouragement
-
----
-
-## 📊 Database Schema
-
-```sql
-users       (id, name, email, password, course, created_at)
-tokens      (token, user_id, created_at)
-subjects    (id, user_id, subject_name, created_at)
-topics      (id, subject_id, topic_name, difficulty, completed)
-tasks       (id, user_id, task, notes, status, priority, date)
-exams       (id, user_id, subject, exam_date, notes, created_at)
-progress    (id, user_id, subject, hours_studied, date)
-study_plans (id, user_id, exam_date, daily_hours, plan_json, created_at)
+```
+POST  /api/auth/register          POST  /api/auth/login
+GET   /api/dashboard              GET/POST /api/subjects
+POST  /api/subjects/:id/topics    PATCH /api/subjects/topics/:id
+GET/POST /api/tasks               PATCH/DELETE /api/tasks/:id
+GET/POST /api/exams               DELETE /api/exams/:id
+GET/POST /api/progress            GET  /api/analytics
+GET/POST /api/pyqs                GET  /api/mocktests
+GET  /api/mocktests/:id           POST /api/mocktests/submit
+GET  /api/scores                  POST /api/planner/generate
+GET  /api/planner/saved           GET  /api/planner/:id
+POST /api/chat                    GET  /api/search
+GET  /api/achievements            GET  /api/notifications
 ```
 
 ---
 
-## 🎯 Demo Flow (Hackathon Walkthrough)
-
-1. Open `index.html` → landing page
-2. Click **Get Started** → signup form
-3. Register with name, email, password, course
-4. Redirected to **Dashboard** automatically
-5. Go to **Planner** → Add subjects (e.g. Mathematics, Physics)
-6. Add topics with difficulty levels
-7. Click **Generate Plan** → enter exam date + hours → see timetable
-8. Back to **Dashboard** → Add tasks + exams
-9. Log study hours via Quick Log or sidebar
-10. Visit **Progress** → see charts, streak, AI suggestions
-11. Visit **Profile** → manage settings
-
----
-
-## 🔐 Security Notes
-
-- Passwords stored as `salt:sha256(salt+password)` — never plaintext
-- Tokens are 64-char random hex strings with 7-day expiry
-- Foreign keys enforced at DB level
-- All protected routes validate token on every request
-
----
-
-## 🏁 Footer
-
-> **© Manas Kumar Mishra. All rights reserved.**
-> StudySaathi – Plan Better. Study Smarter.
-
----
-
-## ✅ Frontend (No Backend Required)
-
-The frontend now works **fully offline** using a localStorage Mock API.
-
-**To open directly in browser:**
-```
-Open frontend/index.html in any modern browser
-```
-No server needed. All data is stored in your browser's localStorage.
-
-**To switch to real Flask backend:**
-1. Run `python backend/app.py`
-2. In `frontend/script.js`, set `const USE_MOCK = false;`
-
+Copyright © Manas Kumar Mishra. All rights reserved.

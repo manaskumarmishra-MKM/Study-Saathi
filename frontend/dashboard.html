@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard — StudySaathi v3</title>
+<link rel="stylesheet" href="assets/css/main.css">
+<link rel="stylesheet" href="assets/css/graphics.css">
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar"></header>
+  <nav class="sidebar"></nav>
+  <main class="main">
+
+    <!-- Welcome Banner -->
+    <div class="welcome-banner" id="wb">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div class="wb-avatar" id="wb-av">U</div>
+        <div class="wb-info"><h2 id="wb-greet">Good morning! 👋</h2><p id="wb-date">Loading…</p></div>
+      </div>
+      <div id="wb-meta" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+    </div>
+
+    <!-- Stat cards with glow bottom border -->
+    <div class="stats-grid">
+      <div class="stat-card sc-teal glow-card">
+        <div style="display:flex;justify-content:space-between">
+          <div><div class="sc-label">Hours Today</div><div class="sc-val accent" id="s-hours">0h</div></div>
+          <div class="sc-icon" style="background:rgba(0,201,167,.1);font-size:1.2rem">⏱</div>
+        </div>
+        <div class="sc-sub"><a href="#" onclick="openModal('modal-log')" style="color:var(--teal);font-size:.78rem">+ Log hours</a></div>
+      </div>
+      <div class="stat-card sc-indigo glow-card">
+        <div style="display:flex;justify-content:space-between">
+          <div><div class="sc-label">Tasks Today</div><div class="sc-val" id="s-tasks">0/0</div></div>
+          <div class="sc-icon" style="background:rgba(61,90,241,.1);font-size:1.2rem">✅</div>
+        </div>
+        <div class="sc-sub" id="s-tasks-sub">—</div>
+      </div>
+      <div class="stat-card sc-purple glow-card">
+        <div style="display:flex;justify-content:space-between">
+          <div><div class="sc-label">Syllabus</div><div class="sc-val" style="color:var(--purple)" id="s-syl">0%</div></div>
+          <div class="sc-icon" style="background:rgba(168,85,247,.1);font-size:1.2rem">📚</div>
+        </div>
+        <div class="sc-sub"><a href="subjects.html" style="color:var(--purple);font-size:.78rem">View subjects →</a></div>
+      </div>
+      <div class="stat-card sc-gold glow-card">
+        <div style="display:flex;justify-content:space-between">
+          <div><div class="sc-label">Streak 🔥</div><div class="sc-val" style="color:var(--gold)" id="s-streak">0</div></div>
+          <div class="sc-icon" style="background:rgba(245,200,66,.1);font-size:1.2rem">🔥</div>
+        </div>
+        <div class="sc-sub">days in a row</div>
+      </div>
+      <div class="stat-card sc-green glow-card">
+        <div style="display:flex;justify-content:space-between">
+          <div><div class="sc-label">Mock Score</div><div class="sc-val" style="color:var(--teal)" id="s-mock">—</div></div>
+          <div class="sc-icon" style="background:rgba(34,197,94,.1);font-size:1.2rem">🧪</div>
+        </div>
+        <div class="sc-sub"><a href="mocktest.html" style="color:var(--teal);font-size:.78rem">Take a test →</a></div>
+      </div>
+    </div>
+
+    <!-- Row 1: Tasks + Exam countdown -->
+    <div class="g2" style="margin-bottom:22px">
+      <div class="card glow-card">
+        <div class="card-title">Today's Tasks <button class="lnk" onclick="openModal('modal-add-task')">+ Add</button></div>
+        <div id="tasks-list"><div class="loading"><span class="spinner"></span> Loading…</div></div>
+      </div>
+      <div class="card glow-card">
+        <div class="card-title">Exam Countdown <button class="lnk" onclick="openModal('modal-add-exam')">+ Add</button></div>
+        <div id="exams-list"><div class="loading"><span class="spinner"></span></div></div>
+      </div>
+    </div>
+
+    <!-- Row 2: Animated bar chart + Streak -->
+    <div class="g2" style="margin-bottom:22px">
+      <div class="card glow-card">
+        <div class="card-title">📊 Weekly Study Hours</div>
+        <div class="bar-chart" id="weekly-chart" style="height:140px;align-items:flex-end"></div>
+      </div>
+      <div class="card glow-card">
+        <div class="card-title">🔥 Streak — <span id="streak-count" style="color:var(--gold)">0</span> days</div>
+        <div style="font-size:.82rem;color:var(--text2);margin-bottom:12px">Last 7 days</div>
+        <div class="streak-row" id="streak-row"></div>
+        <div style="margin-top:20px">
+          <div style="font-size:.82rem;font-weight:600;color:var(--text2);margin-bottom:8px">Quick log today</div>
+          <div style="display:flex;gap:8px">
+            <input type="text" id="ql-subj" placeholder="Subject" style="flex:2">
+            <input type="number" id="ql-hrs" placeholder="Hrs" min=".5" max="24" step=".5" style="flex:1">
+            <button class="btn btn-teal btn-sm" onclick="quickLog()">Log</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Subject progress rings + AI recommendations -->
+    <div class="g2" style="margin-bottom:22px">
+      <div class="card glow-card">
+        <div class="card-title">Subject Progress <a href="subjects.html">All →</a></div>
+        <div id="subj-prog"></div>
+      </div>
+      <div class="card glow-card">
+        <div class="card-title">💡 AI Recommendations <a href="chatbot.html">Ask AI →</a></div>
+        <div id="recs-list"></div>
+      </div>
+    </div>
+
+    <!-- Row 4: Mock scores + Achievements -->
+    <div class="g2">
+      <div class="card glow-card">
+        <div class="card-title">Recent Mock Tests <a href="mocktest.html">All →</a></div>
+        <div id="mock-scores"></div>
+      </div>
+      <div class="card glow-card">
+        <div class="card-title">🏆 Achievements <a href="analytics.html">All →</a></div>
+        <div id="ach-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px"></div>
+      </div>
+    </div>
+
+    
+    <!-- Digital Library Banner -->
+    <div style="background:linear-gradient(135deg,rgba(34,20,18,.95),rgba(26,27,42,.95));border:1px solid rgba(234,188,184,.2);border-radius:20px;padding:24px 28px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-30px;right:-30px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(234,188,184,.07),transparent);pointer-events:none"></div>
+      <div style="display:flex;align-items:center;gap:16px">
+        <div style="width:52px;height:52px;border-radius:14px;background:rgba(234,188,184,.1);border:1px solid rgba(234,188,184,.2);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0">🏛️</div>
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:3px">Digital Library Experience</div>
+          <div style="font-size:.83rem;color:var(--text2);line-height:1.5">Scholarly study environment with AI Librarian, Subject Shelves, Pomodoro sessions, Break Mode &amp; more — in a beautiful library aesthetic.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;flex-shrink:0">
+        <a href="digital-library/entrance.html" class="btn btn-sm" style="background:rgba(234,188,184,.12);color:#eabcb8;border:1px solid rgba(234,188,184,.25);font-family:Inter,sans-serif">🏛️ Enter Library</a>
+        <a href="digital-library/active-session.html" class="btn btn-sm" style="background:rgba(176,205,190,.1);color:#b0cdbe;border:1px solid rgba(176,205,190,.2);font-family:Inter,sans-serif">⏱ Start Session</a>
+        <a href="digital-library/study-desk.html" class="btn btn-sm" style="background:rgba(183,200,222,.1);color:#b7c8de;border:1px solid rgba(183,200,222,.2);font-family:Inter,sans-serif">🖊 Study Desk</a>
+      </div>
+    </div>
+
+    <footer class="page-footer">Copyright © Manas Kumar Mishra. All rights reserved.</footer>
+  </main>
+</div>
+
+<!-- Log Hours Modal -->
+<div class="modal-ov" id="modal-log">
+  <div class="modal">
+    <div class="modal-hdr"><div class="modal-ttl">⏱ Log Study Hours</div><button class="modal-close" onclick="closeModal('modal-log')">✕</button></div>
+    <div class="form-group"><label>Subject</label><input type="text" id="lh-subj" placeholder="e.g. Algorithms"></div>
+    <div class="form-row"><div class="form-group"><label>Hours</label><input type="number" id="lh-hrs" min=".5" max="24" step=".5" placeholder="2"></div><div class="form-group"><label>Date</label><input type="date" id="lh-date"></div></div>
+    <div class="form-group"><label>Notes (optional)</label><input type="text" id="lh-notes" placeholder="What did you cover?"></div>
+    <button class="btn btn-teal btn-full" id="btn-log" onclick="logHours()">Log Hours</button>
+  </div>
+</div>
+
+<!-- Add Task Modal -->
+<div class="modal-ov" id="modal-add-task">
+  <div class="modal">
+    <div class="modal-hdr"><div class="modal-ttl">✅ Add Task</div><button class="modal-close" onclick="closeModal('modal-add-task')">✕</button></div>
+    <div class="form-group"><label>Task</label><input type="text" id="at-task" placeholder="e.g. Revise Chapter 5"></div>
+    <div class="form-row"><div class="form-group"><label>Priority</label><select id="at-pri"><option>High</option><option selected>Medium</option><option>Low</option></select></div><div class="form-group"><label>Date</label><input type="date" id="at-date"></div></div>
+    <button class="btn btn-teal btn-full" onclick="addTask()">Add Task</button>
+  </div>
+</div>
+
+<!-- Add Exam Modal -->
+<div class="modal-ov" id="modal-add-exam">
+  <div class="modal">
+    <div class="modal-hdr"><div class="modal-ttl">📅 Add Exam</div><button class="modal-close" onclick="closeModal('modal-add-exam')">✕</button></div>
+    <div class="form-group"><label>Subject / Exam Name</label><input type="text" id="ae-subj" placeholder="e.g. GATE 2026"></div>
+    <div class="form-group"><label>Exam Date</label><input type="date" id="ae-date"></div>
+    <button class="btn btn-teal btn-full" onclick="addExam()">Save Exam</button>
+  </div>
+</div>
+
+<script src="assets/js/core.js"></script>
+<script src="assets/js/sidebar.js"></script>
+<script>
+if(!requireAuth())throw"";
+injectShell("dashboard.html");
+document.getElementById("lh-date").value=todayStr();
+document.getElementById("at-date").value=todayStr();
+
+async function loadDashboard(){
+  try{
+    const d=await API.get("/dashboard");
+    const u=d.user,hr=new Date().getHours();
+    document.getElementById("wb-greet").textContent=(hr<12?"Good morning ☀️":hr<17?"Good afternoon 🌤":"Good evening 🌙")+", "+u.name.split(" ")[0]+"!";
+    document.getElementById("wb-date").textContent=new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+    document.getElementById("wb-av").textContent=(u.name||"U")[0].toUpperCase();
+    const meta=document.getElementById("wb-meta");
+    const cd=COURSES[u.course];
+    meta.innerHTML=(cd?`<span class="badge b-indigo">${cd.name}</span>`:"")+(u.semester?`<span class="badge b-teal">Sem ${u.semester}</span>`:"")+(u.exam?`<span class="badge b-gold">${u.exam}</span>`:"");
+
+    document.getElementById("s-hours").textContent=d.hours_today+"h";
+    document.getElementById("s-tasks").textContent=d.tasks_done+"/"+d.tasks_total;
+    document.getElementById("s-tasks-sub").textContent=d.tasks_done+" done today";
+    document.getElementById("s-syl").textContent=d.syllabus_pct+"%";
+    document.getElementById("s-streak").textContent=d.streak;
+    document.getElementById("s-mock").textContent=d.avg_mock?d.avg_mock+"%":"No tests yet";
+
+    // Tasks list
+    const tl=document.getElementById("tasks-list");
+    tl.innerHTML=d.tasks.length?d.tasks.map(t=>`
+      <div style="display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:var(--r-sm);border:1px solid transparent;transition:var(--trans);margin-bottom:4px" onmouseenter="this.style.background='var(--surface)'" onmouseleave="this.style.background=''">
+        <div onclick="toggleTask(${t.id},this)" style="width:18px;height:18px;border-radius:5px;border:2px solid ${t.status==='done'?'var(--green)':'var(--border2)'};background:${t.status==='done'?'var(--green)':'none'};cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;flex-shrink:0;transition:.15s">${t.status==='done'?'✓':''}</div>
+        <span style="flex:1;font-size:.87rem;${t.status==='done'?'text-decoration:line-through;color:var(--text2)':''}">${t.task}</span>
+        ${badgeHTML(t.priority,PMAP)}
+      </div>`).join("")
+    :emptyHTML("✅","No tasks — <a href='#' onclick='openModal(\"modal-add-task\")' style='color:var(--teal)'>add one?</a>");
+
+    // Exams list
+    const el=document.getElementById("exams-list");
+    el.innerHTML=d.exams.length?d.exams.map(e=>{
+      const dl=Math.round(e.days_left);
+      return`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--bg2);margin-bottom:8px;transition:var(--trans)" onmouseenter="this.style.borderColor='var(--border2)'" onmouseleave="this.style.borderColor='var(--border)'">
+        <div><div style="font-weight:600;font-size:.88rem">${e.subject}</div><div style="font-size:.76rem;color:var(--text2);margin-top:2px">${fmtDate(e.exam_date)}</div></div>
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:${dl<=7?'var(--red)':dl>60?'var(--green)':'var(--gold)'}">${dl}d</div>
+      </div>`;
+    }).join("")
+    :emptyHTML("📅","<a href='#' onclick='openModal(\"modal-add-exam\")' style='color:var(--teal)'>Add exam dates</a>");
+
+    // Recommendations
+    const rcMap={weak:"rc-weak",hard:"rc-hard",exam:"rc-exam",good:"rc-good"};
+    document.getElementById("recs-list").innerHTML=d.recommendations.map(r=>`
+      <div class="rec-card ${rcMap[r.type]||''}">
+        <div class="rc-icon">${r.icon}</div>
+        <div><div class="rc-title">${r.title}</div><div class="rc-msg">${r.msg}</div></div>
+      </div>`).join("")||emptyHTML("💡","Log hours to get personalised tips.");
+
+  }catch(err){showToast(err.message,"error");}
+}
+
+async function loadWeekly(){
+  try{
+    const d=await API.get("/progress");
+    buildBarChart("weekly-chart",(d.weekly||[]).map((x,i)=>({l:x.label,v:x.hours,c:i===6?"var(--teal)":"var(--indigo)"})));
+    document.getElementById("streak-count").textContent=d.streak||0;
+    const row=document.getElementById("streak-row"),today=todayStr(),days=["M","T","W","T","F","S","S"];
+    let html="";
+    for(let i=6;i>=0;i--){const dd=new Date();dd.setDate(dd.getDate()-i);const ds=dd.toISOString().split("T")[0];const lbl=days[dd.getDay()===0?6:dd.getDay()-1];const cls=ds===today?"today":((d.study_dates||[]).includes(ds)?"done":"");html+=`<div class="s-day ${cls}" title="${ds}">${lbl}</div>`;}
+    row.innerHTML=html;
+    // Subject progress bars
+    const sp=document.getElementById("subj-prog");
+    sp.innerHTML=(d.topic_completion||[]).length
+      ?(d.topic_completion||[]).slice(0,5).map(s=>progBarHTML(s.subject,s.pct,s.color)).join("")
+      +((d.topic_completion||[]).length>5?`<a href="subjects.html" style="color:var(--teal);font-size:.82rem">+${(d.topic_completion||[]).length-5} more →</a>`:"")
+      :emptyHTML("📚","<a href='subjects.html' style='color:var(--teal)'>Add subjects</a>");
+  }catch(_){}
+}
+
+async function loadMockScores(){
+  try{
+    const d=await API.get("/scores"),scores=d.scores||[];
+    document.getElementById("mock-scores").innerHTML=scores.length
+      ?`<div class="tbl-wrap"><table><thead><tr><th>Test</th><th>Score</th><th>Date</th></tr></thead><tbody>${scores.slice(0,5).map(s=>`<tr><td style="font-size:.84rem;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.test_title}</td><td><span class="grade-${s.grade}" style="padding:2px 10px;font-size:.78rem">${s.grade}</span> ${s.pct}%</td><td style="color:var(--text2);font-size:.78rem">${fmtDate(s.date)}</td></tr>`).join("")}</tbody></table></div>`
+      :emptyHTML("🧪","<a href='mocktest.html' style='color:var(--teal)'>Take a mock test</a>");
+  }catch(_){}
+}
+
+async function loadAchievements(){
+  try{
+    const d=await API.get("/achievements");
+    document.getElementById("ach-grid").innerHTML=(d.achievements||[]).slice(0,8).map(a=>`
+      <div class="ach-card ${a.unlocked?'':'locked'}" title="${a.desc}">
+        <div class="ach-icon">${a.icon}</div>
+        <div class="ach-name" style="font-size:.72rem">${a.name}</div>
+      </div>`).join("");
+  }catch(_){}
+}
+
+async function logHours(){
+  const subj=document.getElementById("lh-subj").value.trim();const hrs=parseFloat(document.getElementById("lh-hrs").value);const date=document.getElementById("lh-date").value||todayStr();const notes=document.getElementById("lh-notes").value.trim();
+  if(!subj||!hrs){showToast("Enter subject and hours","error");return;}
+  const btn=document.getElementById("btn-log");setLoading(btn,true);
+  try{await API.post("/progress",{subject:subj,hours:hrs,date,notes});closeModal("modal-log");document.getElementById("lh-subj").value="";document.getElementById("lh-hrs").value="";showToast(`✅ ${hrs}h logged for ${subj}`);loadDashboard();loadWeekly();}
+  catch(err){showToast(err.message,"error");}finally{setLoading(btn,false);}
+}
+
+async function quickLog(){
+  const subj=document.getElementById("ql-subj").value.trim();const hrs=parseFloat(document.getElementById("ql-hrs").value);
+  if(!subj||!hrs){showToast("Enter subject and hours","error");return;}
+  try{await API.post("/progress",{subject:subj,hours:hrs,date:todayStr()});document.getElementById("ql-subj").value="";document.getElementById("ql-hrs").value="";showToast(`✅ ${hrs}h logged!`);loadDashboard();loadWeekly();}catch(err){showToast(err.message,"error");}
+}
+
+async function addTask(){
+  const task=document.getElementById("at-task").value.trim(),priority=document.getElementById("at-pri").value,date=document.getElementById("at-date").value||todayStr();
+  if(!task){showToast("Enter a task","error");return;}
+  try{await API.post("/tasks",{task,priority,date});closeModal("modal-add-task");document.getElementById("at-task").value="";showToast("Task added! ✅");loadDashboard();}catch(err){showToast(err.message,"error");}
+}
+
+async function addExam(){
+  const subject=document.getElementById("ae-subj").value.trim(),exam_date=document.getElementById("ae-date").value;
+  if(!subject||!exam_date){showToast("Fill all fields","error");return;}
+  try{await API.post("/exams",{subject,exam_date});closeModal("modal-add-exam");document.getElementById("ae-subj").value="";document.getElementById("ae-date").value="";showToast("Exam added! 📅");loadDashboard();}catch(err){showToast(err.message,"error");}
+}
+
+async function toggleTask(id,el){
+  const done=el.style.background!=="var(--green)"&&el.style.background!=="rgb(34, 197, 94)";
+  try{await API.patch("/tasks/"+id,{status:done?"done":"pending"});loadDashboard();}catch(err){showToast(err.message,"error");}
+}
+
+loadDashboard();loadWeekly();loadMockScores();loadAchievements();
+</script>
+</body>
+</html>

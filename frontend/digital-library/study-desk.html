@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>StudySaathi 2.0 - The Study Desk</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container": "#221f1e",
+                      "surface": "#161312",
+                      "on-secondary-fixed-variant": "#38485a",
+                      "inverse-surface": "#e9e1df",
+                      "primary-container": "#4a2c2a",
+                      "error": "#ffb4ab",
+                      "tertiary-container": "#1f392e",
+                      "on-secondary": "#213243",
+                      "on-primary": "#462827",
+                      "on-surface-variant": "#d4c3c1",
+                      "on-tertiary-fixed-variant": "#324c40",
+                      "on-surface": "#e9e1df",
+                      "on-tertiary-container": "#86a394",
+                      "primary": "#eabcb8",
+                      "on-secondary-fixed": "#0b1d2d",
+                      "on-tertiary": "#1b352b",
+                      "secondary": "#b7c8de",
+                      "surface-container-high": "#2d2929",
+                      "tertiary": "#b0cdbe",
+                      "primary-fixed-dim": "#eabcb8",
+                      "primary-fixed": "#ffdad7",
+                      "inverse-primary": "#795553",
+                      "secondary-fixed": "#d2e4fb",
+                      "on-primary-fixed-variant": "#5f3e3c",
+                      "on-primary-fixed": "#2e1413",
+                      "tertiary-fixed": "#cbe9d9",
+                      "inverse-on-surface": "#342f2f",
+                      "surface-container-highest": "#383433",
+                      "surface-variant": "#383433",
+                      "on-tertiary-fixed": "#052016",
+                      "surface-bright": "#3d3838",
+                      "on-secondary-container": "#a9bad0",
+                      "on-error": "#690005",
+                      "on-error-container": "#ffdad6",
+                      "error-container": "#93000a",
+                      "on-background": "#e9e1df",
+                      "tertiary-fixed-dim": "#b0cdbe",
+                      "surface-tint": "#eabcb8",
+                      "secondary-container": "#3a4b5d",
+                      "surface-dim": "#161312",
+                      "secondary-fixed-dim": "#b7c8de",
+                      "background": "#161312",
+                      "surface-container-lowest": "#110d0d",
+                      "surface-container-low": "#1e1b1a",
+                      "outline": "#9d8d8c",
+                      "on-primary-container": "#bd928f",
+                      "outline-variant": "#504443"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-desktop": "40px",
+                      "gutter": "24px",
+                      "container-max": "1280px",
+                      "unit": "8px",
+                      "margin-mobile": "16px"
+              },
+              "fontFamily": {
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Playfair Display"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Playfair Display"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Playfair Display"
+                      ],
+                      "headline-md": [
+                              "Playfair Display"
+                      ]
+              },
+              "fontSize": {
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "1",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .texture-paper {
+            background-color: var(--surface-container);
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.5);
+        }
+        .texture-wood {
+            background: linear-gradient(90deg, #1e1515 0%, #2a1e1d 50%, #1e1515 100%);
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .glow-active {
+            box-shadow: 0 0 15px rgba(234, 188, 184, 0.2);
+        }
+    </style>
+<style>
+.dl-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(17,13,13,0.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(234,188,184,0.1);height:56px;display:flex;align-items:center;padding:0 24px;gap:4px;}
+.dl-nav a{display:flex;align-items:center;gap:5px;padding:7px 11px;border-radius:5px;font-family:Inter,sans-serif;font-size:11.5px;font-weight:600;color:#9d8d8c;text-decoration:none;transition:all 0.2s;letter-spacing:.04em;white-space:nowrap;border:1px solid transparent;}
+.dl-nav a:hover{color:#eabcb8;background:rgba(234,188,184,0.07);}
+.dl-nav a.active{color:#eabcb8;background:rgba(234,188,184,0.1);border-color:rgba(234,188,184,0.15);}
+.dl-nav .logo{font-family:"Playfair Display",serif;font-size:15px;font-weight:700;color:#e9e1df;letter-spacing:-0.01em;margin-right:6px;padding:6px 10px;}
+.dl-nav .logo:hover{background:rgba(234,188,184,0.05);color:#eabcb8;}
+.dl-nav .sep{width:1px;height:20px;background:rgba(234,188,184,0.12);margin:0 6px;flex-shrink:0;}
+.dl-nav .spacer{flex:1;}
+.dl-nav .nav-v3{font-size:11px;border:1px solid rgba(176,205,190,0.25)!important;border-radius:20px;color:#b0cdbe!important;padding:5px 13px!important;}
+.dl-nav .nav-v3:hover{background:rgba(176,205,190,0.1)!important;border-color:rgba(176,205,190,0.4)!important;}
+.dl-nav .material-symbols-outlined{font-size:15px!important;}
+body.with-dl-nav{padding-top:56px;}
+</style>
+</head>
+<body class="bg-background text-on-surface font-body-md text-body-md min-h-screen flex flex-col relative overflow-x-hidden">
+<nav class="dl-nav">
+  <a href="entrance.html" class="logo">✦ StudySaathi</a>
+  <div class="sep"></div>
+  <a href="entrance.html" data-p="entrance"><span class="material-symbols-outlined">castle</span>Library</a>
+  <a href="shelves.html" data-p="shelves"><span class="material-symbols-outlined">library_books</span>Shelves</a>
+  <a href="question-paper.html" data-p="question-paper"><span class="material-symbols-outlined">inventory_2</span>PYQ Archive</a>
+  <a href="study-desk.html" data-p="study-desk"><span class="material-symbols-outlined">desk</span>Study Desk</a>
+  <a href="active-session.html" data-p="active-session"><span class="material-symbols-outlined">timer</span>Study Session</a>
+  <a href="mock-session.html" data-p="mock-session"><span class="material-symbols-outlined">quiz</span>Mock Test</a>
+  <a href="break-mode.html" data-p="break-mode"><span class="material-symbols-outlined">spa</span>Break</a>
+  <a href="session-summary.html" data-p="session-summary"><span class="material-symbols-outlined">bar_chart</span>Summary</a>
+  <div class="spacer"></div>
+  <a href="../dashboard.html" class="nav-v3"><span class="material-symbols-outlined">dashboard</span>v3 Dashboard</a>
+</nav>
+<script>
+(function(){
+  document.body.classList.add("with-dl-nav");
+  const p=location.pathname.split("/").pop().replace(".html","");
+  document.querySelectorAll(".dl-nav a[data-p]").forEach(a=>{if(a.dataset.p===p)a.classList.add("active");});
+})();
+</script>
+<!-- TopAppBar -->
+<header class="bg-surface-container-low dark:bg-surface-container-low border-b border-outline-variant shadow-sm z-50 sticky top-0">
+<div class="flex justify-between items-center px-margin-desktop w-full max-w-container-max mx-auto h-16">
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">
+                StudySaathi 2.0
+            </div>
+<nav class="hidden md:flex space-x-8">
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="#">Entrance</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="#">Shelves</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200" href="#">Archive</a>
+<a class="text-primary border-b-2 border-primary font-bold pb-1 hover:text-primary transition-colors duration-200" href="#">Desk</a>
+</nav>
+<div class="flex items-center space-x-4">
+<button class="scale-95 duration-100 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-gutter flex flex-col lg:flex-row gap-gutter z-10">
+<!-- Left Column: The Desk Canvas -->
+<div class="w-full lg:w-2/3 flex flex-col gap-gutter">
+<div class="texture-paper rounded-xl p-8 flex-grow flex flex-col relative overflow-hidden glow-active shadow-lg border border-outline-variant/30 bg-surface-container-low">
+<!-- Desk Header -->
+<div class="mb-8 border-b border-outline-variant/30 pb-4 flex justify-between items-end">
+<div>
+<h2 class="font-label-sm text-label-sm text-primary uppercase tracking-widest mb-2">Current Subject</h2>
+<h1 class="font-display-lg text-display-lg text-on-surface">Database Management Systems</h1>
+</div>
+<div class="text-right">
+<span class="font-headline-md text-headline-md text-primary-container block">68%</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Normalization: 1NF to BCNF</span>
+</div>
+</div>
+<!-- Timer / Focus Area -->
+<div class="flex flex-col items-center justify-center flex-grow py-12">
+<div class="relative w-64 h-64 flex items-center justify-center mb-6">
+<!-- Simulated SVG Timer Ring -->
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 100 100">
+<circle class="text-surface-container-high" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-width="2"></circle>
+<circle class="text-primary drop-shadow-md transition-all duration-1000 ease-linear" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-dasharray="283" stroke-dashoffset="75" stroke-width="4"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-display-lg text-display-lg text-primary tracking-tight">45:00</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-2 uppercase">Deep Work</span>
+</div>
+</div>
+<div class="flex gap-4">
+<button class="px-6 py-3 bg-primary-container text-on-primary-container rounded-full font-body-md text-body-md hover:bg-primary hover:text-on-primary transition-colors duration-300 flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="pause">pause</span> Pause
+                        </button>
+<a class="px-6 py-3 bg-surface-container-high border border-outline-variant text-on-surface rounded-full font-body-md text-body-md hover:bg-surface-container-highest transition-colors duration-300 flex items-center gap-2" href="{{DATA:SCREEN:SCREEN_11}}">
+<span class="material-symbols-outlined text-[20px]" data-icon="stop">stop</span> End
+                        </a>
+</div>
+</div>
+<!-- Study Material Scroll -->
+<div class="mt-auto h-48 border border-outline-variant/50 rounded-lg p-4 bg-surface-container-lowest/50 overflow-y-auto">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="book">book</span> Key Concepts
+                    </h3>
+<ul class="space-y-3 font-body-md text-body-md text-on-surface-variant">
+<li class="flex items-start gap-2">
+<span class="text-primary mt-1">•</span>
+<span><strong>1NF (First Normal Form):</strong> Eliminate repeating groups. Every attribute must be atomic.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="text-primary mt-1">•</span>
+<span><strong>2NF (Second Normal Form):</strong> Must be in 1NF and have no partial dependencies (all non-key attributes depend on the entire primary key).</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="text-primary mt-1">•</span>
+<span><strong>3NF (Third Normal Form):</strong> Must be in 2NF and have no transitive dependencies.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="text-primary mt-1">•</span>
+<span><strong>BCNF (Boyce-Codd Normal Form):</strong> A stricter version of 3NF. For every non-trivial functional dependency X -&gt; Y, X must be a superkey.</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Right Column: Session Sidebar (Repurposed SideNav Structure) -->
+<aside class="w-full lg:w-1/3 flex flex-col gap-4">
+<!-- Header/AI Area -->
+<div class="bg-surface-container shadow-lg rounded-xl p-6 border border-outline-variant/20 flex flex-col gap-4 texture-wood relative overflow-hidden">
+<div class="flex items-center gap-4 border-b border-outline-variant/30 pb-4">
+<div class="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center shadow-inner glow-active animate-pulse">
+<span class="material-symbols-outlined text-tertiary" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Saathi AI Librarian</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Deep Work Assistance</p>
+</div>
+</div><div class="flex items-center gap-2 px-2 py-1 bg-tertiary-container/20 rounded border border-tertiary/20">
+<span class="material-symbols-outlined text-tertiary text-[14px] animate-spin-slow">sync</span>
+<span class="text-[10px] uppercase tracking-widest text-tertiary font-bold">Contextual Data: Analyzing DBMS + Session Goals</span>
+</div>
+<div class="bg-surface-container-lowest/50 rounded-lg p-4 border border-outline-variant/20">
+<div class="space-y-4 font-body-md text-body-md text-on-surface">
+<div>
+<span class="block font-bold text-primary mb-1">The Core Principle</span>
+<p class="italic">BCNF ensures that every determinant in a table is a candidate key, effectively eliminating all redundancy caused by functional dependencies.</p>
+</div>
+<div>
+<span class="block font-bold text-primary mb-1">Mathematical Definition</span>
+<code class="block bg-surface-container p-2 rounded text-label-sm">R is in BCNF iff for every FD X → Y, X is a superkey of R.</code>
+</div>
+<div>
+<span class="block font-bold text-primary mb-1">Common Pitfalls</span>
+<p class="italic text-on-surface-variant">Overlapping candidate keys often lead to 3NF violations that only BCNF can resolve. Be wary of dependency preservation trade-offs.</p>
+</div>
+</div>
+<button class="mt-4 flex items-center gap-2 text-label-sm text-tertiary cursor-default transition-colors">
+<span class="material-symbols-outlined text-[18px]">check_circle</span> Pinned to Research Journal
+</button><div class="mt-4 pt-4 border-t border-outline-variant/20 flex flex-wrap gap-2">
+<button class="px-3 py-1.5 bg-primary-container/30 hover:bg-primary-container text-primary text-label-sm rounded-full transition-colors border border-primary/20 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">model_training</span> Generate Practice Case
+    </button>
+<button class="px-3 py-1.5 bg-primary-container/30 hover:bg-primary-container text-primary text-label-sm rounded-full transition-colors border border-primary/20 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">library_books</span> Find Related Papers
+    </button>
+<button class="px-3 py-1.5 bg-primary-container/30 hover:bg-primary-container text-primary text-label-sm rounded-full transition-colors border border-primary/20 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">compare_arrows</span> Synthesize with 3NF
+    </button>
+</div></div>
+<div class="mt-2">
+<h4 class="font-label-sm text-label-sm text-primary uppercase tracking-widest mb-2">Recent Research</h4>
+<ul class="space-y-1"><li class="flex items-center gap-2 text-on-surface-variant hover:text-primary cursor-pointer transition-colors"><span class="material-symbols-outlined text-[16px]">history</span><span class="text-label-sm">BCNF Summary</span></li>
+<li class="flex items-center gap-2 text-on-surface-variant hover:text-primary cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-[16px]">history</span>
+<span class="text-label-sm">DBMS Normalization</span>
+</li>
+<li class="flex items-center gap-2 text-on-surface-variant hover:text-primary cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-[16px]">history</span>
+<span class="text-label-sm">Heap Sort Complexity</span>
+</li>
+</ul>
+</div>
+<div class="relative mt-2">
+<input class="w-full bg-surface-container-lowest border border-outline-variant/50 rounded-lg py-3 px-4 pr-12 text-on-surface font-body-md text-body-md focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="Ask Saathi to summarize, analyze, or synthesize anything..." type="text"/>
+<button class="mt-4 flex items-center gap-2 text-label-sm text-tertiary cursor-default transition-colors">
+<span class="material-symbols-outlined text-[18px]">check_circle</span> Pinned to Research Journal
+</button>
+</div>
+</div>
+<!-- Session Goals -->
+<div class="bg-surface-container shadow-lg rounded-xl p-6 border border-outline-variant/20 flex-grow flex flex-col">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-4 flex items-center gap-2 border-b border-outline-variant/30 pb-2">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="target">target</span> Session Goals
+                </h3>
+<div class="space-y-3 mt-2 font-body-md text-body-md">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="form-checkbox h-5 w-5 text-primary rounded border-outline-variant bg-surface-container-lowest focus:ring-primary focus:ring-offset-surface-container" type="checkbox"/>
+<span class="text-on-surface group-hover:text-primary transition-colors">Review 2NF examples</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="form-checkbox h-5 w-5 text-primary rounded border-outline-variant bg-surface-container-lowest focus:ring-primary focus:ring-offset-surface-container" type="checkbox"/>
+<span class="text-on-surface-variant line-through">Complete Chapter 4 reading</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group"><input checked="" class="form-checkbox h-5 w-5 text-primary rounded border-outline-variant bg-surface-container-lowest focus:ring-primary focus:ring-offset-surface-container" type="checkbox"/><span class="text-on-surface-variant line-through">Solve BCNF practice problem</span></label>
+</div>
+</div>
+<!-- Quick Notes -->
+<div class="bg-surface-container shadow-lg rounded-xl p-6 border border-outline-variant/20 flex-grow flex flex-col">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-4 flex items-center gap-2 border-b border-outline-variant/30 pb-2">
+<span class="material-symbols-outlined text-tertiary text-[20px]" data-icon="edit_note">edit_note</span> Quick Notes
+                </h3>
+<div class="flex-grow bg-surface-container-lowest/50 border border-primary/20 rounded-lg p-4 texture-paper shadow-inner">
+<div class="flex justify-between items-start mb-3">
+<h4 class="font-headline-md text-headline-md text-primary">BCNF (Boyce-Codd Normal Form)</h4>
+<span class="text-[10px] uppercase tracking-widest text-on-surface-variant bg-surface-container px-2 py-1 rounded border border-outline-variant/30">Pinned from Saathi AI • 14:45</span>
+</div>
+<div class="space-y-3 font-body-md text-body-md text-on-surface">
+<p class="italic border-l-2 border-primary/30 pl-3">BCNF ensures that every determinant in a table is a candidate key, effectively eliminating all redundancy caused by functional dependencies.</p>
+<div class="bg-surface-container/50 p-2 rounded border border-outline-variant/20">
+<code class="text-label-sm text-primary">R is in BCNF iff for every FD X → Y, X is a superkey of R.</code>
+</div>
+<ul class="space-y-1 text-on-surface-variant text-[14px]">
+<li class="flex items-start gap-2"><span class="text-primary">•</span> Stricter than 3NF</li>
+<li class="flex items-start gap-2"><span class="text-primary">•</span> Resolves overlapping candidate key issues</li>
+<li class="flex items-start gap-2"><span class="text-primary">•</span> Watch for dependency preservation trade-offs</li>
+</ul>
+</div>
+</div>
+</div>
+</aside>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant z-50">
+<div class="w-full py-gutter px-margin-desktop flex flex-col md:flex-row justify-between items-center max-w-container-max mx-auto font-label-sm text-label-sm text-on-surface-variant dark:text-on-surface-variant gap-4">
+<div class="font-headline-md text-headline-md text-on-surface">
+                StudySaathi 2.0
+            </div>
+<div class="flex space-x-6">
+<a class="hover:text-primary underline opacity-80 hover:opacity-100 transition-opacity" href="#">Library Rules</a>
+<a class="hover:text-primary underline opacity-80 hover:opacity-100 transition-opacity" href="#">Scholarly Privacy</a>
+<a class="hover:text-primary underline opacity-80 hover:opacity-100 transition-opacity" href="#">Contact Librarian</a>
+</div>
+<div class="text-center md:text-right">
+                © 2024 StudySaathi Digital Atheneum. All Rights Reserved.
+            </div>
+</div>
+</footer>
+</body></html>

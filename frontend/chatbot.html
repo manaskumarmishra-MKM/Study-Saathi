@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Assistant — StudySaathi v3</title>
+<link rel="stylesheet" href="assets/css/main.css">
+<link rel="stylesheet" href="assets/css/graphics.css">
+<style>
+.chat-page{display:flex;flex-direction:column;height:calc(100vh - var(--topbar-h));max-width:860px;margin:0 auto;}
+.chat-page-hdr{padding:24px 28px 0;flex-shrink:0;}
+.chat-page-msgs{flex:1;overflow-y:auto;padding:20px 28px;display:flex;flex-direction:column;gap:14px;}
+.chat-page-foot{padding:14px 28px 20px;flex-shrink:0;}
+.cp-row{display:flex;gap:10px;background:var(--bg2);border:1.5px solid var(--border2);border-radius:16px;padding:10px 14px;transition:var(--trans);}
+.cp-row:focus-within{border-color:var(--teal);}
+.cp-row input{flex:1;background:none;border:none;color:var(--text);font-size:.92rem;}
+.cp-row button{width:40px;height:40px;border-radius:10px;background:var(--indigo);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:var(--trans);flex-shrink:0;}
+.cp-row button:hover{background:var(--indigo2);}
+.msg-time{font-size:.68rem;color:var(--text3);margin-top:3px;}
+.msg.user .msg-time{text-align:right;}
+.bot-intro{background:linear-gradient(135deg,rgba(61,90,241,.08),rgba(0,201,167,.05));border:1px solid rgba(61,90,241,.2);border-radius:16px;padding:18px 20px;display:flex;gap:14px;}
+.qa-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+.qa-btn{padding:7px 16px;border-radius:20px;background:var(--surface);border:1px solid var(--border);font-size:.82rem;color:var(--text2);cursor:pointer;transition:.15s;white-space:nowrap;}
+.qa-btn:hover{border-color:var(--teal);color:var(--teal);}
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar"></header><nav class="sidebar"></nav>
+  <main class="main" style="padding:0;display:flex;flex-direction:column;">
+    <div class="chat-page">
+      <div class="chat-page-hdr">
+        <div class="page-title" style="margin-bottom:4px">🤖 AI Study Assistant</div>
+        <div class="page-sub" style="margin-bottom:16px">Ask anything about exam prep, study strategies, or subject doubts</div>
+        <div class="qa-row">
+          <span class="qa-btn" onclick="quickQ('Create a study schedule for GATE CS')">📅 GATE Schedule</span>
+          <span class="qa-btn" onclick="quickQ('JEE preparation strategy for 3 months')">⚗️ JEE Strategy</span>
+          <span class="qa-btn" onclick="quickQ('NEET preparation tips for Biology')">🔬 NEET Tips</span>
+          <span class="qa-btn" onclick="quickQ('UPSC preparation guide for beginners')">📖 UPSC Guide</span>
+          <span class="qa-btn" onclick="quickQ('How to tackle weak subjects effectively?')">📉 Weak Subjects</span>
+          <span class="qa-btn" onclick="quickQ('PYQ strategy for exam preparation')">📝 PYQ Strategy</span>
+          <span class="qa-btn" onclick="quickQ('Mock test tips and analysis strategy')">🧪 Mock Tips</span>
+          <span class="qa-btn" onclick="quickQ('I feel demotivated. Help me stay consistent.')">💪 Motivation</span>
+        </div>
+      </div>
+      <div class="chat-page-msgs" id="chat-msgs">
+        <div class="bot-intro">
+          <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--indigo),var(--teal));display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">🤖</div>
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:4px">StudySaathi AI</div>
+            <div style="font-size:.87rem;color:var(--text2);line-height:1.65">Hi! I'm your personal study assistant. I can help you with:<br>
+            • Study schedules and time management strategies<br>
+            • GATE / JEE / NEET / UPSC exam-specific guidance<br>
+            • PYQ analysis and mock test improvement tips<br>
+            • Weak subject identification and revision plans<br>
+            • Motivation and consistency tips<br><br>
+            <strong>Ask me anything! 🚀</strong></div>
+          </div>
+        </div>
+      </div>
+      <div class="chat-page-foot">
+        <div class="cp-row">
+          <input type="text" id="cp-inp" placeholder="Ask about study plans, exam tips, subject doubts…" autocomplete="off">
+          <button onclick="sendMsg()">➤</button>
+        </div>
+        <div style="text-align:center;font-size:.74rem;color:var(--text3);margin-top:8px">AI responses are study guidance only. Verify with official sources.</div>
+      </div>
+    </div>
+    <footer class="page-footer" style="margin-top:0">Copyright © Manas Kumar Mishra. All rights reserved.</footer>
+  </main>
+</div>
+
+<script src="assets/js/core.js"></script><script src="assets/js/sidebar.js"></script>
+<script>
+if(!requireAuth())throw"";
+injectShell("chatbot.html");
+const msgs=document.getElementById("chat-msgs");
+const inp=document.getElementById("cp-inp");
+let busy=false;
+function timeNow(){return new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});}
+function addMsg(text,role){const d=document.createElement("div");d.className="msg "+role;const ini=role==="user"?((Auth.user()?.name||"U")[0].toUpperCase()):"🤖";d.innerHTML=`<div class="msg-av">${ini}</div><div><div class="msg-bub">${text.replace(/\n/g,"<br>")}</div><div class="msg-time">${timeNow()}</div></div>`;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;}
+function showTyping(){const d=document.createElement("div");d.className="msg bot";d.id="typing";d.innerHTML=`<div class="msg-av">🤖</div><div class="msg-bub" style="display:flex;gap:5px;align-items:center;padding:12px 16px"><div class="td-dot"></div><div class="td-dot"></div><div class="td-dot"></div></div>`;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;}
+async function sendMsg(){const msg=inp.value.trim();if(!msg||busy)return;inp.value="";busy=true;addMsg(msg,"user");showTyping();try{const ctx=new URLSearchParams(location.search).get("ctx");const d=await API.post("/chat",{message:ctx?"[After mock test] "+msg:msg});document.getElementById("typing")?.remove();addMsg(d.reply,"bot");}catch(_){document.getElementById("typing")?.remove();addMsg("Sorry, I ran into an issue. Please try again! 😅","bot");}finally{busy=false;}}
+function quickQ(q){inp.value=q;sendMsg();}
+inp.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMsg();}});
+const ctx=new URLSearchParams(location.search).get("ctx");
+if(ctx==="mocktest")setTimeout(()=>quickQ("I just finished a mock test. Help me analyse my weak areas and what to study next."),500);
+</script>
+</body>
+</html>

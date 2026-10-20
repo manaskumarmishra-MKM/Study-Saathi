@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PYQ Bank — StudySaathi v3</title>
+<link rel="stylesheet" href="assets/css/main.css">
+<link rel="stylesheet" href="assets/css/graphics.css">
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar"></header><nav class="sidebar"></nav>
+  <main class="main">
+    <div class="page-header">
+      <div><div class="page-title">📝 PYQ Bank</div><div class="page-sub">Previous Year Questions with frequency & importance scoring</div></div>
+      <button class="btn btn-teal" onclick="openModal('modal-add-pyq')">+ Add PYQ</button>
+    </div>
+    <div class="stats-grid" style="grid-template-columns:repeat(5,1fr);margin-bottom:22px">
+      <div class="stat-card sc-teal"><div class="sc-label">Total PYQs</div><div class="sc-val accent" id="pq-total">—</div></div>
+      <div class="stat-card sc-indigo"><div class="sc-label">Exams</div><div class="sc-val" id="pq-exams">—</div></div>
+      <div class="stat-card sc-purple"><div class="sc-label">Subjects</div><div class="sc-val" style="color:var(--purple)" id="pq-subjs">—</div></div>
+      <div class="stat-card sc-gold"><div class="sc-label">Years</div><div class="sc-val" style="color:var(--gold)" id="pq-years">—</div></div>
+      <div class="stat-card sc-green"><div class="sc-label">Avg Importance</div><div class="sc-val" style="color:var(--teal)" id="pq-imp">—</div></div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('all',this)">All Questions</button>
+      <button class="tab-btn" onclick="switchTab('important',this)">⭐ Important</button>
+      <button class="tab-btn" onclick="switchTab('repeated',this)">🔁 Repeated</button>
+      <button class="tab-btn" onclick="switchTab('analytics',this)">📊 Analytics</button>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px 22px;margin-bottom:22px">
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:12px;flex-wrap:wrap">
+        <div style="position:relative"><span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none">🔍</span><input type="text" id="f-q" placeholder="Search question or subject…" style="padding-left:38px" oninput="applyFilters()"></div>
+        <select id="f-exam" onchange="applyFilters()"><option value="">All Exams</option><option>GATE</option><option>JEE</option><option>NEET</option><option>UPSC</option><option>University</option></select>
+        <select id="f-subj" onchange="applyFilters()"><option value="">All Subjects</option></select>
+        <select id="f-year" onchange="applyFilters()"><option value="">All Years</option><option>2023</option><option>2022</option><option>2021</option><option>2020</option></select>
+        <select id="f-diff" onchange="applyFilters()"><option value="">All Difficulty</option><option>Easy</option><option>Medium</option><option>Hard</option></select>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap;gap:8px">
+        <span id="results-count" style="font-size:.82rem;color:var(--text2)">Loading…</span>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" onclick="expandAll()">Expand All</button>
+          <button class="btn btn-ghost btn-sm" onclick="collapseAll()">Collapse All</button>
+          <button class="btn btn-ghost btn-sm" onclick="clearFilters()">Clear</button>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane active" id="tab-all"><div id="pyq-list"></div></div>
+    <div class="tab-pane" id="tab-important"><div id="pyq-important"></div></div>
+    <div class="tab-pane" id="tab-repeated"><div id="pyq-repeated"></div></div>
+    <div class="tab-pane" id="tab-analytics">
+      <div class="g2">
+        <div class="card glow-card"><div class="card-title">📊 Most Important Questions</div><div id="an-important"></div></div>
+        <div class="card glow-card"><div class="card-title">🔁 Most Repeated Questions</div><div id="an-repeated"></div></div>
+      </div>
+      <div class="card glow-card" style="margin-top:20px"><div class="card-title">📈 Subject-wise Question Count</div><div id="an-by-subj"></div></div>
+    </div>
+    <footer class="page-footer">Copyright © Manas Kumar Mishra. All rights reserved.</footer>
+  </main>
+</div>
+
+<div class="modal-ov" id="modal-add-pyq">
+  <div class="modal">
+    <div class="modal-hdr"><div class="modal-ttl">📝 Add PYQ</div><button class="modal-close" onclick="closeModal('modal-add-pyq')">✕</button></div>
+    <div class="form-row"><div class="form-group"><label>Subject</label><input type="text" id="ap-subj" placeholder="e.g. Algorithms"></div><div class="form-group"><label>Exam</label><select id="ap-exam"><option>GATE</option><option>JEE</option><option>NEET</option><option>UPSC</option><option>University</option></select></div></div>
+    <div class="form-row"><div class="form-group"><label>Year</label><input type="number" id="ap-year" placeholder="2023" min="2000" max="2030"></div><div class="form-group"><label>Unit</label><input type="text" id="ap-unit" placeholder="e.g. Sorting"></div></div>
+    <div class="form-group"><label>Question</label><textarea id="ap-q" placeholder="Enter the question…"></textarea></div>
+    <div class="form-group"><label>Answer</label><input type="text" id="ap-ans" placeholder="Correct answer"></div>
+    <div class="form-group"><label>Difficulty</label><select id="ap-diff"><option>Easy</option><option selected>Medium</option><option>Hard</option></select></div>
+    <button class="btn btn-teal btn-full" onclick="addPYQ()">Add Question</button>
+  </div>
+</div>
+
+<script src="assets/js/core.js"></script><script src="assets/js/sidebar.js"></script>
+<script>
+if(!requireAuth())throw"";
+injectShell("pyq.html");
+let allPYQs=[];
+
+async function loadPYQs(){try{const d=await API.get("/pyqs");allPYQs=d.pyqs||[];populateSubjFilter(allPYQs);updateStats(allPYQs);applyFilters();renderImportant();renderRepeated();renderAnalytics();}catch(err){showToast(err.message,"error");}}
+function populateSubjFilter(pyqs){const subs=[...new Set(pyqs.map(q=>q.subject))].sort();document.getElementById("f-subj").innerHTML='<option value="">All Subjects</option>'+subs.map(s=>`<option>${s}</option>`).join("");}
+function updateStats(pyqs){document.getElementById("pq-total").textContent=pyqs.length;document.getElementById("pq-exams").textContent=new Set(pyqs.map(q=>q.exam)).size;document.getElementById("pq-subjs").textContent=new Set(pyqs.map(q=>q.subject)).size;document.getElementById("pq-years").textContent=new Set(pyqs.map(q=>q.year)).size;const avgImp=pyqs.length?Math.round(pyqs.reduce((s,q)=>s+(q.importance||70),0)/pyqs.length):0;document.getElementById("pq-imp").textContent=avgImp+"%";}
+
+function applyFilters(){const q=document.getElementById("f-q").value.toLowerCase(),exam=document.getElementById("f-exam").value,subj=document.getElementById("f-subj").value,year=document.getElementById("f-year").value,diff=document.getElementById("f-diff").value;let filtered=allPYQs;if(q)filtered=filtered.filter(x=>x.question.toLowerCase().includes(q)||x.subject.toLowerCase().includes(q)||(x.unit||"").toLowerCase().includes(q));if(exam)filtered=filtered.filter(x=>x.exam===exam);if(subj)filtered=filtered.filter(x=>x.subject===subj);if(year)filtered=filtered.filter(x=>x.year===parseInt(year));if(diff)filtered=filtered.filter(x=>x.difficulty===diff);renderPYQs(filtered,"pyq-list");document.getElementById("results-count").textContent=`Showing ${filtered.length} question${filtered.length!==1?"s":""}`;;}
+function clearFilters(){["f-q","f-exam","f-subj","f-year","f-diff"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});applyFilters();}
+
+function renderPYQs(pyqs,cid){
+  const list=document.getElementById(cid);if(!list)return;
+  if(!pyqs.length){list.innerHTML=emptyHTML("📝","No questions match. Try clearing filters.");return;}
+  list.innerHTML=pyqs.map((q,i)=>`
+    <div class="pyq-card glow-card">
+      <div class="pyq-meta">
+        <span class="badge b-indigo">${q.exam}</span><span class="badge b-muted">${q.subject}</span><span class="badge b-gold">${q.year}</span>
+        ${q.unit?`<span class="badge b-teal">${q.unit}</span>`:""}${badgeHTML(q.difficulty,DMAP)}
+        <span style="font-size:.78rem;color:var(--gold)">🔁 ${q.frequency||1}×</span>
+        <span style="font-size:.78rem;color:var(--teal)">⭐ ${q.importance||70}%</span>
+        ${(q.importance||70)>=90?'<span class="badge b-red">🔥 Must Do</span>':""}
+      </div>
+      <div class="pyq-q">Q${i+1}. ${q.question}</div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button style="background:none;border:none;color:var(--teal);font-size:.82rem;cursor:pointer;font-weight:600" onclick="toggleAns(${q.id})">👁 Show Answer</button>
+        <a href="mocktest.html" class="btn btn-ghost btn-sm" style="font-size:.78rem;padding:4px 10px">Practice Similar →</a>
+      </div>
+      <div class="pyq-ans" id="ans-${q.id}"><strong>Answer:</strong> ${q.answer}</div>
+    </div>`).join("");
+}
+function renderImportant(){const imp=allPYQs.filter(q=>(q.importance||70)>=85).sort((a,b)=>(b.importance||0)-(a.importance||0));renderPYQs(imp,"pyq-important");}
+function renderRepeated(){const rep=allPYQs.filter(q=>(q.frequency||1)>=4).sort((a,b)=>(b.frequency||0)-(a.frequency||0));renderPYQs(rep,"pyq-repeated");}
+function renderAnalytics(){
+  const sortedImp=allPYQs.slice().sort((a,b)=>(b.importance||0)-(a.importance||0)).slice(0,5);
+  document.getElementById("an-important").innerHTML=sortedImp.map(q=>`<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;min-width:44px;color:var(--teal)">${q.importance||70}%</div><div style="flex:1;font-size:.84rem">${q.question.slice(0,75)}…</div></div>`).join("");
+  const sortedRep=allPYQs.slice().sort((a,b)=>(b.frequency||0)-(a.frequency||0)).slice(0,5);
+  document.getElementById("an-repeated").innerHTML=sortedRep.map(q=>`<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;min-width:44px;color:var(--gold)">${q.frequency||1}×</div><div style="flex:1;font-size:.84rem">${q.question.slice(0,75)}…</div></div>`).join("");
+  const smap={};allPYQs.forEach(q=>{smap[q.subject]=(smap[q.subject]||0)+1;});const sorted=Object.entries(smap).sort((a,b)=>b[1]-a[1]);const max=sorted[0]?.[1]||1;
+  document.getElementById("an-by-subj").innerHTML=sorted.map(([s,c],i)=>`<div class="prog-wrap"><div class="prog-head"><span>${s}</span><span class="prog-pct">${c} questions</span></div><div class="prog-bar"><div class="prog-fill" style="width:${Math.round(c/max*100)}%;background:${PALETTE[i%PALETTE.length]}"></div></div></div>`).join("");
+}
+
+function toggleAns(id){const el=document.getElementById("ans-"+id);if(!el)return;el.classList.toggle("show");const btn=el.previousElementSibling?.querySelector("button");if(btn)btn.textContent=el.classList.contains("show")?"🙈 Hide Answer":"👁 Show Answer";}
+function expandAll(){document.querySelectorAll(".pyq-ans").forEach(e=>e.classList.add("show"));}
+function collapseAll(){document.querySelectorAll(".pyq-ans").forEach(e=>e.classList.remove("show"));}
+
+async function addPYQ(){const subject=document.getElementById("ap-subj").value.trim(),exam=document.getElementById("ap-exam").value,year=parseInt(document.getElementById("ap-year").value),unit=document.getElementById("ap-unit").value.trim(),question=document.getElementById("ap-q").value.trim(),answer=document.getElementById("ap-ans").value.trim(),difficulty=document.getElementById("ap-diff").value;if(!subject||!year||!question||!answer){showToast("Fill all required fields","error");return;}try{await API.post("/pyqs",{subject,exam,year,unit,question,answer,difficulty});showToast("PYQ added! ✅");closeModal("modal-add-pyq");["ap-subj","ap-year","ap-unit","ap-q","ap-ans"].forEach(id=>document.getElementById(id).value="");loadPYQs();}catch(err){showToast(err.message,"error");}}
+
+function switchTab(tab,btn){document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");document.querySelectorAll(".tab-pane").forEach(p=>p.classList.remove("active"));document.getElementById("tab-"+tab).classList.add("active");}
+
+const urlSubj=new URLSearchParams(location.search).get("subject");
+loadPYQs().then(()=>{if(urlSubj){document.getElementById("f-subj").value=urlSubj;applyFilters();}});
+</script>
+</body>
+</html>
