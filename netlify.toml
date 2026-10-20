@@ -1,0 +1,3 @@
+# Publish the StudySaathi v3 frontend (the root-level HTML files are the old v2 site)
+[build]
+  publish = "frontend"
