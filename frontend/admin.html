@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin Dashboard — StudySaathi v3</title>
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/graphics.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar"></header>
+      <nav class="sidebar"></nav>
+      <main class="main">
+        <div class="page-header">
+          <div>
+            <div class="page-title">🛡️ Admin Dashboard</div>
+            <div class="page-sub">
+              Platform statistics, user activity, feedback &amp; reviews
+            </div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="loadAll()">🔄 Refresh</button>
+        </div>
+
+        <div class="tabs" id="admin-tabs">
+          <button class="tab-btn active" data-tab="overview">Overview</button>
+          <button class="tab-btn" data-tab="users">Users</button>
+          <button class="tab-btn" data-tab="feedback">Feedback</button>
+          <button class="tab-btn" data-tab="activity">Activity</button>
+        </div>
+
+        <!-- ── Overview ─────────────────────────────────────── -->
+        <div class="tab-pane active" id="pane-overview">
+          <div class="stats-grid" id="stat-cards">
+            <div class="stat-card sc-teal">
+              <div class="sc-label">Total Users</div>
+              <div class="sc-val" data-stat="total_users">—</div>
+            </div>
+            <div class="stat-card sc-indigo">
+              <div class="sc-label">New Users (7d)</div>
+              <div class="sc-val" data-stat="new_users">—</div>
+            </div>
+            <div class="stat-card sc-gold">
+              <div class="sc-label">Avg Rating</div>
+              <div class="sc-val" data-stat="avg_rating">—</div>
+            </div>
+            <div class="stat-card sc-purple">
+              <div class="sc-label">Total Feedback</div>
+              <div class="sc-val" data-stat="total_feedback">—</div>
+            </div>
+            <div class="stat-card sc-green">
+              <div class="sc-label">Pending Feedback</div>
+              <div class="sc-val" data-stat="pending_feedback">—</div>
+            </div>
+          </div>
+
+          <div class="g2" style="align-items: start">
+            <div class="card">
+              <div class="card-title">📈 Signups (last 14 days)</div>
+              <div id="signup-chart">
+                <div class="loading"><span class="spinner"></span> Loading…</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">🎓 Users by course</div>
+              <div id="course-chart">
+                <div class="loading"><span class="spinner"></span> Loading…</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top: 20px">
+            <div class="card-title">🕒 Recent activity</div>
+            <div id="ov-activity">—</div>
+          </div>
+        </div>
+        <!-- ── Users ────────────────────────────────────────── -->
+        <div class="tab-pane" id="pane-users">
+          <div class="filter-row">
+            <input
+              type="search"
+              id="user-search"
+              placeholder="Search by name or email…"
+              style="max-width: 320px"
+            />
+            <div class="chip-row" style="margin: 0">
+              <button class="chip sel" data-ufilter="all">All</button>
+              <button class="chip" data-ufilter="admin">Admins</button>
+            </div>
+          </div>
+          <div class="card" style="padding: 0; overflow-x: auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Course</th>
+                  <th>Subjects</th>
+                  <th>Tests</th>
+                  <th>Hours</th>
+                  <th>Streak</th>
+                  <th>Joined</th>
+                  <th>Role</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="users-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ── Feedback ─────────────────────────────────────── -->
+        <div class="tab-pane" id="pane-feedback">
+          <div class="filter-row">
+            <div class="chip-row" style="margin: 0">
+              <button class="chip sel" data-ffilter="all">All</button>
+              <button class="chip" data-ffilter="new">New</button>
+              <button class="chip" data-ffilter="reviewed">Reviewed</button>
+              <button class="chip" data-ffilter="resolved">Resolved</button>
+              <button class="chip" data-ffilter="rejected">Rejected</button>
+            </div>
+            <div class="chip-row" style="margin: 0">
+              <button class="chip sel" data-kindfilter="all">All types</button>
+              <button class="chip" data-kindfilter="request">Requests</button>
+              <button class="chip" data-kindfilter="suggestion">Suggestions</button>
+              <button class="chip" data-kindfilter="bug">Bugs</button>
+              <button class="chip" data-kindfilter="review">Reviews</button>
+            </div>
+          </div>
+          <div id="feedback-list"></div>
+        </div>
+
+        <!-- ── Activity ─────────────────────────────────────── -->
+        <div class="tab-pane" id="pane-activity">
+          <div class="card" style="padding: 0; overflow-x: auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>When</th>
+                  <th>User</th>
+                  <th>Event</th>
+                  <th>Detail</th>
+                </tr>
+              </thead>
+              <tbody id="activity-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- ── User detail modal ────────────────────────────────── -->
+    <div class="modal-ov" id="modal-user">
+      <div class="modal modal-lg">
+        <div class="modal-hdr">
+          <div class="modal-ttl" id="ud-name">User</div>
+          <button class="modal-close" onclick="closeModal('modal-user')">✕</button>
+        </div>
+        <div id="ud-body" style="max-height: 70vh; overflow-y: auto"></div>
+      </div>
+    </div>
+
+    <!-- ── Feedback edit modal ──────────────────────────────── -->
+    <div class="modal-ov" id="modal-fb">
+      <div class="modal">
+        <div class="modal-hdr">
+          <div class="modal-ttl" id="fb-title">Feedback</div>
+          <button class="modal-close" onclick="closeModal('modal-fb')">✕</button>
+        </div>
+        <div id="fb-body"></div>
+      </div>
+    </div>
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/sidebar.js"></script>
+    <script>
+      const STATUS_MAP = {
+        new: "b-gold",
+        reviewed: "b-indigo",
+        resolved: "b-green",
+        rejected: "b-red",
+      };
+      const KIND_MAP = {
+        request: "b-indigo",
+        suggestion: "b-teal",
+        bug: "b-red",
+        review: "b-gold",
+      };
+      const EVENT_ICON = {
+        login: "🔑",
+        logout: "🚪",
+        register: "✨",
+        feedback: "💬",
+        feedback_update: "📝",
+        feedback_delete: "🗑️",
+        admin_update: "🛡️",
+        user_delete: "⚠️",
+        study: "📚",
+        test: "🧪",
+      };
+
+      let userFilter = "all";
+      let fbFilter = "all";
+      let kindFilter = "all";
+      let searchTimer = null;
+
+      function esc(s) {
+        return String(s ?? "").replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[c],
+        );
+      }
+      function fmtAdminDate(s) {
+        if (!s) return "—";
+        const d = new Date(String(s).replace(" ", "T"));
+        if (isNaN(d)) return s;
+        return d.toLocaleDateString(undefined, {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        });
+      }
+      function fmtAdminDateTime(s) {
+        if (!s) return "—";
+        const d = new Date(String(s).replace(" ", "T"));
+        if (isNaN(d)) return s;
+        return (
+          d.toLocaleDateString(undefined, {
+            day: "2-digit",
+            month: "short",
+          }) +
+          ", " +
+          d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })
+        );
+      }
+      /* ── Tabs ────────────────────────────────────────────── */
+      document.querySelectorAll("#admin-tabs .tab-btn").forEach((b) => {
+        b.addEventListener("click", () => {
+          document
+            .querySelectorAll("#admin-tabs .tab-btn")
+            .forEach((x) => x.classList.remove("active"));
+          document
+            .querySelectorAll(".tab-pane")
+            .forEach((x) => x.classList.remove("active"));
+          b.classList.add("active");
+          document.getElementById("pane-" + b.dataset.tab).classList.add("active");
+          if (b.dataset.tab === "users") loadUsers();
+          if (b.dataset.tab === "feedback") loadFeedback();
+          if (b.dataset.tab === "activity") loadActivity();
+        });
+      });
+
+      /* ── Filters ─────────────────────────────────────────── */
+      document.querySelectorAll("[data-ufilter]").forEach((c) => {
+        c.addEventListener("click", () => {
+          document
+            .querySelectorAll("[data-ufilter]")
+            .forEach((x) => x.classList.remove("sel"));
+          c.classList.add("sel");
+          userFilter = c.dataset.ufilter;
+          loadUsers();
+        });
+      });
+      document.querySelectorAll("[data-ffilter]").forEach((c) => {
+        c.addEventListener("click", () => {
+          document
+            .querySelectorAll("[data-ffilter]")
+            .forEach((x) => x.classList.remove("sel"));
+          c.classList.add("sel");
+          fbFilter = c.dataset.ffilter;
+          loadFeedback();
+        });
+      });
+      document.querySelectorAll("[data-kindfilter]").forEach((c) => {
+        c.addEventListener("click", () => {
+          document
+            .querySelectorAll("[data-kindfilter]")
+            .forEach((x) => x.classList.remove("sel"));
+          c.classList.add("sel");
+          kindFilter = c.dataset.kindfilter;
+          loadFeedback();
+        });
+      });
+      document.getElementById("user-search").addEventListener("input", () => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(loadUsers, 300);
+      });
+      /* ── Overview ────────────────────────────────────────── */
+      async function loadOverview() {
+        const sc = document.getElementById("stat-cards");
+        if (!sc) return;
+        try {
+          const d = await API.get("/admin/overview");
+          const st = d.stats || {};
+          sc.querySelectorAll("[data-stat]").forEach((el) => {
+            const k = el.dataset.stat;
+            const v = st[k];
+            el.textContent = v === undefined || v === null ? "—" : v;
+          });
+
+          // Signups bar chart
+          const sg = d.signups || [];
+          const scEl = document.getElementById("signup-chart");
+          if (!sg.length) {
+            scEl.innerHTML = emptyHTML("📈", "No signup data yet");
+          } else {
+            const max = Math.max(...sg.map((x) => x.v), 1);
+            scEl.innerHTML =
+              `<div style="display:flex;align-items:flex-end;gap:4px;height:130px;padding-top:10px">` +
+              sg
+                .map(
+                  (x) =>
+                    `<div title="${x.l}: ${x.v}" style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px">` +
+                    `<div style="font-size:0.65rem;color:var(--text2)">${x.v || ""}</div>` +
+                    `<div style="width:100%;height:${Math.max(2, (x.v / max) * 95)}px;background:linear-gradient(180deg,var(--teal),var(--indigo2));border-radius:4px 4px 0 0"></div>` +
+                    `<div style="font-size:0.58rem;color:var(--text3)">${x.l.slice(-2)}</div>` +
+                    `</div>`,
+                )
+                .join("") +
+              `</div>`;
+          }
+
+          // Course breakdown
+          const cc = document.getElementById("course-chart");
+          const courses = d.courses || [];
+          if (!courses.length) {
+            cc.innerHTML = emptyHTML("🎓", "No course data yet");
+          } else {
+            const cmax = Math.max(...courses.map((c) => c.v), 1);
+            const palette = [
+              "var(--teal)",
+              "var(--indigo2)",
+              "var(--gold)",
+              "var(--purple)",
+              "var(--green)",
+              "var(--red)",
+            ];
+            cc.innerHTML = courses
+              .map(
+                (c, i) =>
+                  `<div style="margin-bottom:12px">` +
+                  `<div class="prog-head"><span>${esc(c.l || "—")}</span><span class="prog-pct">${c.v}</span></div>` +
+                  `<div class="prog-bar"><div class="prog-fill" style="width:${(c.v / cmax) * 100}%;background:${palette[i % palette.length]}"></div></div>` +
+                  `</div>`,
+              )
+              .join("");
+          }
+
+          const acts = d.activity || [];
+          document.getElementById("ov-activity").innerHTML = acts.length
+            ? acts.slice(0, 8).map((a) => activityRow(a)).join("")
+            : emptyHTML("🕒", "No activity recorded yet");
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      }
+      function activityRow(a) {
+        const icon = EVENT_ICON[a.event] || "•";
+        return (
+          `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">` +
+          `<span style="font-size:1.05rem">${icon}</span>` +
+          `<div style="flex:1;min-width:0">` +
+          `<div style="font-size:0.85rem"><b>${esc(a.uname || "Unknown")}</b> <span style="color:var(--text2)">${esc(a.detail || a.event || "")}</span></div>` +
+          `<div style="font-size:0.72rem;color:var(--text3)">${fmtAdminDateTime(a.created_at)}</div>` +
+          `</div>` +
+          `<span class="badge b-muted">${esc(a.event || "")}</span>` +
+          `</div>`
+        );
+      }
+
+      /* ── Users ───────────────────────────────────────────── */
+      async function loadUsers() {
+        const tb = document.getElementById("users-body");
+        if (!tb) return;
+        const q = document.getElementById("user-search").value.trim();
+        const params = [];
+        if (q) params.push("q=" + encodeURIComponent(q));
+        if (userFilter === "admin") params.push("is_admin=1");
+        const url = "/admin/users" + (params.length ? "?" + params.join("&") : "");
+        try {
+          const d = await API.get(url);
+          const rows = d.users || [];
+          if (!rows.length) {
+            tb.innerHTML = `<tr><td colspan="9">${emptyHTML("🔍", "No users found")}</td></tr>`;
+            return;
+          }
+          const me = Auth.user();
+          tb.innerHTML = rows
+            .map((u) => {
+              const isSelf = me && u.id === me.id;
+              return (
+                `<tr>` +
+                `<td><b>${esc(u.name)}</b><div style="font-size:0.75rem;color:var(--text2)">${esc(u.email)}</div></td>` +
+                `<td>${esc(u.course || "—")}<div style="font-size:0.72rem;color:var(--text2)">Sem ${u.semester || "—"}</div></td>` +
+                `<td>${u.c_subjects ?? 0}</td>` +
+                `<td>${u.c_tests ?? 0}</td>` +
+                `<td>${u.c_hours ?? 0}</td>` +
+                `<td>${u.streak ?? 0}</td>` +
+                `<td>${fmtAdminDate(u.created_at)}</td>` +
+                `<td>${u.is_admin ? `<span class="badge b-teal">👑 Admin</span>` : `<span class="badge b-muted">User</span>`}</td>` +
+                `<td style="white-space:nowrap">` +
+                `<button class="btn btn-ghost btn-sm" onclick="viewUser(${u.id})">👁️</button> ` +
+                (isSelf
+                  ? `<button class="btn btn-ghost btn-sm" disabled title="You cannot change your own role">👑</button>`
+                  : `<button class="btn btn-ghost btn-sm" onclick="toggleAdmin(${u.id}, ${u.is_admin ? 0 : 1})" title="${u.is_admin ? "Revoke admin" : "Make admin"}">👑</button>`) +
+                ` ` +
+                (isSelf
+                  ? `<button class="btn btn-ghost btn-sm" disabled title="You cannot delete your own account">🗑️</button>`
+                  : `<button class="btn btn-ghost btn-sm" onclick="deleteUser(${u.id}, '${esc(u.name)}')" title="Delete user">🗑️</button>`) +
+                `</td>` +
+                `</tr>`
+              );
+            })
+            .join("");
+        } catch (err) {
+          tb.innerHTML = `<tr><td colspan="9">${emptyHTML("⚠️", esc(err.message))}</td></tr>`;
+        }
+      }
+      async function viewUser(id) {
+        const body = document.getElementById("ud-body");
+        body.innerHTML = loadHTML();
+        openModal("modal-user");
+        try {
+          const d = await API.get("/admin/users/" + id);
+          const u = d.user || {};
+          document.getElementById("ud-name").textContent =
+            (u.name || "User") + (u.is_admin ? " 👑" : "");
+          const kv = (k, v) =>
+            `<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:0.85rem">` +
+            `<span style="color:var(--text2)">${k}</span><b>${esc(v ?? "—")}</b></div>`;
+          body.innerHTML =
+            `<div style="margin-bottom:14px">` +
+            kv("Email", u.email) +
+            kv("Course", u.course || "—") +
+            kv("Semester", u.semester) +
+            kv("Exam", u.exam || "—") +
+            kv("Streak", u.streak) +
+            kv("Study days", u.study_days) +
+            kv("Daily goal", u.daily_goal ? u.daily_goal + "h" : "—") +
+            kv("Registered", fmtAdminDate(u.created_at)) +
+            kv("Last login", fmtAdminDate(u.last_login_date)) +
+            kv("Email verified", u.email_verified ? "✅ Yes" : "❌ No") +
+            kv("Admin", u.is_admin ? "👑 Yes" : "No") +
+            `</div>` +
+            `<div class="card-title" style="margin-top:10px">💬 Feedback (${(d.feedback || []).length})</div>` +
+            ((d.feedback || []).length
+              ? d.feedback
+                  .map(
+                    (f) =>
+                      `<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:0.83rem">` +
+                      `<span class="badge ${STATUS_MAP[f.status] || "b-muted"}">${esc(f.status)}</span> ` +
+                      `<b>${esc(f.kind)}</b> — ${esc(f.title || f.message)}` +
+                      `</div>`,
+                  )
+                  .join("")
+              : `<div style="color:var(--text2);font-size:0.83rem">No feedback submitted.</div>`) +
+            `<div class="card-title" style="margin-top:14px">🕒 Recent activity</div>` +
+            ((d.activity || []).length
+              ? d.activity.map((a) => activityRow(a)).join("")
+              : `<div style="color:var(--text2);font-size:0.83rem">No activity recorded.</div>`);
+        } catch (err) {
+          body.innerHTML = emptyHTML("⚠️", esc(err.message));
+        }
+      }
+
+      async function toggleAdmin(id, make) {
+        try {
+          await API.patch("/admin/users/" + id, { is_admin: make });
+          showToast(make ? "Admin access granted 👑" : "Admin access revoked");
+          loadUsers();
+          loadOverview();
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      }
+
+      async function deleteUser(id, name) {
+        if (!confirm(`Delete ${name}? All of their data will be removed.`)) return;
+        try {
+          await API.patch("/admin/users/" + id, { delete: true });
+          showToast("User deleted");
+          loadUsers();
+          loadOverview();
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      }
+      /* ── Feedback ────────────────────────────────────────── */
+      async function loadFeedback() {
+        const wrap = document.getElementById("feedback-list");
+        if (!wrap) return;
+        const params = [];
+        if (fbFilter !== "all") params.push("status=" + fbFilter);
+        if (kindFilter !== "all") params.push("kind=" + kindFilter);
+        const url = "/admin/feedback" + (params.length ? "?" + params.join("&") : "");
+        try {
+          const d = await API.get(url);
+          const rows = d.feedback || [];
+          if (!rows.length) {
+            wrap.innerHTML = emptyHTML("💬", "No feedback found");
+            return;
+          }
+          wrap.innerHTML = rows.map(feedbackCard).join("");
+        } catch (err) {
+          wrap.innerHTML = emptyHTML("⚠️", esc(err.message));
+        }
+      }
+
+      function feedbackCard(f) {
+        const stars = f.rating
+          ? "★".repeat(Math.max(0, Math.min(5, f.rating))) +
+            `<span style="opacity:.3">${"★".repeat(5 - Math.max(0, Math.min(5, f.rating)))}</span>`
+          : "";
+        return (
+          `<div class="card" style="margin-bottom:12px">` +
+          `<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">` +
+          `<div style="flex:1;min-width:240px">` +
+          `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">` +
+          `<span class="badge ${KIND_MAP[f.kind] || "b-muted"}">${esc(f.kind || "request")}</span>` +
+          `<span class="badge ${STATUS_MAP[f.status] || "b-muted"}">${esc(f.status || "new")}</span>` +
+          (stars ? `<span style="color:var(--gold);font-size:0.85rem">${stars}</span>` : "") +
+          `</div>` +
+          `<div style="font-weight:600;margin-bottom:4px">${esc(f.title || "(no title)")}</div>` +
+          `<div style="font-size:0.85rem;color:var(--text2);white-space:pre-wrap">${esc(f.message)}</div>` +
+          `<div style="font-size:0.73rem;color:var(--text3);margin-top:8px">` +
+          `by <b>${esc(f.uname || "Unknown")}</b>${f.uemail ? " (" + esc(f.uemail) + ")" : ""} · ${fmtAdminDateTime(f.created_at)}` +
+          `</div>` +
+          (f.admin_note
+            ? `<div style="margin-top:10px;padding:9px 12px;border-left:3px solid var(--teal);background:rgba(0,201,167,.07);border-radius:0 8px 8px 0;font-size:0.83rem">` +
+              `<b>Admin note:</b> ${esc(f.admin_note)}</div>`
+            : "") +
+          `</div>` +
+          `<div style="display:flex;gap:8px;flex-shrink:0">` +
+          `<button class="btn btn-ghost btn-sm" onclick="editFeedback(${f.id})">✏️ Handle</button>` +
+          `<button class="btn btn-ghost btn-sm" onclick="deleteFeedback(${f.id})">🗑️</button>` +
+          `</div>` +
+          `</div>` +
+          `</div>`
+        );
+      }
+
+      async function editFeedback(id) {
+        const body = document.getElementById("fb-body");
+        body.innerHTML = loadHTML();
+        openModal("modal-fb");
+        try {
+          const d = await API.get("/admin/feedback");
+          const f = (d.feedback || []).find((x) => x.id === id);
+          if (!f) {
+            body.innerHTML = emptyHTML("⚠️", "Feedback not found");
+            return;
+          }
+          document.getElementById("fb-title").textContent =
+            "Feedback #" + f.id + " — " + (f.uname || "User");
+          const opts = ["new", "reviewed", "resolved", "rejected"]
+            .map(
+              (s) =>
+                `<option value="${s}" ${f.status === s ? "selected" : ""}>${s}</option>`,
+            )
+            .join("");
+          body.innerHTML =
+            `<div style="font-size:0.87rem;white-space:pre-wrap;margin-bottom:14px">${esc(f.message)}</div>` +
+            `<div class="form-group"><label>Status</label><select id="fb-status">${opts}</select></div>` +
+            `<div class="form-group"><label>Admin note (visible to the user)</label>` +
+            `<textarea id="fb-note" placeholder="e.g. Shipped in the next release">${esc(f.admin_note || "")}</textarea></div>` +
+            `<div style="display:flex;gap:8px;justify-content:flex-end">` +
+            `<button class="btn btn-ghost" onclick="closeModal('modal-fb')">Cancel</button>` +
+            `<button class="btn btn-teal" onclick="saveFeedback(${f.id})">Save</button>` +
+            `</div>`;
+        } catch (err) {
+          body.innerHTML = emptyHTML("⚠️", esc(err.message));
+        }
+      }
+      async function saveFeedback(id) {
+        const status = document.getElementById("fb-status").value;
+        const note = document.getElementById("fb-note").value.trim();
+        try {
+          await API.patch("/admin/feedback/" + id, { status, admin_note: note });
+          showToast("Feedback updated ✅");
+          closeModal("modal-fb");
+          loadFeedback();
+          loadOverview();
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      }
+
+      async function deleteFeedback(id) {
+        if (!confirm("Delete this feedback permanently?")) return;
+        try {
+          await API.del("/admin/feedback/" + id);
+          showToast("Feedback deleted");
+          loadFeedback();
+          loadOverview();
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      }
+
+      /* ── Activity ────────────────────────────────────────── */
+      async function loadActivity() {
+        const tb = document.getElementById("activity-body");
+        if (!tb) return;
+        try {
+          const d = await API.get("/admin/activity");
+          const rows = d.activity || [];
+          if (!rows.length) {
+            tb.innerHTML = `<tr><td colspan="4">${emptyHTML("🕒", "No activity recorded yet")}</td></tr>`;
+            return;
+          }
+          tb.innerHTML = rows
+            .map(
+              (a) =>
+                `<tr>` +
+                `<td style="white-space:nowrap">${fmtAdminDateTime(a.created_at)}</td>` +
+                `<td><b>${esc(a.uname || "Unknown")}</b><div style="font-size:0.73rem;color:var(--text2)">${esc(a.uemail || "")}</div></td>` +
+                `<td><span class="badge b-muted">${EVENT_ICON[a.event] || ""} ${esc(a.event || "")}</span></td>` +
+                `<td>${esc(a.detail || "")}</td>` +
+                `</tr>`,
+            )
+            .join("");
+        } catch (err) {
+          tb.innerHTML = `<tr><td colspan="4">${emptyHTML("⚠️", esc(err.message))}</td></tr>`;
+        }
+      }
+
+      /* ── Boot ────────────────────────────────────────────── */
+      function loadAll() {
+        loadOverview();
+        loadUsers();
+        loadFeedback();
+        loadActivity();
+      }
+
+      if (requireAdmin()) {
+        injectShell("admin.html");
+        loadAll();
+      }
+    </script>
+  </body>
+</html>

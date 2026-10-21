@@ -15,7 +15,25 @@ from functools import wraps
 
 from flask import jsonify, request
 
-SECRET = os.environ.get("SS3_SECRET", "studysaathi-v3-secret-key-change-in-prod")
+# Fallback used only for local development. Production deployments must set
+# SS3_SECRET (see the environment table in README.md).
+DEV_SECRET = "studysaathi-v3-secret-key-change-in-prod"
+
+
+def secret():
+    """Return the active signing key.
+
+    The value is resolved lazily on every call instead of being captured at
+    import time, so a ``.env`` file loaded by ``app.py`` (or a value exported
+    after import) is always honoured — signing and verification can never end
+    up using two different keys.
+    """
+    return os.environ.get("SS3_SECRET") or DEV_SECRET
+
+
+def is_default_secret():
+    """True when the app is still using the development signing key."""
+    return not os.environ.get("SS3_SECRET")
 
 
 def hash_pw(pw):
@@ -44,7 +62,7 @@ def make_token(uid, name, email):
         "exp": int(time.time()) + 86400 * 14,
     }
     encoded = base64.urlsafe_b64encode(json.dumps(payload).encode()).decode()
-    signature = hmac.new(SECRET.encode(), encoded.encode(), hashlib.sha256).hexdigest()
+    signature = hmac.new(secret().encode(), encoded.encode(), hashlib.sha256).hexdigest()
     return f"{encoded}.{signature}"
 
 
@@ -52,7 +70,7 @@ def verify_token(token):
     """Validate a signed token and return the payload if still active."""
     try:
         data, sig = token.rsplit(".", 1)
-        expected = hmac.new(SECRET.encode(), data.encode(), hashlib.sha256).hexdigest()
+        expected = hmac.new(secret().encode(), data.encode(), hashlib.sha256).hexdigest()
         if not hmac.compare_digest(sig, expected):
             return None
 
@@ -73,6 +91,34 @@ def auth_required(f):
         user = verify_token(token)
         if not user:
             return jsonify({"error": "Unauthorized"}), 401
+        return f(user, *args, **kwargs)
+
+    return wrapper
+
+
+def admin_required(f):
+    """Decorator that restricts an endpoint to admin accounts only.
+
+    The admin flag is read from the database (not the token) so that revoking
+    admin rights takes effect immediately, without waiting for token expiry.
+    """
+
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        token = request.headers.get("Authorization", "").replace("Bearer ", "").strip()
+        user = verify_token(token)
+        if not user:
+            return jsonify({"error": "Unauthorized"}), 401
+
+        from database import get_db
+
+        db = get_db()
+        row = db.execute(
+            "SELECT is_admin FROM users WHERE id = ?", [user["id"]]
+        ).fetchone()
+        db.close()
+        if not row or not row["is_admin"]:
+            return jsonify({"error": "Admin access required"}), 403
         return f(user, *args, **kwargs)
 
     return wrapper

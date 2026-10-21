@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Feedback — StudySaathi v3</title>
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/graphics.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar"></header>
+      <nav class="sidebar"></nav>
+      <main class="main">
+        <div class="page-header">
+          <div>
+            <div class="page-title">💬 Feedback</div>
+            <div class="page-sub">
+              Share ideas, report bugs or rate your experience
+            </div>
+          </div>
+        </div>
+
+        <div class="g2" style="align-items: start">
+          <!-- ── New feedback form ────────────────────────────── -->
+          <div class="card">
+            <div class="card-title">✍️ Send feedback</div>
+
+            <div class="form-group">
+              <label>What kind of feedback is this?</label>
+              <div class="chip-row" id="kind-row">
+                <button class="chip sel" data-kind="request">💡 Feature request</button>
+                <button class="chip" data-kind="suggestion">💬 Suggestion</button>
+                <button class="chip" data-kind="bug">🐛 Bug report</button>
+                <button class="chip" data-kind="review">⭐ Review</button>
+              </div>
+            </div>
+
+            <div class="form-group" id="rating-group" style="display: none">
+              <label>How would you rate the app?</label>
+              <div class="chip-row" id="star-row"></div>
+              <div
+                id="rating-text"
+                style="font-size: 0.78rem; color: var(--text2); margin-top: 6px"
+              ></div>
+            </div>
+
+            <div class="form-group">
+              <label>Title <span style="color: var(--text3)">(optional)</span></label>
+              <input type="text" id="fb-title-input" maxlength="120" placeholder="Short summary" />
+            </div>
+
+            <div class="form-group">
+              <label>Your message</label>
+              <textarea
+                id="fb-message"
+                rows="5"
+                maxlength="2000"
+                placeholder="Tell us what you think…"
+              ></textarea>
+              <div
+                id="fb-count"
+                style="font-size: 0.72rem; color: var(--text3); text-align: right; margin-top: 4px"
+              >
+                0 / 2000
+              </div>
+            </div>
+
+            <button class="btn btn-teal" id="fb-submit" style="width: 100%">
+              Send feedback
+            </button>
+          </div>
+
+          <!-- ── My feedback history ─────────────────────────── -->
+          <div>
+            <div class="card" style="margin-bottom: 20px">
+              <div class="card-title">📬 My feedback</div>
+              <div id="my-feedback">
+                <div class="loading"><span class="spinner"></span> Loading…</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/sidebar.js"></script>
+    <script>
+      const STATUS_MAP = {
+        new: "b-gold",
+        reviewed: "b-indigo",
+        resolved: "b-green",
+        rejected: "b-red",
+      };
+      const KIND_LABEL = {
+        request: "Feature request",
+        suggestion: "Suggestion",
+        bug: "Bug report",
+        review: "Review",
+      };
+      const RATING_TEXT = {
+        1: "Poor — needs work",
+        2: "Fair — could improve",
+        3: "Good — solid experience",
+        4: "Great — very useful",
+        5: "Excellent — love it!",
+      };
+
+      let kind = "request";
+      let rating = 0;
+
+      function esc(s) {
+        return String(s ?? "").replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[c],
+        );
+      }
+      function fmtFbDateTime(s) {
+        if (!s) return "—";
+        const d = new Date(String(s).replace(" ", "T"));
+        if (isNaN(d)) return s;
+        return (
+          d.toLocaleDateString(undefined, {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          }) +
+          ", " +
+          d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })
+        );
+      }
+      /* ── Star rating widget ──────────────────────────────── */
+      function paintStars() {
+        const row = document.getElementById("star-row");
+        row.innerHTML = [1, 2, 3, 4, 5]
+          .map(
+            (n) =>
+              `<button class="chip ${n <= rating ? "sel" : ""}" data-star="${n}" ` +
+              `style="font-size:1.05rem;padding:4px 12px">★</button>`,
+          )
+          .join("");
+        row.querySelectorAll("[data-star]").forEach((b) => {
+          b.addEventListener("click", () => {
+            rating = Number(b.dataset.star);
+            paintStars();
+          });
+        });
+        document.getElementById("rating-text").textContent = RATING_TEXT[rating] || "";
+      }
+
+      /* ── Kind chips ──────────────────────────────────────── */
+      document.querySelectorAll("#kind-row .chip").forEach((c) => {
+        c.addEventListener("click", () => {
+          document
+            .querySelectorAll("#kind-row .chip")
+            .forEach((x) => x.classList.remove("sel"));
+          c.classList.add("sel");
+          kind = c.dataset.kind;
+          document.getElementById("rating-group").style.display =
+            kind === "review" ? "block" : "none";
+          if (kind !== "review") {
+            rating = 0;
+            paintStars();
+          }
+        });
+      });
+
+      /* ── Character counter ────────────────────────────────── */
+      const msgEl = document.getElementById("fb-message");
+      msgEl.addEventListener("input", () => {
+        document.getElementById("fb-count").textContent =
+          msgEl.value.length + " / 2000";
+      });
+
+      /* ── Submit ───────────────────────────────────────────── */
+      async function submitFeedback() {
+        const message = msgEl.value.trim();
+        if (!message) {
+          showToast("Please write a message first", "error");
+          msgEl.focus();
+          return;
+        }
+        const btn = document.getElementById("fb-submit");
+        setLoading(btn, true);
+        try {
+          await API.post("/feedback", {
+            kind,
+            rating: kind === "review" ? rating : 0,
+            title: document.getElementById("fb-title-input").value.trim(),
+            message,
+          });
+          showToast("Thanks! We received your feedback ✅");
+          msgEl.value = "";
+          document.getElementById("fb-count").textContent = "0 / 2000";
+          document.getElementById("fb-title-input").value = "";
+          rating = 0;
+          paintStars();
+          loadMyFeedback();
+        } catch (err) {
+          showToast(err.message, "error");
+        } finally {
+          setLoading(btn, false);
+        }
+      }
+      document
+        .getElementById("fb-submit")
+        .addEventListener("click", submitFeedback);
+
+      /* ── My feedback history ───────────────────────────────── */
+      async function loadMyFeedback() {
+        const wrap = document.getElementById("my-feedback");
+        if (!wrap) return;
+        try {
+          const d = await API.get("/feedback");
+          const rows = d.feedback || [];
+          if (!rows.length) {
+            wrap.innerHTML = emptyHTML("💬", "You haven't sent any feedback yet");
+            return;
+          }
+          wrap.innerHTML = rows
+            .map((f) => {
+              const stars = f.rating
+                ? "★".repeat(Math.max(0, Math.min(5, f.rating))) +
+                  `<span style="opacity:.3">${"★".repeat(5 - Math.max(0, Math.min(5, f.rating)))}</span>`
+                : "";
+              return (
+                `<div style="padding:12px 0;border-bottom:1px solid var(--border)">` +
+                `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">` +
+                `<span class="badge b-muted">${esc(KIND_LABEL[f.kind] || f.kind)}</span>` +
+                `<span class="badge ${STATUS_MAP[f.status] || "b-muted"}">${esc(f.status)}</span>` +
+                (stars ? `<span style="color:var(--gold);font-size:0.85rem">${stars}</span>` : "") +
+                `</div>` +
+                `<div style="font-weight:600;margin-bottom:4px">${esc(f.title || "(no title)")}</div>` +
+                `<div style="font-size:0.84rem;color:var(--text2);white-space:pre-wrap">${esc(f.message)}</div>` +
+                `<div style="font-size:0.72rem;color:var(--text3);margin-top:6px">${fmtFbDateTime(f.created_at)}</div>` +
+                (f.admin_note
+                  ? `<div style="margin-top:8px;padding:8px 11px;border-left:3px solid var(--teal);background:rgba(0,201,167,.07);border-radius:0 8px 8px 0;font-size:0.82rem">` +
+                    `<b>Admin reply:</b> ${esc(f.admin_note)}</div>`
+                  : "") +
+                `</div>`
+              );
+            })
+            .join("");
+        } catch (err) {
+          wrap.innerHTML = emptyHTML("⚠️", esc(err.message));
+        }
+      }
+
+      /* ── Boot ────────────────────────────────────────────── */
+      if (requireAuth()) {
+        injectShell("feedback.html");
+        paintStars();
+        loadMyFeedback();
+      }
+    </script>
+  </body>
+</html>

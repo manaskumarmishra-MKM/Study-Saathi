@@ -1,5 +1,13 @@
 /* sidebar.js — StudySaathi v3 © Manas Kumar Mishra */
 function injectShell(activePage) {
+  // The Admin link only renders for users with the is_admin flag, so regular
+  // users never see (or navigate to) the dashboard.
+  const isAdmin = !!(Auth.user() && Auth.isAdmin());
+  const adminLinks = isAdmin
+    ? `<div class="sb-div"></div>
+       <div class="sb-section">Admin</div>
+       <a class="sb-item ${activePage === "admin.html" ? "active" : ""}" href="admin.html"><span class="si">🛡️</span> Admin Dashboard</a>`
+    : "";
   const links = [
     { href: "dashboard.html", icon: "📊", label: "Dashboard" },
     { href: "subjects.html", icon: "📚", label: "Subjects" },
@@ -23,6 +31,8 @@ function injectShell(activePage) {
     <div class="sb-div"></div>
     <div class="sb-section">Account</div>
     <a class="sb-item ${activePage === "profile.html" ? "active" : ""}" href="profile.html"><span class="si">👤</span> Profile</a>
+    <a class="sb-item ${activePage === "feedback.html" ? "active" : ""}" href="feedback.html"><span class="si">💬</span> Feedback</a>
+    ${adminLinks}
     <a class="sb-item" onclick="logout()" style="cursor:pointer"><span class="si">🚪</span> Logout</a>
   `;
   const tbHTML = `

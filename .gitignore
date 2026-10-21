@@ -25,5 +25,12 @@ frontend/node_modules/
 
 # Python / backend
 backend/__pycache__/
+__pycache__/
 *.pyc
 .env
+
+# Runtime SQLite databases (created automatically on first run)
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3

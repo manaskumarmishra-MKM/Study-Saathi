@@ -27,6 +27,10 @@ const Auth = {
   isAuth() {
     return !!this.token();
   },
+  isAdmin() {
+    const u = this.user();
+    return !!(u && (u.is_admin === 1 || u.is_admin === true));
+  },
 };
 const DB = {
   get(k, d = null) {
@@ -873,10 +877,69 @@ const ACHIEVEMENTS = [
   },
 ];
 
+function mockAdminUser(x) {
+  return {
+    id: x.id,
+    name: x.name,
+    email: x.email,
+    course: x.course || "",
+    semester: x.semester || 1,
+    exam: x.exam || "",
+    is_admin: x.is_admin ? 1 : 0,
+    email_verified: x.email_verified || 0,
+    created_at: x.created_at || "",
+    last_login_date: x.last_login_date || "",
+    streak: x.streak || 0,
+    study_days: x.study_days || 0,
+    daily_goal: x.daily_goal || 6,
+    c_subjects: 0,
+    c_topics: 0,
+    c_tests: 0,
+    c_hours: 0,
+    c_feedback: DB.get("feedback", []).filter((f) => f.user_id === x.id).length,
+  };
+}
+
+function mockLogActivity(userId, event, detail) {
+  const rows = DB.get("activity_log", []);
+  const owner = DB.get("users", []).find((x) => x.id === userId);
+  rows.push({
+    id: Date.now() + Math.floor(Math.random() * 1000),
+    user_id: userId,
+    event,
+    detail: detail || "",
+    uname: owner ? owner.name : "User",
+    uemail: owner ? owner.email : "",
+    created_at: new Date().toISOString().slice(0, 19).replace("T", " "),
+  });
+  DB.set("activity_log", rows.slice(-200));
+}
+
+function buildSignupSeries(users) {
+  const out = [];
+  const now = new Date();
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date(now.getTime() - i * 86400000);
+    const key = d.toISOString().slice(0, 10);
+    const count = users.filter((x) => (x.created_at || "").slice(0, 10) === key).length;
+    out.push({ l: key.slice(5), v: count });
+  }
+  return out;
+}
+
 const MockAPI = {
   async req(method, path, body) {
     await new Promise((r) => setTimeout(r, 75));
     const u = DB.uid();
+    // Split off any query string so filters work in mock mode too.
+    const [rawPath, qs] = path.split("?");
+    const query = {};
+    if (qs)
+      qs.split("&").forEach((kv) => {
+        const [k, v] = kv.split("=");
+        query[decodeURIComponent(k)] = decodeURIComponent(v || "");
+      });
+    path = rawPath;
     if (path === "/auth/register" && method === "POST") {
       const users = DB.get("users", []);
       if (users.find((x) => x.email === body.email))
@@ -893,6 +956,7 @@ const MockAPI = {
         study_days: 0,
         pyq_answered: 0,
         plans_gen: 0,
+        is_admin: 0,
       };
       users.push(user);
       DB.set("users", users);
@@ -905,6 +969,7 @@ const MockAPI = {
           course: user.course,
           semester: user.semester,
           exam: user.exam,
+          is_admin: user.is_admin,
         },
       };
     }
@@ -922,8 +987,192 @@ const MockAPI = {
           course: user.course,
           semester: user.semester,
           exam: user.exam,
+          is_admin: user.is_admin || 0,
         },
       };
+    }
+
+    // ---- Feedback (mock) ----
+    if (path === "/feedback" && method === "GET") {
+      const rows = DB.get("feedback", []).filter((f) => f.user_id === u);
+      return { feedback: rows };
+    }
+    if (path === "/feedback" && method === "POST") {
+      const rows = DB.get("feedback", []);
+      const row = {
+        id: Date.now(),
+        user_id: u,
+        kind: body.kind || "suggestion",
+        rating: body.rating || 0,
+        title: body.title || "",
+        message: body.message || "",
+        status: "new",
+        admin_note: "",
+        created_at: new Date().toISOString().slice(0, 19).replace("T", " "),
+      };
+      rows.push(row);
+      DB.set("feedback", rows);
+      mockLogActivity(u, "feedback", `Submitted ${row.kind}`);
+      return { feedback: row, message: "Thanks! We received it." };
+    }
+
+    // ---- Admin (mock) ----
+    if (path.startsWith("/admin/")) {
+      const me = DB.get("users", []).find((x) => x.id === u);
+      if (!me || !me.is_admin) throw new Error("Admin access required");
+      const users = DB.get("users", []);
+      const feedback = DB.get("feedback", []);
+      const activity = DB.get("activity_log", []);
+
+      if (path === "/admin/overview") {
+        const ratings = feedback
+          .map((f) => f.rating || 0)
+          .filter((r) => r > 0);
+        const avg = ratings.length
+          ? Math.round((ratings.reduce((a, b) => a + b, 0) / ratings.length) * 10) / 10
+          : 0;
+        const totalHours = users.reduce((a, x) => a + (x.total_hours || 0), 0);
+        return {
+          stats: {
+            total_users: users.length,
+            new_users: users.filter(
+              (x) => (x.created_at || "").slice(0, 10) >= new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10),
+            ).length,
+            total_feedback: feedback.length,
+            pending_feedback: feedback.filter((f) => f.status === "new").length,
+            avg_rating: avg,
+            total_hours: Math.round(totalHours * 10) / 10,
+            total_sessions: 0,
+            total_tests: 0,
+          },
+          signups: buildSignupSeries(users),
+          feedback_kinds: ["request", "suggestion", "bug", "review"].map((k) => ({
+            l: k,
+            v: feedback.filter((f) => f.kind === k).length,
+          })),
+          courses: Object.entries(
+            users.reduce((acc, x) => {
+              const c = x.course || "";
+              if (!c) return acc;
+              acc[c] = (acc[c] || 0) + 1;
+              return acc;
+            }, {}),
+          )
+            .map(([l, v]) => ({ l, v }))
+            .sort((a, b) => b.v - a.v)
+            .slice(0, 6),
+          activity: activity
+            .slice()
+            .reverse()
+            .slice(0, 8)
+            .map((a) => ({ ...a, uname: a.uname || "User" })),
+        };
+      }
+      if (path === "/admin/users" && method === "GET") {
+        let rows = users;
+        if (query.q) {
+          const q = query.q.toLowerCase();
+          rows = rows.filter(
+            (x) =>
+              (x.name || "").toLowerCase().includes(q) ||
+              (x.email || "").toLowerCase().includes(q),
+          );
+        }
+        if (query.is_admin === "1") rows = rows.filter((x) => x.is_admin);
+        return { users: rows.map((x) => mockAdminUser(x)) };
+      }
+      const m = path.match(/^\/admin\/users\/(\d+)$/);
+      if (m) {
+        const id = Number(m[1]);
+        const target = users.find((x) => x.id === id);
+        if (!target) throw new Error("User not found");
+        if (method === "GET") {
+          return {
+            user: mockAdminUser(target),
+            subjects: [],
+            topics: [],
+            progress: [],
+            scores: [],
+            feedback: feedback.filter((f) => f.user_id === id),
+            activity: activity.filter((a) => a.user_id === id),
+          };
+        }
+        if (method === "PATCH") {
+          if (body.delete) {
+            if (id === u) throw new Error("You cannot delete your own account");
+            DB.set(
+              "users",
+              users.filter((x) => x.id !== id),
+            );
+            mockLogActivity(u, "user_delete", `Deleted user #${id}`);
+            return { message: "User deleted" };
+          }
+          if (body.is_admin !== undefined) {
+            if (id === u) throw new Error("You cannot remove your own admin access");
+            target.is_admin = body.is_admin ? 1 : 0;
+            mockLogActivity(
+              u,
+              "admin_toggle",
+              `Set admin=${body.is_admin ? "on" : "off"} for user #${id}`,
+            );
+          }
+          DB.set("users", users);
+          return { user: mockAdminUser(target) };
+        }
+      }
+      if (path === "/admin/feedback" && method === "GET") {
+        let rows = feedback;
+        if (query.status) rows = rows.filter((f) => f.status === query.status);
+        if (query.kind) rows = rows.filter((f) => f.kind === query.kind);
+        if (query.q) {
+          const q = query.q.toLowerCase();
+          rows = rows.filter(
+            (f) =>
+              (f.title || "").toLowerCase().includes(q) ||
+              (f.message || "").toLowerCase().includes(q),
+          );
+        }
+        return {
+          feedback: rows.map((f) => {
+            const owner = users.find((x) => x.id === f.user_id);
+            return { ...f, uname: owner ? owner.name : "Unknown", uemail: owner ? owner.email : "" };
+          }),
+        };
+      }
+      const fm = path.match(/^\/admin\/feedback\/(\d+)$/);
+      if (fm) {
+        const id = Number(fm[1]);
+        const row = feedback.find((f) => f.id === id);
+        if (!row) throw new Error("Feedback not found");
+        if (method === "PATCH") {
+          if (body.status) row.status = body.status;
+          if (body.admin_note !== undefined) row.admin_note = body.admin_note;
+          DB.set("feedback", feedback);
+          mockLogActivity(
+            u,
+            "feedback_update",
+            `Feedback #${id} → ${row.status}`,
+          );
+          return { feedback: row };
+        }
+        if (method === "DELETE") {
+          DB.set(
+            "feedback",
+            feedback.filter((f) => f.id !== id),
+          );
+          mockLogActivity(u, "feedback_delete", `Deleted feedback #${id}`);
+          return { message: "Feedback deleted" };
+        }
+      }
+      if (path === "/admin/activity" && method === "GET") {
+        return {
+          activity: activity
+            .slice()
+            .reverse()
+            .slice(0, 100)
+            .map((a) => ({ ...a, uname: a.uname || "User" })),
+        };
+      }
     }
     if (path === "/auth/logout") return { message: "Logged out" };
     if (path === "/auth/me") {
@@ -1704,6 +1953,15 @@ function requireAuth() {
   }
   return true;
 }
+function requireAdmin() {
+  if (!requireAuth()) return false;
+  if (!Auth.isAdmin()) {
+    showToast("Admin access required", "error");
+    setTimeout(() => (location.href = "dashboard.html"), 1200);
+    return false;
+  }
+  return true;
+}
 function redirectIfAuth() {
   if (Auth.isAuth()) location.href = "dashboard.html";
 }
@@ -1901,6 +2159,15 @@ function _removeTyping() {
   document.getElementById("typing-ind")?.remove();
 }
 function setupScrollReveal() {
+  // Guard: IntersectionObserver is unavailable in some embedded/older
+  // browsers. Fall back to marking everything visible so the rest of the
+  // page bootstrap is never blocked.
+  if (typeof IntersectionObserver === "undefined") {
+    document
+      .querySelectorAll(".reveal")
+      .forEach((el) => el.classList.add("visible"));
+    return;
+  }
   const obs = new IntersectionObserver(
     (entries) => {
       entries.forEach((e) => {

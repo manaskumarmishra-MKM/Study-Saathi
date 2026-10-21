@@ -6,8 +6,6 @@ Run: python app.py
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from database import init_db, get_db
-from models import auth_required, hash_pw, check_pw, make_token
 from datetime import date, timedelta
 import json
 import random
@@ -18,12 +16,40 @@ import urllib.parse
 
 from dotenv import load_dotenv
 
+# Load .env BEFORE importing the app modules so that SS3_SECRET and friends are
+# present in the environment when models.py resolves the signing key.
 load_dotenv()
+
+from database import init_db, get_db  # noqa: E402
+from models import (  # noqa: E402
+    auth_required,
+    admin_required,
+    hash_pw,
+    check_pw,
+    make_token,
+    is_default_secret,
+)
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 NEVERBOUNCE_API_KEY = os.environ.get("NEVERBOUNCE_API_KEY", "")
+
+
+def ensure_schema():
+    """Create the database and tables if they do not exist yet.
+
+    Called on import so that a WSGI server (gunicorn/uwsgi) that does not run
+    the ``__main__`` block still gets a usable database. The schema statements
+    are all ``CREATE TABLE IF NOT EXISTS``, so this is safe to run repeatedly.
+    """
+    try:
+        init_db()
+    except Exception as exc:  # pragma: no cover - startup safety net
+        print(f"⚠️  Could not initialise the database: {exc}")
+
+
+ensure_schema()
 
 
 def verify_email_neverbounce(email):
@@ -152,6 +178,7 @@ def login():
 
     # ── Update login streak (real-time access tracking) ─────────
     new_streak = update_login_streak(db, user)
+    log_activity(db, user["id"], "login", f"Session started (streak {new_streak})")
 
     return jsonify(
         {
@@ -211,9 +238,22 @@ def _ud(u):
             "streak",
             "study_days",
             "email_verified",
+            "is_admin",
         ]
         if k in u.keys()
     }
+
+
+def log_activity(db, user_id, event, detail=""):
+    """Record a user activity event for the admin activity feed."""
+    try:
+        db.execute(
+            "INSERT INTO activity_log(user_id, event, detail) VALUES(?, ?, ?)",
+            [user_id, event, detail],
+        )
+        db.commit()
+    except Exception:
+        pass  # Activity logging must never break the main request
 
 
 # ── Email Verification ──────────────────────────────────────────
@@ -1568,8 +1608,428 @@ def _recs(db, uid):
     return r[:5]
 
 
+# ── Feedback (user facing) ─────────────────────────────────────
+@app.route("/api/feedback", methods=["POST"])
+@auth_required
+def submit_feedback(u):
+    """Let a logged-in user send a request, suggestion, bug report or review."""
+    d = request.get_json() or {}
+    kind = (d.get("kind") or "request").strip().lower()
+    if kind not in ("request", "suggestion", "bug", "review"):
+        kind = "request"
+
+    message = (d.get("message") or "").strip()
+    if not message:
+        return jsonify({"error": "Message is required"}), 400
+    if len(message) > 2000:
+        return jsonify({"error": "Message too long (max 2000 chars)"}), 400
+
+    title = (d.get("title") or "").strip()[:120]
+    try:
+        rating = max(0, min(5, int(d.get("rating") or 0)))
+    except (TypeError, ValueError):
+        rating = 0
+
+    db = get_db()
+    cur = db.execute(
+        "INSERT INTO feedback(user_id, kind, rating, title, message) "
+        "VALUES(?, ?, ?, ?, ?)",
+        [u["id"], kind, rating, title, message],
+    )
+    fid = cur.lastrowid
+    db.commit()
+    log_activity(db, u["id"], "feedback", f"{kind} submitted: {title or message[:50]}")
+    row = db.execute("SELECT * FROM feedback WHERE id = ?", [fid]).fetchone()
+    db.close()
+    return jsonify({"feedback": dict(row), "message": "Thanks! We received it."}), 201
+
+
+@app.route("/api/feedback", methods=["GET"])
+@auth_required
+def my_feedback(u):
+    """Return the feedback the current user has submitted."""
+    db = get_db()
+    rows = db.execute(
+        "SELECT * FROM feedback WHERE user_id=? ORDER BY id DESC LIMIT 50", [u["id"]]
+    ).fetchall()
+    db.close()
+    return jsonify({"feedback": [dict(r) for r in rows]})
+
+
+# ── Admin: overview ────────────────────────────────────────────
+@app.route("/api/admin/overview", methods=["GET"])
+@admin_required
+def admin_overview(u):
+    """Aggregate platform statistics for the admin dashboard."""
+    db = get_db()
+
+    total_users = db.execute("SELECT COUNT(*) c FROM users").fetchone()["c"]
+    new_users = db.execute(
+        "SELECT COUNT(*) c FROM users WHERE date(created_at) >= date('now','-7 day')"
+    ).fetchone()["c"]
+    total_feedback = db.execute("SELECT COUNT(*) c FROM feedback").fetchone()["c"]
+    pending = db.execute(
+        "SELECT COUNT(*) c FROM feedback WHERE status='new'"
+    ).fetchone()["c"]
+    avg_rating = db.execute(
+        "SELECT AVG(rating) a FROM feedback WHERE rating > 0"
+    ).fetchone()["a"]
+
+    total_hours = db.execute(
+        "SELECT COALESCE(SUM(hours),0) h FROM progress"
+    ).fetchone()["h"]
+    total_sessions = db.execute("SELECT COUNT(*) c FROM progress").fetchone()["c"]
+    total_tests = db.execute("SELECT COUNT(*) c FROM scores").fetchone()["c"]
+
+    # Signups over the last 14 days
+    signups = db.execute(
+        "SELECT date(created_at) d, COUNT(*) c FROM users "
+        "WHERE created_at >= date('now','-13 day') GROUP BY d ORDER BY d"
+    ).fetchall()
+    signups_map = {r["d"]: r["c"] for r in signups}
+    signup_series = []
+    for i in range(13, -1, -1):
+        day = (date.today() - timedelta(days=i)).isoformat()
+        signup_series.append({"l": day[5:], "v": signups_map.get(day, 0)})
+
+    # Feedback split by kind
+    kinds = db.execute(
+        "SELECT kind, COUNT(*) c FROM feedback GROUP BY kind"
+    ).fetchall()
+    kind_map = {r["kind"]: r["c"] for r in kinds}
+    kind_series = [
+        {"l": k, "v": kind_map.get(k, 0)}
+        for k in ("request", "suggestion", "bug", "review")
+    ]
+
+    # Top courses
+    courses = db.execute(
+        "SELECT course, COUNT(*) c FROM users WHERE course != '' "
+        "GROUP BY course ORDER BY c DESC LIMIT 6"
+    ).fetchall()
+
+    # Recent activity (mirrors /api/admin/activity, newest first)
+    recent = db.execute(
+        "SELECT a.*, u.name uname, u.email uemail FROM activity_log a "
+        "LEFT JOIN users u ON u.id = a.user_id ORDER BY a.id DESC LIMIT 8"
+    ).fetchall()
+
+    db.close()
+    return jsonify(
+        {
+            "stats": {
+                "total_users": total_users,
+                "new_users": new_users,
+                "total_feedback": total_feedback,
+                "pending_feedback": pending,
+                "avg_rating": round(avg_rating, 1) if avg_rating else 0,
+                "total_hours": round(total_hours or 0, 1),
+                "total_sessions": total_sessions,
+                "total_tests": total_tests,
+            },
+            "signups": signup_series,
+            "feedback_kinds": kind_series,
+            "courses": [{"l": r["course"], "v": r["c"]} for r in courses],
+            "activity": [dict(r) for r in recent],
+        }
+    )
+
+
+# ── Admin: users ───────────────────────────────────────────────
+@app.route("/api/admin/users", methods=["GET"])
+@admin_required
+def admin_users(u):
+    """List every registered user with their study details."""
+    db = get_db()
+    q = (request.args.get("q") or "").strip().lower()
+    only_admin = (request.args.get("is_admin") or "").strip()
+    where = []
+    params = []
+    if q:
+        where.append("(LOWER(u.name) LIKE ? OR LOWER(u.email) LIKE ?)")
+        params += [f"%{q}%", f"%{q}%"]
+    if only_admin == "1":
+        where.append("u.is_admin = 1")
+    sql = """
+        SELECT
+            u.id, u.name, u.email, u.course, u.semester, u.exam,
+            u.daily_goal, u.streak, u.study_days, u.email_verified,
+            u.is_admin, u.created_at, u.last_login_date,
+            (SELECT COUNT(*) FROM subjects WHERE subjects.user_id = u.id) c_subjects,
+            (SELECT COALESCE(SUM(hours),0) FROM progress WHERE progress.user_id = u.id) c_hours,
+            (SELECT COUNT(*) FROM scores WHERE scores.user_id = u.id) c_tests,
+            (SELECT COUNT(*) FROM feedback WHERE feedback.user_id = u.id) c_feedback
+        FROM users u
+    """
+    if where:
+        sql += "WHERE " + " AND ".join(where) + " "
+    sql += "ORDER BY u.id DESC"
+    rows = db.execute(sql, params).fetchall()
+    db.close()
+    return jsonify({"users": [dict(r) for r in rows]})
+
+
+@app.route("/api/admin/users/<int:uid>", methods=["GET"])
+@admin_required
+def admin_user_detail(u, uid):
+    """Return a single user's full record for the detail drawer."""
+    db = get_db()
+    user = db.execute("SELECT * FROM users WHERE id = ?", [uid]).fetchone()
+    if not user:
+        db.close()
+        return jsonify({"error": "User not found"}), 404
+
+    subjects = db.execute(
+        "SELECT * FROM subjects WHERE user_id=? ORDER BY id DESC", [uid]
+    ).fetchall()
+    topics = db.execute(
+        "SELECT t.*, s.name subj FROM topics t "
+        "JOIN subjects s ON s.id = t.subject_id WHERE s.user_id=? ORDER BY t.id DESC",
+        [uid],
+    ).fetchall()
+    progress = db.execute(
+        "SELECT * FROM progress WHERE user_id=? ORDER BY id DESC LIMIT 30", [uid]
+    ).fetchall()
+    scores = db.execute(
+        "SELECT * FROM scores WHERE user_id=? ORDER BY id DESC LIMIT 20", [uid]
+    ).fetchall()
+    exams = db.execute(
+        "SELECT * FROM exams WHERE user_id=? ORDER BY exam_date", [uid]
+    ).fetchall()
+    feedback = db.execute(
+        "SELECT * FROM feedback WHERE user_id=? ORDER BY id DESC", [uid]
+    ).fetchall()
+    activity = db.execute(
+        "SELECT * FROM activity_log WHERE user_id=? ORDER BY id DESC LIMIT 40", [uid]
+    ).fetchall()
+
+    db.close()
+    return jsonify(
+        {
+            "user": {
+                k: user[k]
+                for k in [
+                    "id",
+                    "name",
+                    "email",
+                    "course",
+                    "semester",
+                    "exam",
+                    "daily_goal",
+                    "streak",
+                    "study_days",
+                    "pyq_answered",
+                    "plans_gen",
+                    "email_verified",
+                    "is_admin",
+                    "created_at",
+                    "last_login_date",
+                ]
+                if k in user.keys()
+            },
+            "subjects": [dict(r) for r in subjects],
+            "topics": [dict(r) for r in topics],
+            "progress": [dict(r) for r in progress],
+            "scores": [dict(r) for r in scores],
+            "exams": [dict(r) for r in exams],
+            "feedback": [dict(r) for r in feedback],
+            "activity": [dict(r) for r in activity],
+        }
+    )
+
+
+@app.route("/api/admin/users/<int:uid>", methods=["PATCH"])
+@admin_required
+def admin_update_user(u, uid):
+    """Let an admin toggle admin rights, verification or delete a user."""
+    d = request.get_json() or {}
+    db = get_db()
+    user = db.execute("SELECT * FROM users WHERE id = ?", [uid]).fetchone()
+    if not user:
+        db.close()
+        return jsonify({"error": "User not found"}), 404
+
+    if d.get("delete"):
+        # An admin cannot delete their own account from the admin panel
+        # (same lockout protection as self-demotion below).
+        if uid == u["id"]:
+            db.close()
+            return (
+                jsonify({"error": "You cannot delete your own account"}),
+                400,
+            )
+        db.execute("DELETE FROM users WHERE id = ?", [uid])
+        db.commit()
+        log_activity(db, u["id"], "user_delete", f"Deleted user #{uid}")
+        db.close()
+        return jsonify({"message": "User deleted"})
+
+    if "is_admin" in d:
+        # An admin cannot remove their own admin rights (avoid lockout).
+        if uid == u["id"] and not d["is_admin"]:
+            db.close()
+            return jsonify({"error": "You cannot remove your own admin access"}), 400
+        db.execute(
+            "UPDATE users SET is_admin = ? WHERE id = ?",
+            [1 if d["is_admin"] else 0, uid],
+        )
+        log_activity(
+            db,
+            u["id"],
+            "admin_toggle",
+            f"Set admin={'on' if d['is_admin'] else 'off'} for user #{uid}",
+        )
+
+    if "email_verified" in d:
+        db.execute(
+            "UPDATE users SET email_verified = ? WHERE id = ?",
+            [1 if d["email_verified"] else 0, uid],
+        )
+        log_activity(db, u["id"], "verify_toggle", f"Toggled verification for user #{uid}")
+
+    db.commit()
+    row = db.execute("SELECT * FROM users WHERE id = ?", [uid]).fetchone()
+    db.close()
+    return jsonify({"user": _ud(row)})
+
+
+# ── Admin: feedback ────────────────────────────────────────────
+@app.route("/api/admin/feedback", methods=["GET"])
+@admin_required
+def admin_feedback(u):
+    """List all user feedback, newest first."""
+    db = get_db()
+    status = (request.args.get("status") or "").strip().lower()
+    kind = (request.args.get("kind") or "").strip().lower()
+    q = (request.args.get("q") or "").strip().lower()
+    where = []
+    params = []
+    if status and status != "all":
+        where.append("f.status = ?")
+        params.append(status)
+    if kind and kind != "all":
+        where.append("f.kind = ?")
+        params.append(kind)
+    if q:
+        where.append("(LOWER(COALESCE(f.title,'')) LIKE ? OR LOWER(f.message) LIKE ?)")
+        params += [f"%{q}%", f"%{q}%"]
+    query = (
+        "SELECT f.*, u.name uname, u.email uemail FROM feedback f "
+        "LEFT JOIN users u ON u.id = f.user_id "
+    )
+    if where:
+        query += "WHERE " + " AND ".join(where) + " "
+    query += "ORDER BY f.id DESC"
+    rows = db.execute(query, params).fetchall()
+    db.close()
+    return jsonify({"feedback": [dict(r) for r in rows]})
+
+
+@app.route("/api/admin/feedback/<int:fid>", methods=["PATCH"])
+@admin_required
+def admin_update_feedback(u, fid):
+    """Update the status of a feedback item and store the admin note."""
+    d = request.get_json() or {}
+    db = get_db()
+    fb = db.execute("SELECT * FROM feedback WHERE id = ?", [fid]).fetchone()
+    if not fb:
+        db.close()
+        return jsonify({"error": "Feedback not found"}), 404
+
+    status = (d.get("status") or fb["status"]).strip().lower()
+    if status not in ("new", "reviewed", "resolved", "rejected"):
+        status = fb["status"]
+    note = d.get("admin_note", fb["admin_note"]) or ""
+
+    db.execute(
+        "UPDATE feedback SET status = ?, admin_note = ? WHERE id = ?",
+        [status, note, fid],
+    )
+    db.commit()
+    log_activity(db, u["id"], "feedback_update", f"Feedback #{fid} → {status}")
+    row = db.execute("SELECT * FROM feedback WHERE id = ?", [fid]).fetchone()
+    db.close()
+    return jsonify({"feedback": dict(row)})
+
+
+@app.route("/api/admin/feedback/<int:fid>", methods=["DELETE"])
+@admin_required
+def admin_delete_feedback(u, fid):
+    """Delete a feedback item."""
+    db = get_db()
+    db.execute("DELETE FROM feedback WHERE id = ?", [fid])
+    db.commit()
+    log_activity(db, u["id"], "feedback_delete", f"Deleted feedback #{fid}")
+    db.close()
+    return jsonify({"message": "Feedback deleted"})
+
+
+# ── Admin: activity feed ───────────────────────────────────────
+@app.route("/api/admin/activity", methods=["GET"])
+@admin_required
+def admin_activity(u):
+    """Return the platform-wide user activity feed."""
+    db = get_db()
+    rows = db.execute(
+        "SELECT a.*, u.name uname, u.email uemail FROM activity_log a "
+        "LEFT JOIN users u ON u.id = a.user_id ORDER BY a.id DESC LIMIT 100"
+    ).fetchall()
+    db.close()
+    return jsonify({"activity": [dict(r) for r in rows]})
+
+
+# ── CLI: manage admin access ─────────────────────────────────────
+def _cli_make_admin(email):
+    """Promote an existing user to admin. Used by the CLI entry point."""
+    init_db()
+    email = email.strip().lower()
+    db = get_db()
+    row = db.execute(
+        "SELECT id, name, is_admin FROM users WHERE LOWER(email) = ?", [email]
+    ).fetchone()
+    if not row:
+        print(f"✗ No user found with email: {email}")
+        db.close()
+        return 1
+    db.execute("UPDATE users SET is_admin = 1 WHERE id = ?", [row["id"]])
+    db.commit()
+    db.close()
+    print(f"👑 {row['name']} ({email}) is now an administrator.")
+    return 0
+
+
+def _cli_list_admins():
+    """Print every current administrator."""
+    db = get_db()
+    rows = db.execute(
+        "SELECT id, name, email FROM users WHERE is_admin = 1 ORDER BY id"
+    ).fetchall()
+    db.close()
+    if not rows:
+        print("No administrators yet.")
+        return 0
+    print("Current administrators:")
+    for r in rows:
+        print(f"  #{r['id']}  {r['name']}  <{r['email']}>")
+    return 0
+
+
 if __name__ == "__main__":
+    import sys
+
+    if len(sys.argv) >= 3 and sys.argv[1] in ("make-admin", "make_admin"):
+        raise SystemExit(_cli_make_admin(sys.argv[2]))
+    if len(sys.argv) >= 2 and sys.argv[1] in ("list-admins", "list_admins"):
+        init_db()
+        raise SystemExit(_cli_list_admins())
+
     init_db()
     print("🚀 StudySaathi v3 → http://localhost:5000")
     print("📝 Set USE_MOCK=false in core.js to use this backend")
+    print("💡 Admin CLI: python app.py make-admin <email> | python app.py list-admins")
+    if is_default_secret():
+        print(
+            "⚠️  WARNING: SS3_SECRET is not set — using the development signing "
+            "key.\n    Set SS3_SECRET (e.g. in backend/.env) before deploying."
+        )
     app.run(debug=True, port=5000)
