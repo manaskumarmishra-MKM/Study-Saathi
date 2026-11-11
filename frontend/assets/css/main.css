@@ -1797,33 +1797,55 @@ tr:hover td {
   }
   .sidebar {
     position: fixed;
-    left: -260px;
+    left: 0;
     top: 0;
+    bottom: 0;
+    width: 260px;
     height: 100vh;
-    z-index: 300;
-    transition: left var(--trans);
-    overflow: hidden;
+    background: var(--bg2);
+    z-index: 200;
+    transition: transform 0.3s ease;
+    transform: translateX(-260px);
   }
   .sidebar.open {
-    left: 0;
-    box-shadow: 4px 0 32px rgba(0, 0, 0, 0.5);
+    transform: translateX(0);
   }
-  .hamburger {
-    display: flex;
+  .sidebar .topbar-brand {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar .sb-item {
+    display: block;
+    padding: 12px 24px;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar .sb-item:hover {
+    background: var(--bg3);
+  }
+  .sidebar .sb-div {
+    height: 1px;
+    background: var(--border);
+    margin: 12px 24px;
+  }
+  .sidebar .sb-section {
+    padding: 12px 24px;
+    color: var(--text2);
+    font-size: 0.75rem;
+    text-transform: uppercase;
   }
   .main {
-    padding: 20px 16px;
-    overflow-x: hidden;
-  }
-  .g2,
-  .g3,
-  .g4 {
-    grid-template-columns: 1fr;
+    padding: 20px;
+    margin-left: 0 !important;
   }
   .topbar-search {
     display: none;
   }
+  .hamburger {
+    display: flex;
+  }
 }
+
 /* Ensure no horizontal overflow on small screens */
 @media (max-width: 600px) {
   body {
