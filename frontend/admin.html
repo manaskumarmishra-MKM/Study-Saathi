@@ -82,7 +82,7 @@
             <input
               type="search"
               id="user-search"
-              placeholder="Search by name or email…"
+              [{"query":"edit:/Users/manaskumarmishra/Downloads/SS_v3/frontend/admin.html","result":"","error":"Editor operation failed: No replacement performed: text not found in /Users/manaskumarmishra/Downloads/SS_v3/frontend/admin.html.","success":false}
               style="max-width: 320px"
             />
             <div class="chip-row" style="margin: 0">
@@ -569,7 +569,7 @@
             `<div style="font-size:0.87rem;white-space:pre-wrap;margin-bottom:14px">${esc(f.message)}</div>` +
             `<div class="form-group"><label>Status</label><select id="fb-status">${opts}</select></div>` +
             `<div class="form-group"><label>Admin note (visible to the user)</label>` +
-            `<textarea id="fb-note" placeholder="e.g. Shipped in the next release">${esc(f.admin_note || "")}</textarea></div>` +
+            `<textarea id="fb-note">${esc(f.admin_note || "")}</textarea></div>` +
             `<div style="display:flex;gap:8px;justify-content:flex-end">` +
             `<button class="btn btn-ghost" onclick="closeModal('modal-fb')">Cancel</button>` +
             `<button class="btn btn-teal" onclick="saveFeedback(${f.id})">Save</button>` +
