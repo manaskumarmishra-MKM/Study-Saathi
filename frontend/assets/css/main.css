@@ -1802,6 +1802,7 @@ tr:hover td {
     height: 100vh;
     z-index: 300;
     transition: left var(--trans);
+    overflow: hidden;
   }
   .sidebar.open {
     left: 0;
@@ -1812,6 +1813,7 @@ tr:hover td {
   }
   .main {
     padding: 20px 16px;
+    overflow-x: hidden;
   }
   .g2,
   .g3,
@@ -1822,18 +1824,9 @@ tr:hover td {
     display: none;
   }
 }
+/* Ensure no horizontal overflow on small screens */
 @media (max-width: 600px) {
-  .stats-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-  .chat-panel {
-    width: calc(100vw - 20px);
-    right: 10px;
-  }
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-  .r-grid {
-    grid-template-columns: repeat(2, 1fr);
+  body {
+    overflow-x: hidden !important;
   }
 }

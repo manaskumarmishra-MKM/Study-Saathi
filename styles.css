@@ -1067,9 +1067,11 @@ textarea {
   }
   .sidebar {
     display: none;
+    width: 0 !important;
   }
   .main-content {
-    margin-left: 0;
+    margin-left: 0 !important;
+    width: 100% !important;
   }
   .grid-2,
   .grid-2-1 {
@@ -1083,6 +1085,10 @@ textarea {
   }
   .input-row {
     grid-template-columns: 1fr;
+  }
+  /* Ensure no horizontal overflow on small screens */
+  body {
+    overflow-x: hidden !important;
   }
 }
 @media (max-width: 600px) {
